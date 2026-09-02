@@ -1,0 +1,270 @@
+﻿@model FreshStart.Models.Student.StudentProfile
+
+@{
+    ViewData["Title"] = "Edit Profile";
+}
+
+
+<div class="container mt-5">
+
+    <div class="card shadow p-4">
+
+        <h2 class="mb-4">
+            Edit Student Profile
+        </h2>
+
+
+        <form asp-action="EditProfile"
+              method="post"
+              enctype="multipart/form-data">
+
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Full Name
+                </label>
+
+                <input asp-for="FullName"
+                       class="form-control" />
+
+            </div>
+
+
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Phone Number
+                </label>
+
+                <input asp-for="Phone"
+                       class="form-control" />
+
+            </div>
+
+
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    City
+                </label>
+
+                <input asp-for="City"
+                       class="form-control" />
+
+            </div>
+
+
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    University
+                </label>
+
+                <input asp-for="University"
+                       class="form-control" />
+
+            </div>
+
+
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Degree
+                </label>
+
+                <input asp-for="Degree"
+                       class="form-control" />
+
+            </div>
+
+
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Graduation Year
+                </label>
+
+                <input asp-for="GraduationYear"
+                       class="form-control" />
+
+            </div>
+
+
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Skills
+                </label>
+
+                <input asp-for="Skills"
+                       class="form-control" />
+
+            </div>
+
+
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Experience
+                </label>
+
+                <textarea asp-for="Experience"
+                          class="form-control"
+                          rows="4"></textarea>
+
+            </div>
+
+
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Professional Bio
+                </label>
+
+                <textarea asp-for="Bio"
+                          class="form-control"
+                          rows="4"></textarea>
+
+            </div>
+
+
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    LinkedIn Profile
+                </label>
+
+                <input asp-for="LinkedIn"
+                       class="form-control" />
+
+            </div>
+
+
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    GitHub Profile
+                </label>
+
+                <input asp-for="GitHub"
+                       class="form-control" />
+
+            </div>
+
+
+
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Upload New Resume (PDF)
+                </label>
+
+                <input type="file"
+                       name="ResumeFile"
+                       class="form-control"
+                       accept=".pdf" />
+
+            </div>
+
+
+
+
+            @if (!string.IsNullOrEmpty(Model.ResumePath))
+            {
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Current Resume
+                    </label>
+
+                    <br />
+
+                    <a href="@Model.ResumePath"
+                       target="_blank"
+                       class="btn btn-outline-primary">
+
+                        View Current Resume
+
+                    </a>
+
+                </div>
+            }
+
+
+
+
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Change Profile Picture
+                </label>
+
+
+                <input type="file"
+                       name="ProfileImageFile"
+                       class="form-control"
+                       accept="image/*" />
+
+            </div>
+
+
+
+
+            @if (!string.IsNullOrEmpty(Model.ProfileImage))
+            {
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Current Profile Picture
+                    </label>
+
+                    <br />
+
+                    <img src="@Model.ProfileImage"
+                         width="120"
+                         height="120"
+                         class="rounded-circle mt-2" />
+
+                </div>
+            }
+
+
+
+
+            <button type="submit"
+                    class="btn btn-primary">
+
+                Update Profile
+
+            </button>
+
+
+
+            <a asp-action="Index"
+               class="btn btn-secondary ms-2">
+
+                Cancel
+
+            </a>
+
+
+        </form>
+
+
+    </div>
+
+
+</div>

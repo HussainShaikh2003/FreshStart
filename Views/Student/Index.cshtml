@@ -1,0 +1,241 @@
+﻿@model FreshStart.Models.ViewModels.StudentDashboardViewModel
+
+@{
+    ViewData["Title"] = "Student Dashboard";
+}
+
+
+<div class="container mt-5">
+
+
+    <h1 class="mb-4">
+        Student Dashboard
+    </h1>
+
+
+
+    <div class="row mb-4">
+
+
+        <div class="col-md-4">
+
+            <div class="card shadow p-3 text-center">
+
+                <h5>
+                    Profile Completion
+                </h5>
+
+                <h2>
+                    @Model.ProfileCompletion%
+                </h2>
+
+            </div>
+
+        </div>
+
+
+
+
+        <div class="col-md-4">
+
+            <div class="card shadow p-3 text-center">
+
+                <h5>
+                    Applications
+                </h5>
+
+                <h2>
+                    @Model.TotalApplications
+                </h2>
+
+            </div>
+
+        </div>
+
+
+
+
+        <div class="col-md-4">
+
+            <div class="card shadow p-3 text-center">
+
+                <h5>
+                    Saved Jobs
+                </h5>
+
+                <h2>
+                    @Model.SavedJobs
+                </h2>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    @if (Model.Profile == null)
+    {
+
+        <div class="card shadow p-4 text-center">
+
+
+            <h3>
+                Welcome to FreshStart!
+            </h3>
+
+
+            <p class="text-muted">
+                Your student profile is not completed yet.
+            </p>
+
+
+
+            <a asp-controller="Student"
+               asp-action="CreateProfile"
+               class="btn btn-primary">
+
+                Create My Profile
+
+            </a>
+
+
+        </div>
+
+    }
+    else
+    {
+
+
+        <div class="card shadow p-4">
+
+
+            <div class="row align-items-center">
+
+
+                <div class="col-md-3 text-center">
+
+
+                    @if (!string.IsNullOrEmpty(Model.Profile.ProfileImage))
+                    {
+
+                        <img src="@Model.Profile.ProfileImage"
+                             width="150"
+                             height="150"
+                             class="rounded-circle shadow" />
+
+                    }
+                    else
+                    {
+
+                        <div class="rounded-circle bg-secondary text-white p-5">
+
+                            No Image
+
+                        </div>
+
+                    }
+
+
+                </div>
+
+
+
+
+
+                <div class="col-md-9">
+
+
+                    <div class="d-flex justify-content-between">
+
+
+                        <h2>
+                            @Model.Profile.FullName
+                        </h2>
+
+
+
+                        <a asp-controller="Student"
+                           asp-action="EditProfile"
+                           class="btn btn-success">
+
+                            Edit Profile
+
+                        </a>
+
+
+                    </div>
+
+
+                    <hr />
+
+
+
+                    <p>
+                        <strong>University:</strong>
+                        @Model.Profile.University
+                    </p>
+
+
+
+                    <p>
+                        <strong>Degree:</strong>
+                        @Model.Profile.Degree
+                    </p>
+
+
+
+                    <p>
+                        <strong>Skills:</strong>
+                        @Model.Profile.Skills
+                    </p>
+
+
+
+                    <p>
+                        <strong>Experience:</strong>
+                        @Model.Profile.Experience
+                    </p>
+
+
+
+                    <p>
+                        <strong>Bio:</strong>
+                        @Model.Profile.Bio
+                    </p>
+
+
+
+
+                    @if (!string.IsNullOrEmpty(Model.Profile.ResumePath))
+                    {
+
+                        <a href="@Model.Profile.ResumePath"
+                           target="_blank"
+                           class="btn btn-primary">
+
+                            View Resume
+
+                        </a>
+
+                    }
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    }
+
+
+
+</div>

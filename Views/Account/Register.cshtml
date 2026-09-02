@@ -1,0 +1,107 @@
+﻿@model FreshStart.Models.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+
+<div class="container mt-5">
+
+    <div class="card p-4 shadow">
+
+        <h2 class="text-center">
+            Create FreshStart Account
+        </h2>
+
+
+        <form method="post" asp-action="Register" asp-controller="Account">
+
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+
+            <div class="mb-3">
+                <label>Email</label>
+
+                <input asp-for="Email"
+                       class="form-control"
+                       placeholder="Enter Email" />
+
+                <span asp-validation-for="Email"
+                      class="text-danger">
+                </span>
+            </div>
+
+
+            <div class="mb-3">
+                <label>Password</label>
+
+                <input asp-for="Password"
+                       class="form-control"
+                       placeholder="Enter Password" />
+
+                <span asp-validation-for="Password"
+                      class="text-danger">
+                </span>
+            </div>
+
+
+            <div class="mb-3">
+                <label>Confirm Password</label>
+
+                <input asp-for="ConfirmPassword"
+                       class="form-control"
+                       placeholder="Confirm Password" />
+
+                <span asp-validation-for="ConfirmPassword"
+                      class="text-danger">
+                </span>
+            </div>
+
+
+            <div class="mb-3">
+
+                <label>Select Role</label>
+
+                <select asp-for="Role"
+                        class="form-control">
+
+                    <option value="">
+                        Select Role
+                    </option>
+
+                    <option value="Student">
+                        Student
+                    </option>
+
+                    <option value="Employer">
+                        Employer
+                    </option>
+
+                </select>
+
+                <span asp-validation-for="Role"
+                      class="text-danger">
+                </span>
+
+            </div>
+
+
+            <button type="submit"
+                    class="btn btn-primary w-100">
+
+                Register
+
+            </button>
+
+
+        </form>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
