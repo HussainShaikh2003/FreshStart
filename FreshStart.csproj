@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\Employer\" />
     <Folder Include="Models\Job\" />
     <Folder Include="Models\Application\" />
     <Folder Include="wwwroot\uploads\Profile\" />

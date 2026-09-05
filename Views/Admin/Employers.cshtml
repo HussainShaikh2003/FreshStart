@@ -1,0 +1,179 @@
+﻿@model IEnumerable<FreshStart.Models.Employer.EmployerProfile>
+
+@{
+    ViewData["Title"] = "Manage Employers";
+}
+
+
+<div class="container mt-5">
+
+
+    <h1 class="mb-4">
+        Manage Employers
+    </h1>
+
+
+
+    <div class="card shadow p-4">
+
+
+        <table class="table table-bordered table-striped">
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Logo
+                    </th>
+
+                    <th>
+                        Company Name
+                    </th>
+
+                    <th>
+                        Email
+                    </th>
+
+                    <th>
+                        Industry
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Actions
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+
+            <tbody>
+
+
+                @foreach (var employer in Model)
+                {
+
+                    <tr>
+
+
+                        <td>
+
+                            @if (!string.IsNullOrEmpty(employer.CompanyLogo))
+                            {
+
+                                <img src="@employer.CompanyLogo"
+                                     width="60"
+                                     height="60"
+                                     class="rounded" />
+
+                            }
+                            else
+                            {
+                                <span>
+                                    No Logo
+                                </span>
+                            }
+
+                        </td>
+
+
+
+
+                        <td>
+                            @employer.CompanyName
+                        </td>
+
+
+
+                        <td>
+                            @employer.CompanyEmail
+                        </td>
+
+
+
+
+                        <td>
+                            @employer.Industry
+                        </td>
+
+
+
+
+                        <td>
+
+                            @if (employer.ApprovalStatus == "Approved")
+                            {
+                                <span class="badge bg-success">
+                                    Approved
+                                </span>
+                            }
+                            else if (employer.ApprovalStatus == "Rejected")
+                            {
+                                <span class="badge bg-danger">
+                                    Rejected
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning">
+                                    Pending
+                                </span>
+                            }
+
+                        </td>
+
+
+
+
+
+                        <td>
+
+
+                            <a asp-controller="Admin"
+                               asp-action="ApproveEmployer"
+                               asp-route-id="@employer.EmployerId"
+                               class="btn btn-success btn-sm">
+
+                                Approve
+
+                            </a>
+
+
+
+                            <a asp-controller="Admin"
+                               asp-action="RejectEmployer"
+                               asp-route-id="@employer.EmployerId"
+                               class="btn btn-danger btn-sm">
+
+                                Reject
+
+                            </a>
+
+
+                        </td>
+
+
+
+                    </tr>
+
+
+                }
+
+
+            </tbody>
+
+
+        </table>
+
+
+    </div>
+
+
+</div>

@@ -1,0 +1,264 @@
+﻿@model FreshStart.Models.Employer.EmployerProfile
+
+@{
+    ViewData["Title"] = "Edit Company Profile";
+}
+
+
+
+<div class="container mt-5">
+
+
+    <div class="card shadow p-4">
+
+
+        <h2 class="mb-4">
+            Edit Company Profile
+        </h2>
+
+
+
+
+        <form asp-controller="Employer"
+              asp-action="EditProfile"
+              method="post"
+              enctype="multipart/form-data">
+
+
+
+
+
+            <div class="mb-3">
+
+                <label asp-for="CompanyName"
+                       class="form-label">
+
+                    Company Name
+
+                </label>
+
+
+                <input asp-for="CompanyName"
+                       class="form-control" />
+
+            </div>
+
+
+
+
+
+
+
+            <div class="mb-3">
+
+                <label asp-for="CompanyEmail"
+                       class="form-label">
+
+                    Company Email
+
+                </label>
+
+
+                <input asp-for="CompanyEmail"
+                       class="form-control" />
+
+            </div>
+
+
+
+
+
+
+
+            <div class="mb-3">
+
+                <label asp-for="Phone"
+                       class="form-label">
+
+                    Phone Number
+
+                </label>
+
+
+                <input asp-for="Phone"
+                       class="form-control" />
+
+            </div>
+
+
+
+
+
+
+
+            <div class="mb-3">
+
+                <label asp-for="Website"
+                       class="form-label">
+
+                    Website
+
+                </label>
+
+
+                <input asp-for="Website"
+                       class="form-control" />
+
+            </div>
+
+
+
+
+
+
+
+            <div class="mb-3">
+
+                <label asp-for="Industry"
+                       class="form-label">
+
+                    Industry
+
+                </label>
+
+
+                <input asp-for="Industry"
+                       class="form-control" />
+
+            </div>
+
+
+
+
+
+
+
+            <div class="mb-3">
+
+                <label asp-for="CompanyDescription"
+                       class="form-label">
+
+                    Company Description
+
+                </label>
+
+
+                <textarea asp-for="CompanyDescription"
+                          class="form-control"
+                          rows="5"></textarea>
+
+            </div>
+
+
+
+
+
+
+
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    Change Company Logo
+
+                </label>
+
+
+                <input type="file"
+                       name="CompanyLogoFile"
+                       class="form-control"
+                       accept="image/*" />
+
+            </div>
+
+
+
+
+
+
+
+
+            @if (!string.IsNullOrEmpty(Model.CompanyLogo))
+            {
+
+                <div class="mb-3">
+
+
+                    <label class="form-label">
+
+                        Current Logo
+
+                    </label>
+
+
+                    <br />
+
+
+                    <img src="@Model.CompanyLogo"
+                         width="120"
+                         height="120"
+                         class="rounded shadow" />
+
+
+                </div>
+
+            }
+
+
+
+
+
+
+
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    Approval Status
+
+                </label>
+
+
+                <input asp-for="ApprovalStatus"
+                       class="form-control"
+                       readonly />
+
+            </div>
+
+
+
+
+
+
+
+            <button type="submit"
+                    class="btn btn-primary">
+
+                Update Company Profile
+
+            </button>
+
+
+
+
+            <a asp-controller="Employer"
+               asp-action="Index"
+               class="btn btn-secondary ms-2">
+
+                Cancel
+
+            </a>
+
+
+
+
+        </form>
+
+
+
+    </div>
+
+
+</div>
