@@ -1,6 +1,7 @@
 ﻿using FreshStart.Data;
 using FreshStart.Models.Employer;
 using FreshStart.Models.Identity;
+using FreshStart.Models.Job;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,8 @@ namespace FreshStart.Controllers
             _userManager = userManager;
             _environment = environment;
         }
+
+
 
 
 
@@ -55,12 +58,16 @@ namespace FreshStart.Controllers
 
 
 
+
+
         // Create Company Profile Page
         [HttpGet]
         public IActionResult CreateProfile()
         {
             return View();
         }
+
+
 
 
 
@@ -251,10 +258,8 @@ namespace FreshStart.Controllers
 
 
 
-
                 string fileName = Guid.NewGuid().ToString()
                     + Path.GetExtension(CompanyLogoFile.FileName);
-
 
 
 
@@ -265,12 +270,10 @@ namespace FreshStart.Controllers
 
 
 
-
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await CompanyLogoFile.CopyToAsync(stream);
                 }
-
 
 
 
@@ -287,6 +290,143 @@ namespace FreshStart.Controllers
 
             return RedirectToAction("Index");
         }
+
+
+
+
+
+
+
+
+
+        // View Employer Jobs
+        public async Task<IActionResult> Jobs()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+
+            if (user == null)
+            {
+                return Challenge();
+            }
+
+
+
+            var company = await _context.EmployerProfiles
+                .FirstOrDefaultAsync(x => x.UserId == user.Id);
+
+
+
+            if (company == null)
+            {
+                return RedirectToAction("CreateProfile");
+            }
+
+
+
+            var jobs = await _context.Jobs
+                .Where(x => x.EmployerId == company.EmployerId)
+                .ToListAsync();
+
+
+
+            return View(jobs);
+        }
+
+
+
+
+
+
+
+
+
+        // Create Job Page
+        [HttpGet]
+        public async Task<IActionResult> CreateJob()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+
+            if (user == null)
+            {
+                return Challenge();
+            }
+
+
+
+            var company = await _context.EmployerProfiles
+                .FirstOrDefaultAsync(x => x.UserId == user.Id);
+
+
+
+            if (company == null)
+            {
+                return RedirectToAction("CreateProfile");
+            }
+
+
+
+            return View();
+        }
+
+
+
+
+
+
+
+
+
+        // Save Job
+        // Save Job
+        [HttpPost]
+        public async Task<IActionResult> CreateJob(Job model)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+
+            if (user == null)
+            {
+                return Challenge();
+            }
+
+
+
+            var company = await _context.EmployerProfiles
+                .FirstOrDefaultAsync(x => x.UserId == user.Id);
+
+
+
+            if (company == null)
+            {
+                return RedirectToAction("CreateProfile");
+            }
+
+
+
+            model.EmployerId = company.EmployerId;
+
+            model.Employer = company;
+
+
+
+            if (ModelState.IsValid)
+            {
+                _context.Jobs.Add(model);
+
+
+                await _context.SaveChangesAsync();
+
+
+                return RedirectToAction("Jobs");
+            }
+
+
+
+            return View(model);
+        }
+
 
     }
 }

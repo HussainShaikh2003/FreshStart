@@ -1,0 +1,120 @@
+﻿@model IEnumerable<FreshStart.Models.Job.Job>
+
+@{
+    ViewData["Title"] = "Available Jobs";
+}
+
+
+<div class="container mt-5">
+
+
+    <h1 class="mb-4">
+        Available Jobs
+    </h1>
+
+
+
+    @if (!Model.Any())
+    {
+
+        <div class="alert alert-info">
+
+            Currently no jobs available.
+
+        </div>
+
+    }
+    else
+    {
+
+
+        <div class="row">
+
+
+            @foreach (var job in Model)
+            {
+
+                <div class="col-md-6 mb-4">
+
+
+                    <div class="card shadow p-4">
+
+
+                        <h3>
+                            @job.JobTitle
+                        </h3>
+
+
+                        <hr />
+
+
+                        <h5>
+                            Company:
+                        </h5>
+
+
+                        <p>
+                            @job.Employer.CompanyName
+                        </p>
+
+
+
+                        <p>
+                            <strong>Skills:</strong>
+                            @job.RequiredSkills
+                        </p>
+
+
+
+                        <p>
+                            <strong>Location:</strong>
+                            @job.Location
+                        </p>
+
+
+
+                        <p>
+                            <strong>Salary:</strong>
+                            @job.Salary
+                        </p>
+
+
+
+                        <p>
+                            <strong>Job Type:</strong>
+                            @job.JobType
+                        </p>
+
+
+
+                        <p>
+                            <strong>Deadline:</strong>
+                            @job.Deadline.ToShortDateString()
+                        </p>
+
+
+
+                        <a asp-controller="Student"
+                           asp-action="JobDetails"
+                           asp-route-id="@job.JobId"
+                           class="btn btn-primary">
+
+                            View Details
+
+                        </a>
+
+
+                    </div>
+
+
+                </div>
+
+            }
+
+
+        </div>
+
+    }
+
+
+</div>

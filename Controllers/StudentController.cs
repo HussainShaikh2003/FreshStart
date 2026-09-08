@@ -5,6 +5,7 @@ using FreshStart.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using FreshStart.Models.Application;
 
 namespace FreshStart.Controllers
 {
@@ -26,7 +27,6 @@ namespace FreshStart.Controllers
         }
 
 
-
         // Student Dashboard
         public async Task<IActionResult> Index()
         {
@@ -43,13 +43,26 @@ namespace FreshStart.Controllers
 
 
 
+            int totalApplications = 0;
+
+
+            if (profile != null)
+            {
+                totalApplications = await _context.JobApplications
+                    .CountAsync(x => x.StudentId == profile.StudentId);
+            }
+
+
+
             var dashboard = new StudentDashboardViewModel
             {
                 Profile = profile,
 
                 ProfileCompletion = profile == null ? 20 : 70,
 
-                TotalApplications = 0,
+
+                TotalApplications = totalApplications,
+
 
                 SavedJobs = 0
             };
@@ -57,7 +70,6 @@ namespace FreshStart.Controllers
 
             return View(dashboard);
         }
-
 
 
 
@@ -335,6 +347,109 @@ namespace FreshStart.Controllers
 
 
             return RedirectToAction("Index");
+
+
+        }
+        // Available Jobs
+        public async Task<IActionResult> Jobs()
+        {
+            var jobs = await _context.Jobs
+                .Include(x => x.Employer)
+                .ToListAsync();
+
+
+            return View(jobs);
+        }
+
+
+        // Job Details
+        public async Task<IActionResult> JobDetails(int id)
+        {
+            var job = await _context.Jobs
+                .Include(x => x.Employer)
+                .FirstOrDefaultAsync(x => x.JobId == id);
+
+
+            if (job == null)
+            {
+                return NotFound();
+            }
+
+
+            return View(job);
+        }
+        // Apply Job
+        [HttpPost]
+        public async Task<IActionResult> ApplyJob(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+
+            if (user == null)
+            {
+                return Challenge();
+            }
+
+
+
+            var student = await _context.StudentProfiles
+                .FirstOrDefaultAsync(x => x.UserId == user.Id);
+
+
+
+            if (student == null)
+            {
+                return RedirectToAction("CreateProfile");
+            }
+
+
+
+            var job = await _context.Jobs
+                .FirstOrDefaultAsync(x => x.JobId == id);
+
+
+
+            if (job == null)
+            {
+                return NotFound();
+            }
+
+
+
+            var alreadyApplied = await _context.JobApplications
+                .AnyAsync(x => x.JobId == id
+                            && x.StudentId == student.StudentId);
+
+
+
+            if (alreadyApplied)
+            {
+                return RedirectToAction("JobDetails", new { id = id });
+            }
+
+
+
+            var application = new JobApplication
+            {
+                JobId = job.JobId,
+
+                StudentId = student.StudentId,
+
+                AppliedDate = DateTime.Now,
+
+                Status = "Pending"
+            };
+
+
+
+            _context.JobApplications.Add(application);
+
+
+            await _context.SaveChangesAsync();
+
+
+
+            return RedirectToAction("JobDetails", new { id = id });
         }
 
     }

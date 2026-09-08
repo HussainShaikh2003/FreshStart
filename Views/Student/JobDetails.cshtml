@@ -1,0 +1,133 @@
+﻿@model FreshStart.Models.Job.Job
+
+@{
+    ViewData["Title"] = "Job Details";
+}
+
+
+<div class="container mt-5">
+
+
+    <div class="card shadow p-5">
+
+
+        <h1 class="mb-3">
+            @Model.JobTitle
+        </h1>
+
+
+        <hr />
+
+
+
+        <h4>
+            Company
+        </h4>
+
+        <p>
+            @Model.Employer.CompanyName
+        </p>
+
+
+
+
+        <h4>
+            Job Description
+        </h4>
+
+        <p>
+            @Model.Description
+        </p>
+
+
+
+
+        <div class="row mt-4">
+
+
+            <div class="col-md-6">
+
+                <p>
+                    <strong>Required Skills:</strong>
+                    @Model.RequiredSkills
+                </p>
+
+
+                <p>
+                    <strong>Location:</strong>
+                    @Model.Location
+                </p>
+
+
+                <p>
+                    <strong>Salary:</strong>
+                    @Model.Salary
+                </p>
+
+            </div>
+
+
+
+
+            <div class="col-md-6">
+
+
+                <p>
+                    <strong>Job Type:</strong>
+                    @Model.JobType
+                </p>
+
+
+                <p>
+                    <strong>Application Deadline:</strong>
+                    @Model.Deadline.ToShortDateString()
+                </p>
+
+
+                <p>
+                    <strong>Posted Date:</strong>
+                    @Model.CreatedDate.ToShortDateString()
+                </p>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+        <hr />
+
+
+        <form asp-controller="Student"
+              asp-action="ApplyJob"
+              asp-route-id="@Model.JobId"
+              method="post">
+
+            <button type="submit"
+                    class="btn btn-success btn-lg">
+
+                Apply Now
+
+            </button>
+
+        </form>
+
+
+
+        <a asp-controller="Student"
+           asp-action="Jobs"
+           class="btn btn-secondary btn-lg ms-2">
+
+            Back To Jobs
+
+        </a>
+
+
+
+    </div>
+
+
+</div>

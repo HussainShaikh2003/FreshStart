@@ -22,6 +22,36 @@ namespace FreshStart.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("FreshStart.Models.Application.JobApplication", b =>
+                {
+                    b.Property<int>("ApplicationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ApplicationId"), 1L, 1);
+
+                    b.Property<DateTime>("AppliedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("JobId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ApplicationId");
+
+                    b.HasIndex("JobId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("JobApplications");
+                });
+
             modelBuilder.Entity("FreshStart.Models.Employer.EmployerProfile", b =>
                 {
                     b.Property<int>("EmployerId")
@@ -143,6 +173,54 @@ namespace FreshStart.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("FreshStart.Models.Job.Job", b =>
+                {
+                    b.Property<int>("JobId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("JobId"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Deadline")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EmployerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("JobTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("JobType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RequiredSkills")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Salary")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("JobId");
+
+                    b.HasIndex("EmployerId");
+
+                    b.ToTable("Jobs");
                 });
 
             modelBuilder.Entity("FreshStart.Models.Student.StudentProfile", b =>
@@ -341,6 +419,25 @@ namespace FreshStart.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("FreshStart.Models.Application.JobApplication", b =>
+                {
+                    b.HasOne("FreshStart.Models.Job.Job", "Job")
+                        .WithMany()
+                        .HasForeignKey("JobId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("FreshStart.Models.Student.StudentProfile", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Job");
+
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("FreshStart.Models.Employer.EmployerProfile", b =>
                 {
                     b.HasOne("FreshStart.Models.Identity.ApplicationUser", "User")
@@ -350,6 +447,17 @@ namespace FreshStart.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("FreshStart.Models.Job.Job", b =>
+                {
+                    b.HasOne("FreshStart.Models.Employer.EmployerProfile", "Employer")
+                        .WithMany()
+                        .HasForeignKey("EmployerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employer");
                 });
 
             modelBuilder.Entity("FreshStart.Models.Student.StudentProfile", b =>
