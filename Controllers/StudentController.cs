@@ -378,6 +378,44 @@ namespace FreshStart.Controllers
 
             return View(job);
         }
+
+        // My Applications
+        public async Task<IActionResult> MyApplications()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+
+            if (user == null)
+            {
+                return Challenge();
+            }
+
+
+
+            var student = await _context.StudentProfiles
+                .FirstOrDefaultAsync(x => x.UserId == user.Id);
+
+
+
+            if (student == null)
+            {
+                return RedirectToAction("CreateProfile");
+            }
+
+
+
+
+            var applications = await _context.JobApplications
+                .Include(x => x.Job)
+                .ThenInclude(x => x.Employer)
+                .Where(x => x.StudentId == student.StudentId)
+                .ToListAsync();
+
+
+
+            return View(applications);
+        }
+
         // Apply Job
         [HttpPost]
         public async Task<IActionResult> ApplyJob(int id)

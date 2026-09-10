@@ -5,6 +5,7 @@ using FreshStart.Models.Job;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using FreshStart.Models.Application;
 
 namespace FreshStart.Controllers
 {
@@ -427,6 +428,86 @@ namespace FreshStart.Controllers
             return View(model);
         }
 
+        // View Applicants For Job
+        public async Task<IActionResult> Applicants(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
 
+
+            if (user == null)
+            {
+                return Challenge();
+            }
+
+
+
+            var company = await _context.EmployerProfiles
+                .FirstOrDefaultAsync(x => x.UserId == user.Id);
+
+
+
+            if (company == null)
+            {
+                return RedirectToAction("CreateProfile");
+            }
+
+
+
+
+            var job = await _context.Jobs
+                .FirstOrDefaultAsync(x => x.JobId == id
+                                       && x.EmployerId == company.EmployerId);
+
+
+
+            if (job == null)
+            {
+                return NotFound();
+            }
+
+
+
+
+
+            var applications = await _context.JobApplications
+                .Include(x => x.Student)
+                .Include(x => x.Job)
+                .Where(x => x.JobId == id)
+                .ToListAsync();
+
+
+
+            return View(applications);
+        }
+        // Update Application Status
+        [HttpPost]
+        public async Task<IActionResult> UpdateApplicationStatus(
+            int applicationId,
+            string status)
+        {
+            var application = await _context.JobApplications
+                .FirstOrDefaultAsync(x => x.ApplicationId == applicationId);
+
+
+            if (application == null)
+            {
+                return NotFound();
+            }
+
+
+
+            application.Status = status;
+
+
+            await _context.SaveChangesAsync();
+
+
+
+            return RedirectToAction(
+                "Applicants",
+                new { id = application.JobId }
+            );
+        }
     }
+
 }

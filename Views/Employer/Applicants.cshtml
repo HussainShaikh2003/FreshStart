@@ -1,0 +1,155 @@
+﻿@model List<FreshStart.Models.Application.JobApplication>
+
+@{
+    ViewData["Title"] = "Applicants";
+}
+
+
+<div class="container mt-5">
+
+
+    <h1 class="mb-4">
+        Job Applicants
+    </h1>
+
+
+
+    @if (Model.Count == 0)
+    {
+
+        <div class="alert alert-info">
+
+            No applicants found.
+
+        </div>
+
+    }
+    else
+    {
+
+
+        @foreach (var application in Model)
+        {
+
+            <div class="card shadow p-4 mb-4">
+
+
+                <h3>
+                    @application.Student.FullName
+                </h3>
+
+
+                <hr />
+
+
+                <p>
+                    <strong>University:</strong>
+                    @application.Student.University
+                </p>
+
+
+                <p>
+                    <strong>Degree:</strong>
+                    @application.Student.Degree
+                </p>
+
+
+                <p>
+                    <strong>Skills:</strong>
+                    @application.Student.Skills
+                </p>
+
+
+                <p>
+                    <strong>Experience:</strong>
+                    @application.Student.Experience
+                </p>
+
+
+
+                @if (!string.IsNullOrEmpty(application.Student.ResumePath))
+                {
+
+                    <a href="@application.Student.ResumePath"
+                       target="_blank"
+                       class="btn btn-primary">
+
+                        View Resume
+
+                    </a>
+
+                }
+
+
+
+                <p class="mt-3">
+
+                    <strong>Applied Date:</strong>
+                    @application.AppliedDate.ToShortDateString()
+
+                </p>
+
+
+
+                <p>
+
+                    <strong>Status:</strong>
+
+                    <form asp-controller="Employer"
+                          asp-action="UpdateApplicationStatus"
+                          method="post"
+                          class="mt-3">
+
+
+                        <input type="hidden"
+                               name="applicationId"
+                               value="@application.ApplicationId" />
+
+
+                        <button type="submit"
+                                name="status"
+                                value="Accepted"
+                                class="btn btn-success">
+
+                            Accept
+
+                        </button>
+
+
+
+                        <button type="submit"
+                                name="status"
+                                value="Rejected"
+                                class="btn btn-danger ms-2">
+
+                            Reject
+
+                        </button>
+
+
+                    </form>
+
+                    @if (application.Status == "Pending")
+                    {
+                        <span class="badge bg-warning">
+                            Pending
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">
+                            @application.Status
+                        </span>
+                    }
+
+                </p>
+
+
+            </div>
+
+        }
+
+    }
+
+
+</div>

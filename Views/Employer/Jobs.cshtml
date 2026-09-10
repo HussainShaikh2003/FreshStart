@@ -65,6 +65,10 @@
                         Deadline
                     </th>
 
+                    <th>
+                        Action
+                    </th>
+
                 </tr>
 
             </thead>
@@ -110,6 +114,20 @@
                         </td>
 
 
+                        <td>
+
+                            <a asp-controller="Employer"
+                               asp-action="Applicants"
+                               asp-route-id="@job.JobId"
+                               class="btn btn-info">
+
+                                View Applicants
+
+                            </a>
+
+                        </td>
+
+
                     </tr>
 
                 }
@@ -124,4 +142,4 @@
     </div>
 
 
-</div>
+</div>B
