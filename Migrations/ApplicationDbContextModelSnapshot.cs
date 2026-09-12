@@ -223,6 +223,32 @@ namespace FreshStart.Migrations
                     b.ToTable("Jobs");
                 });
 
+            modelBuilder.Entity("FreshStart.Models.Saved.SavedJob", b =>
+                {
+                    b.Property<int>("SavedJobId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SavedJobId"), 1L, 1);
+
+                    b.Property<int>("JobId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("SavedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("SavedJobId");
+
+                    b.HasIndex("JobId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("SavedJobs");
+                });
+
             modelBuilder.Entity("FreshStart.Models.Student.StudentProfile", b =>
                 {
                     b.Property<int>("StudentId")
@@ -458,6 +484,25 @@ namespace FreshStart.Migrations
                         .IsRequired();
 
                     b.Navigation("Employer");
+                });
+
+            modelBuilder.Entity("FreshStart.Models.Saved.SavedJob", b =>
+                {
+                    b.HasOne("FreshStart.Models.Job.Job", "Job")
+                        .WithMany()
+                        .HasForeignKey("JobId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("FreshStart.Models.Student.StudentProfile", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Job");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("FreshStart.Models.Student.StudentProfile", b =>

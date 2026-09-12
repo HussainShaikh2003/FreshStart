@@ -1,0 +1,107 @@
+﻿@model List<FreshStart.Models.Saved.SavedJob>
+
+@{
+    ViewData["Title"] = "Saved Jobs";
+}
+
+
+<div class="container mt-5">
+
+
+    <h1 class="mb-4">
+        Saved Jobs
+    </h1>
+
+
+
+    @if (Model.Count == 0)
+    {
+
+        <div class="alert alert-info">
+
+            No saved jobs found.
+
+        </div>
+
+    }
+    else
+    {
+
+        @foreach (var saved in Model)
+        {
+
+            <div class="card shadow p-4 mb-4">
+
+
+                <h3>
+                    @saved.Job.JobTitle
+                </h3>
+
+
+                <hr />
+
+
+                <p>
+                    <strong>Company:</strong>
+                    @saved.Job.Employer.CompanyName
+                </p>
+
+
+                <p>
+                    <strong>Location:</strong>
+                    @saved.Job.Location
+                </p>
+
+
+                <p>
+                    <strong>Salary:</strong>
+                    @saved.Job.Salary
+                </p>
+
+
+                <p>
+                    <strong>Job Type:</strong>
+                    @saved.Job.JobType
+                </p>
+
+
+                <p>
+                    <strong>Saved Date:</strong>
+                    @saved.SavedDate.ToShortDateString()
+                </p>
+
+
+
+                <a asp-controller="Student"
+                   asp-action="JobDetails"
+                   asp-route-id="@saved.JobId"
+                   class="btn btn-primary">
+
+                    View Job
+
+                </a>
+
+                <form asp-controller="Student"
+                      asp-action="RemoveSavedJob"
+                      asp-route-id="@saved.SavedJobId"
+                      method="post"
+                      class="d-inline">
+
+                    <button type="submit"
+                            class="btn btn-danger ms-2">
+
+                        Remove
+
+                    </button>
+
+                </form>
+
+
+            </div>
+
+        }
+
+    }
+
+
+</div>

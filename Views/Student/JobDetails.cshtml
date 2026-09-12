@@ -115,6 +115,20 @@
 
         </form>
 
+        <form asp-controller="Student"
+              asp-action="SaveJob"
+              asp-route-id="@Model.JobId"
+              method="post">
+
+            <button type="submit"
+                    class="btn btn-warning btn-lg mt-2">
+
+                Save Job
+
+            </button>
+
+        </form>
+
 
 
         <a asp-controller="Student"

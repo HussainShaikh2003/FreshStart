@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FreshStart.Models.Application;
+using FreshStart.Models.Saved;
 
 namespace FreshStart.Controllers
 {
@@ -45,12 +46,21 @@ namespace FreshStart.Controllers
 
             int totalApplications = 0;
 
+            int savedJobsCount = 0;
+
+
 
             if (profile != null)
             {
                 totalApplications = await _context.JobApplications
                     .CountAsync(x => x.StudentId == profile.StudentId);
+
+
+
+                savedJobsCount = await _context.SavedJobs
+                    .CountAsync(x => x.StudentId == profile.StudentId);
             }
+
 
 
 
@@ -64,7 +74,7 @@ namespace FreshStart.Controllers
                 TotalApplications = totalApplications,
 
 
-                SavedJobs = 0
+                SavedJobs = savedJobsCount
             };
 
 
@@ -378,6 +388,115 @@ namespace FreshStart.Controllers
 
             return View(job);
         }
+        // Save Job
+        [HttpPost]
+        public async Task<IActionResult> SaveJob(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return Challenge();
+            }
+
+
+            var student = await _context.StudentProfiles
+                .FirstOrDefaultAsync(x => x.UserId == user.Id);
+
+
+            if (student == null)
+            {
+                return RedirectToAction("CreateProfile");
+            }
+
+
+            var job = await _context.Jobs
+                .FirstOrDefaultAsync(x => x.JobId == id);
+
+
+            if (job == null)
+            {
+                return NotFound();
+            }
+
+
+            var alreadySaved = await _context.SavedJobs
+                .AnyAsync(x => x.JobId == id
+                            && x.StudentId == student.StudentId);
+
+
+            if (alreadySaved)
+            {
+                return RedirectToAction("JobDetails", new { id = id });
+            }
+
+
+            var savedJob = new SavedJob
+            {
+                JobId = job.JobId,
+                StudentId = student.StudentId,
+                SavedDate = DateTime.Now
+            };
+
+
+            _context.SavedJobs.Add(savedJob);
+
+            await _context.SaveChangesAsync();
+
+
+            return RedirectToAction("JobDetails", new { id = id });
+        }
+
+        // Remove Saved Job
+        [HttpPost]
+        public async Task<IActionResult> RemoveSavedJob(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+
+            if (user == null)
+            {
+                return Challenge();
+            }
+
+
+
+            var student = await _context.StudentProfiles
+                .FirstOrDefaultAsync(x => x.UserId == user.Id);
+
+
+
+            if (student == null)
+            {
+                return RedirectToAction("CreateProfile");
+            }
+
+
+
+
+            var savedJob = await _context.SavedJobs
+                .FirstOrDefaultAsync(x => x.SavedJobId == id
+                                       && x.StudentId == student.StudentId);
+
+
+
+            if (savedJob == null)
+            {
+                return NotFound();
+            }
+
+
+
+
+            _context.SavedJobs.Remove(savedJob);
+
+
+            await _context.SaveChangesAsync();
+
+
+
+            return RedirectToAction("SavedJobs");
+        }
 
         // My Applications
         public async Task<IActionResult> MyApplications()
@@ -414,6 +533,43 @@ namespace FreshStart.Controllers
 
 
             return View(applications);
+        }
+
+        // Saved Jobs
+        public async Task<IActionResult> SavedJobs()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+
+            if (user == null)
+            {
+                return Challenge();
+            }
+
+
+
+            var student = await _context.StudentProfiles
+                .FirstOrDefaultAsync(x => x.UserId == user.Id);
+
+
+
+            if (student == null)
+            {
+                return RedirectToAction("CreateProfile");
+            }
+
+
+
+
+            var savedJobs = await _context.SavedJobs
+                .Include(x => x.Job)
+                .ThenInclude(x => x.Employer)
+                .Where(x => x.StudentId == student.StudentId)
+                .ToListAsync();
+
+
+
+            return View(savedJobs);
         }
 
         // Apply Job
