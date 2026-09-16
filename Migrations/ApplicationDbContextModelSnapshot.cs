@@ -33,6 +33,18 @@ namespace FreshStart.Migrations
                     b.Property<DateTime>("AppliedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("EmployerNotes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("InterviewDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("InterviewLocation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InterviewTime")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("JobId")
                         .HasColumnType("int");
 

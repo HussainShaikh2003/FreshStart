@@ -22,6 +22,7 @@ namespace FreshStart.Models.Application
 
 
 
+
         [Required]
         public int StudentId { get; set; }
 
@@ -32,11 +33,33 @@ namespace FreshStart.Models.Application
 
 
 
+
         public DateTime AppliedDate { get; set; } = DateTime.Now;
 
 
 
+
         public string Status { get; set; } = "Pending";
+
+
+
+
+        // Interview Details
+
+        public DateTime? InterviewDate { get; set; }
+
+
+        public string? InterviewTime { get; set; }
+
+
+        public string? InterviewLocation { get; set; }
+
+
+
+
+        // Employer Notes
+
+        public string? EmployerNotes { get; set; }
 
     }
 }

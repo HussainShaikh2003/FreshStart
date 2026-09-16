@@ -1,0 +1,107 @@
+﻿@model FreshStart.Models.Application.JobApplication
+
+@{
+    ViewData["Title"] = "Schedule Interview";
+}
+
+
+<div class="container mt-5">
+
+
+    <div class="card shadow p-4">
+
+
+        <h2>
+            Schedule Interview
+        </h2>
+
+
+        <hr />
+
+
+        <h4>
+            Student:
+            @Model.Student.FullName
+        </h4>
+
+
+        <h5>
+            Job:
+            @Model.Job.JobTitle
+        </h5>
+
+
+
+        <form asp-controller="Employer"
+              asp-action="ScheduleInterview"
+              method="post">
+
+
+            <input type="hidden"
+                   name="applicationId"
+                   value="@Model.ApplicationId" />
+
+
+
+            <div class="mb-3">
+
+                <label>
+                    Interview Date
+                </label>
+
+                <input type="date"
+                       name="interviewDate"
+                       class="form-control" />
+
+            </div>
+
+
+
+
+            <div class="mb-3">
+
+                <label>
+                    Interview Time
+                </label>
+
+                <input type="text"
+                       name="interviewTime"
+                       class="form-control"
+                       placeholder="10:00 AM" />
+
+            </div>
+
+
+
+
+            <div class="mb-3">
+
+                <label>
+                    Interview Location / Link
+                </label>
+
+                <input type="text"
+                       name="interviewLocation"
+                       class="form-control"
+                       placeholder="Google Meet Link" />
+
+            </div>
+
+
+
+
+            <button type="submit"
+                    class="btn btn-success">
+
+                Schedule Interview
+
+            </button>
+
+
+        </form>
+
+
+    </div>
+
+
+</div>

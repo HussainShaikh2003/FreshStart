@@ -499,8 +499,91 @@ namespace FreshStart.Controllers
             application.Status = status;
 
 
+
+            // If interview is scheduled
+            if (status == "Interview Scheduled")
+            {
+                application.InterviewDate = DateTime.Now.AddDays(2);
+
+                application.InterviewTime = "10:00 AM";
+
+                application.InterviewLocation = "Online Meeting";
+            }
+
+
+
+            // If selected
+            if (status == "Selected")
+            {
+                application.EmployerNotes = "Candidate Selected";
+            }
+
+
+
+            // If rejected
+            if (status == "Rejected")
+            {
+                application.EmployerNotes = "Application Rejected";
+            }
+
+
+
+
             await _context.SaveChangesAsync();
 
+
+
+            return RedirectToAction(
+                "Applicants",
+                new { id = application.JobId }
+            );
+        }
+
+        // Schedule Interview Page
+        [HttpGet]
+        public async Task<IActionResult> ScheduleInterview(int id)
+        {
+            var application = await _context.JobApplications
+                .Include(x => x.Student)
+                .Include(x => x.Job)
+                .FirstOrDefaultAsync(x => x.ApplicationId == id);
+
+
+            if (application == null)
+            {
+                return NotFound();
+            }
+
+
+            return View(application);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ScheduleInterview(
+    int applicationId,
+    DateTime interviewDate,
+    string interviewTime,
+    string interviewLocation)
+        {
+            var application = await _context.JobApplications
+                .FirstOrDefaultAsync(x => x.ApplicationId == applicationId);
+
+
+            if (application == null)
+            {
+                return NotFound();
+            }
+
+
+            application.Status = "Interview Scheduled";
+
+            application.InterviewDate = interviewDate;
+
+            application.InterviewTime = interviewTime;
+
+            application.InterviewLocation = interviewLocation;
+
+
+            await _context.SaveChangesAsync();
 
 
             return RedirectToAction(

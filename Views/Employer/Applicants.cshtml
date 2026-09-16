@@ -105,13 +105,45 @@
                                name="applicationId"
                                value="@application.ApplicationId" />
 
+                        <button type="submit"
+                                name="status"
+                                value="Reviewed"
+                                class="btn btn-secondary">
+
+                            Review
+
+                        </button>
+
+
 
                         <button type="submit"
                                 name="status"
-                                value="Accepted"
-                                class="btn btn-success">
+                                value="Shortlisted"
+                                class="btn btn-primary ms-2">
 
-                            Accept
+                            Shortlist
+
+                        </button>
+
+
+
+                        <a asp-controller="Employer"
+                           asp-action="ScheduleInterview"
+                           asp-route-id="@application.ApplicationId"
+                           class="btn btn-warning ms-2">
+
+                            Schedule Interview
+
+                        </a>
+
+
+
+                        <button type="submit"
+                                name="status"
+                                value="Selected"
+                                class="btn btn-success ms-2">
+
+                            Select
 
                         </button>
 
