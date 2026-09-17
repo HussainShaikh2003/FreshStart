@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FreshStart.Models.Application;
 using FreshStart.Models.Saved;
+using FreshStart.Models.Notification;
 
 namespace FreshStart.Controllers
 {
@@ -361,16 +362,50 @@ namespace FreshStart.Controllers
 
         }
         // Available Jobs
-        public async Task<IActionResult> Jobs()
+        public async Task<IActionResult> Jobs(
+            string search,
+            string location,
+            string jobType)
         {
-            var jobs = await _context.Jobs
+            var jobs = _context.Jobs
                 .Include(x => x.Employer)
-                .ToListAsync();
+                .AsQueryable();
 
 
-            return View(jobs);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                jobs = jobs.Where(x =>
+                    x.JobTitle.Contains(search) ||
+                    x.RequiredSkills.Contains(search));
+            }
+
+
+
+
+            if (!string.IsNullOrEmpty(location))
+            {
+                jobs = jobs.Where(x =>
+                    x.Location.Contains(location));
+            }
+
+
+
+
+            if (!string.IsNullOrEmpty(jobType))
+            {
+                jobs = jobs.Where(x =>
+                    x.JobType == jobType);
+            }
+
+
+
+
+            var result = await jobs.ToListAsync();
+
+
+            return View(result);
         }
-
 
         // Job Details
         public async Task<IActionResult> JobDetails(int id)
@@ -610,6 +645,7 @@ namespace FreshStart.Controllers
 
 
 
+
             var alreadyApplied = await _context.JobApplications
                 .AnyAsync(x => x.JobId == id
                             && x.StudentId == student.StudentId);
@@ -620,6 +656,7 @@ namespace FreshStart.Controllers
             {
                 return RedirectToAction("JobDetails", new { id = id });
             }
+
 
 
 
@@ -636,10 +673,44 @@ namespace FreshStart.Controllers
 
 
 
+
             _context.JobApplications.Add(application);
 
 
+
             await _context.SaveChangesAsync();
+
+
+
+
+            // Employer Notification
+
+            var employer = await _context.EmployerProfiles
+                .FirstOrDefaultAsync(x => x.EmployerId == job.EmployerId);
+
+
+
+            if (employer != null)
+            {
+
+                var notification = new Notification
+                {
+                    UserId = employer.UserId,
+
+                    Message = $"New application received for {job.JobTitle}",
+
+                    CreatedDate = DateTime.Now
+                };
+
+
+
+                _context.Notifications.Add(notification);
+
+
+                await _context.SaveChangesAsync();
+
+            }
+
 
 
 

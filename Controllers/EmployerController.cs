@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FreshStart.Models.Application;
+using FreshStart.Models.Notification;
 
 namespace FreshStart.Controllers
 {
@@ -486,6 +487,7 @@ namespace FreshStart.Controllers
             string status)
         {
             var application = await _context.JobApplications
+                .Include(x => x.Job)
                 .FirstOrDefaultAsync(x => x.ApplicationId == applicationId);
 
 
@@ -512,6 +514,7 @@ namespace FreshStart.Controllers
 
 
 
+
             // If selected
             if (status == "Selected")
             {
@@ -520,10 +523,44 @@ namespace FreshStart.Controllers
 
 
 
+
             // If rejected
             if (status == "Rejected")
             {
                 application.EmployerNotes = "Application Rejected";
+            }
+
+
+
+
+
+            // Student Notification
+
+            var student = await _context.StudentProfiles
+                .FirstOrDefaultAsync(x => x.StudentId == application.StudentId);
+
+
+
+            if (student != null)
+            {
+
+                string message = $"Your application status for {application.Job.JobTitle} is now {status}";
+
+
+
+                var notification = new Notification
+                {
+                    UserId = student.UserId,
+
+                    Message = message,
+
+                    CreatedDate = DateTime.Now
+                };
+
+
+
+                _context.Notifications.Add(notification);
+
             }
 
 

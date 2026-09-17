@@ -9,8 +9,112 @@
 
 
     <h1 class="mb-4">
-        Available Jobs
+        Find Your Dream Job
     </h1>
+
+
+
+    <!-- Search Filter -->
+
+    <div class="card shadow p-4 mb-5">
+
+
+        <form asp-controller="Student"
+              asp-action="Jobs"
+              method="get">
+
+
+            <div class="row">
+
+
+                <div class="col-md-4">
+
+                    <label>
+                        Job Title / Skills
+                    </label>
+
+                    <input type="text"
+                           name="search"
+                           class="form-control"
+                           placeholder="e.g. Developer, .NET, C#" />
+
+                </div>
+
+
+
+                <div class="col-md-4">
+
+                    <label>
+                        Location
+                    </label>
+
+                    <input type="text"
+                           name="location"
+                           class="form-control"
+                           placeholder="e.g. Karachi" />
+
+                </div>
+
+
+
+                <div class="col-md-4">
+
+                    <label>
+                        Job Type
+                    </label>
+
+
+                    <select name="jobType"
+                            class="form-control">
+
+                        <option value="">
+                            All Types
+                        </option>
+
+                        <option value="Full Time">
+                            Full Time
+                        </option>
+
+                        <option value="Part Time">
+                            Part Time
+                        </option>
+
+                        <option value="Remote">
+                            Remote
+                        </option>
+
+                    </select>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <button type="submit"
+                    class="btn btn-primary mt-3">
+
+                Search Jobs
+
+            </button>
+
+
+        </form>
+
+
+    </div>
+
+
+
+
+
+    <h2 class="mb-4">
+        Available Jobs
+    </h2>
+
+
 
 
 
@@ -48,6 +152,7 @@
                         <hr />
 
 
+
                         <h5>
                             Company:
                         </h5>
@@ -59,38 +164,49 @@
 
 
 
+
                         <p>
                             <strong>Skills:</strong>
+
                             @job.RequiredSkills
                         </p>
 
 
 
+
                         <p>
                             <strong>Location:</strong>
+
                             @job.Location
                         </p>
 
 
 
+
                         <p>
                             <strong>Salary:</strong>
+
                             @job.Salary
                         </p>
 
 
 
+
                         <p>
                             <strong>Job Type:</strong>
+
                             @job.JobType
                         </p>
 
 
 
+
                         <p>
                             <strong>Deadline:</strong>
+
                             @job.Deadline.ToShortDateString()
                         </p>
+
 
 
 
@@ -102,6 +218,7 @@
                             View Details
 
                         </a>
+
 
 
                     </div>

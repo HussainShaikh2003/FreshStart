@@ -6,7 +6,7 @@ using FreshStart.Models.Employer;
 using FreshStart.Models.Job;
 using FreshStart.Models.Application;
 using FreshStart.Models.Saved;
-
+using FreshStart.Models.Notification;
 namespace FreshStart.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -28,6 +28,7 @@ namespace FreshStart.Data
 
         public DbSet<SavedJob> SavedJobs { get; set; }
 
+        public DbSet<Notification> Notifications { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
