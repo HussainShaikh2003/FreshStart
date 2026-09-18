@@ -1,0 +1,127 @@
+﻿@model IEnumerable<FreshStart.Models.Job.Job>
+
+@{
+    ViewData["Title"] = "Manage Jobs";
+}
+
+
+<div class="container mt-5">
+
+
+    <h1 class="mb-4">
+        Manage Jobs
+    </h1>
+
+
+
+    <div class="card shadow p-4">
+
+
+        <table class="table table-bordered table-striped">
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Job Title
+                    </th>
+
+                    <th>
+                        Company
+                    </th>
+
+                    <th>
+                        Location
+                    </th>
+
+                    <th>
+                        Salary
+                    </th>
+
+                    <th>
+                        Job Type
+                    </th>
+
+                    <th>
+                        Deadline
+                    </th>
+
+                    <th>
+                        Posted Date
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+
+            <tbody>
+
+
+                @foreach (var job in Model)
+                {
+
+                    <tr>
+
+
+                        <td>
+                            @job.JobTitle
+                        </td>
+
+
+
+                        <td>
+
+                            @job.Employer.CompanyName
+
+                        </td>
+
+
+
+                        <td>
+                            @job.Location
+                        </td>
+
+
+
+                        <td>
+                            @job.Salary
+                        </td>
+
+
+
+                        <td>
+                            @job.JobType
+                        </td>
+
+
+
+                        <td>
+                            @job.Deadline.ToShortDateString()
+                        </td>
+
+
+
+                        <td>
+                            @job.CreatedDate.ToShortDateString()
+                        </td>
+
+
+                    </tr>
+
+                }
+
+
+            </tbody>
+
+
+        </table>
+
+
+    </div>
+
+
+</div>
