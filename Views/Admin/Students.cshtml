@@ -1,0 +1,134 @@
+﻿@model IEnumerable<FreshStart.Models.Student.StudentProfile>
+
+@{
+    ViewData["Title"] = "Manage Students";
+}
+
+
+
+<div class="container mt-5">
+
+
+    <h1 class="mb-4">
+        Manage Students
+    </h1>
+
+
+
+    <div class="card shadow p-4">
+
+
+        <table class="table table-bordered table-striped">
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Image
+                    </th>
+
+                    <th>
+                        Name
+                    </th>
+
+                    <th>
+                        Email
+                    </th>
+
+                    <th>
+                        University
+                    </th>
+
+                    <th>
+                        Degree
+                    </th>
+
+                    <th>
+                        Skills
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+
+            <tbody>
+
+
+                @foreach (var student in Model)
+                {
+
+                    <tr>
+
+
+                        <td>
+
+                            @if (!string.IsNullOrEmpty(student.ProfileImage))
+                            {
+
+                                <img src="@student.ProfileImage"
+                                     width="60"
+                                     height="60"
+                                     class="rounded-circle" />
+
+                            }
+                            else
+                            {
+
+                                <span>
+                                    No Image
+                                </span>
+
+                            }
+
+                        </td>
+
+
+
+                        <td>
+                            @student.FullName
+                        </td>
+
+
+
+                        <td>
+                            @student.User.Email
+                        </td>
+
+
+
+                        <td>
+                            @student.University
+                        </td>
+
+
+
+                        <td>
+                            @student.Degree
+                        </td>
+
+
+
+                        <td>
+                            @student.Skills
+                        </td>
+
+
+                    </tr>
+
+                }
+
+
+            </tbody>
+
+
+        </table>
+
+
+    </div>
+
+
+</div>

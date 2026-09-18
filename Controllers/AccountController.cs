@@ -28,6 +28,7 @@ namespace FreshStart.Controllers
         }
 
 
+
         // Register Submit
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
@@ -54,6 +55,7 @@ namespace FreshStart.Controllers
                 model.Password);
 
 
+
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(
@@ -61,15 +63,18 @@ namespace FreshStart.Controllers
                     model.Role);
 
 
+
                 await _signInManager.SignInAsync(
                     user,
                     false);
+
 
 
                 return RedirectToAction(
                     "Index",
                     "Home");
             }
+
 
 
             foreach (var error in result.Errors)
@@ -80,8 +85,11 @@ namespace FreshStart.Controllers
             }
 
 
+
             return View(model);
         }
+
+
 
 
 
@@ -94,14 +102,18 @@ namespace FreshStart.Controllers
 
 
 
+
+
         // Login Submit
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
+
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
+
 
 
             var result = await _signInManager.PasswordSignInAsync(
@@ -112,12 +124,53 @@ namespace FreshStart.Controllers
 
 
 
+
             if (result.Succeeded)
             {
+
+                var user = await _userManager.FindByEmailAsync(model.Email);
+
+
+
+                var roles = await _userManager.GetRolesAsync(user);
+
+
+
+                if (roles.Contains("Admin"))
+                {
+                    return RedirectToAction(
+                        "Index",
+                        "Admin");
+                }
+
+
+
+
+                if (roles.Contains("Student"))
+                {
+                    return RedirectToAction(
+                        "Index",
+                        "Student");
+                }
+
+
+
+
+                if (roles.Contains("Employer"))
+                {
+                    return RedirectToAction(
+                        "Index",
+                        "Employer");
+                }
+
+
+
+
                 return RedirectToAction(
                     "Index",
                     "Home");
             }
+
 
 
 
@@ -126,7 +179,9 @@ namespace FreshStart.Controllers
                 "Invalid email or password");
 
 
+
             return View(model);
         }
+
     }
 }

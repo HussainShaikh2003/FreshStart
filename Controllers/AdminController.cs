@@ -155,7 +155,16 @@ namespace FreshStart.Controllers
             return RedirectToAction("Employers");
 
         }
+        // View All Students
+        public async Task<IActionResult> Students()
+        {
+            var students = await _context.StudentProfiles
+                .Include(x => x.User)
+                .ToListAsync();
 
+
+            return View(students);
+        }
 
 
     }
