@@ -53,12 +53,9 @@
                         data-bs-toggle="collapse"
                         data-bs-target="#navbarNav">
 
-
                     <span class="navbar-toggler-icon"></span>
 
-
                 </button>
-
 
 
 
@@ -85,41 +82,188 @@
 
 
 
+                        @if (User.Identity.IsAuthenticated)
+                        {
 
 
-                        <li class="nav-item">
+                            var currentUser = await UserManager.GetUserAsync(User);
 
-                            <a class="nav-link text-dark"
-                               asp-controller="Home"
-                               asp-action="Privacy">
-
-                                Privacy
-
-                            </a>
-
-                        </li>
+                            var roles = await UserManager.GetRolesAsync(currentUser);
 
 
 
+                            if (roles.Contains("Admin"))
+                            {
+
+                                <li class="nav-item">
+
+                                    <a class="nav-link text-dark"
+                                       asp-controller="Admin"
+                                       asp-action="Index">
+
+                                        Admin Dashboard
+
+                                    </a>
+
+                                </li>
 
 
-                        <li class="nav-item">
 
-                            <a class="nav-link text-dark"
-                               asp-controller="Notification"
-                               asp-action="Index">
+                                <li class="nav-item">
+
+                                    <a class="nav-link text-dark"
+                                       asp-controller="Admin"
+                                       asp-action="Students">
+
+                                        Students
+
+                                    </a>
+
+                                </li>
 
 
-                                🔔 Notifications
+
+                                <li class="nav-item">
+
+                                    <a class="nav-link text-dark"
+                                       asp-controller="Admin"
+                                       asp-action="Employers">
+
+                                        Employers
+
+                                    </a>
+
+                                </li>
 
 
-                                @{
-                                    var currentUser = await UserManager.GetUserAsync(User);
+
+                                <li class="nav-item">
+
+                                    <a class="nav-link text-dark"
+                                       asp-controller="Admin"
+                                       asp-action="Jobs">
+
+                                        Jobs
+
+                                    </a>
+
+                                </li>
+
+                            }
 
 
-                                    if (currentUser != null)
-                                    {
 
+
+
+                            if (roles.Contains("Student"))
+                            {
+
+                                <li class="nav-item">
+
+                                    <a class="nav-link text-dark"
+                                       asp-controller="Student"
+                                       asp-action="Index">
+
+                                        Dashboard
+
+                                    </a>
+
+                                </li>
+
+
+
+                                <li class="nav-item">
+
+                                    <a class="nav-link text-dark"
+                                       asp-controller="Student"
+                                       asp-action="Jobs">
+
+                                        Jobs
+
+                                    </a>
+
+                                </li>
+
+
+
+                                <li class="nav-item">
+
+                                    <a class="nav-link text-dark"
+                                       asp-controller="Student"
+                                       asp-action="MyApplications">
+
+                                        My Applications
+
+                                    </a>
+
+                                </li>
+
+                            }
+
+
+
+
+
+                            if (roles.Contains("Employer"))
+                            {
+
+                                <li class="nav-item">
+
+                                    <a class="nav-link text-dark"
+                                       asp-controller="Employer"
+                                       asp-action="Index">
+
+                                        Dashboard
+
+                                    </a>
+
+                                </li>
+
+
+
+                                <li class="nav-item">
+
+                                    <a class="nav-link text-dark"
+                                       asp-controller="Employer"
+                                       asp-action="PostJob">
+
+                                        Post Job
+
+                                    </a>
+
+                                </li>
+
+
+
+                                <li class="nav-item">
+
+                                    <a class="nav-link text-dark"
+                                       asp-controller="Employer"
+                                       asp-action="MyJobs">
+
+                                        My Jobs
+
+                                    </a>
+
+                                </li>
+
+                            }
+
+
+
+
+
+                            <li class="nav-item">
+
+                                <a class="nav-link text-dark"
+                                   asp-controller="Notification"
+                                   asp-action="Index">
+
+
+                                    🔔 Notifications
+
+
+                                    @{
                                         var unreadCount = Context.Notifications
                                         .Count(x => x.UserId == currentUser.Id && !x.IsRead);
 
@@ -127,38 +271,83 @@
 
                                         if (unreadCount > 0)
                                         {
-
                                             <span class="badge bg-danger">
 
                                                 @unreadCount
 
                                             </span>
-
                                         }
 
                                     }
-                                }
 
 
-                            </a>
+                                </a>
 
-                        </li>
+                            </li>
+
+
+
+
+
+                            <li class="nav-item">
+
+                                <a class="nav-link text-danger"
+                                   asp-controller="Account"
+                                   asp-action="Logout">
+
+                                    Logout
+
+                                </a>
+
+                            </li>
+
+
+                        }
+                        else
+                        {
+
+
+                            <li class="nav-item">
+
+                                <a class="nav-link text-dark"
+                                   asp-controller="Account"
+                                   asp-action="Login">
+
+                                    Login
+
+                                </a>
+
+                            </li>
+
+
+
+                            <li class="nav-item">
+
+                                <a class="nav-link text-dark"
+                                   asp-controller="Account"
+                                   asp-action="Register">
+
+                                    Register
+
+                                </a>
+
+                            </li>
+
+
+                        }
 
 
 
                     </ul>
 
 
-
                 </div>
-
 
 
             </div>
 
 
         </nav>
-
 
     </header>
 
@@ -182,12 +371,9 @@
 
     <footer class="border-top footer text-muted">
 
-
         <div class="container">
 
-
             &copy; 2026 - FreshStart -
-
 
             <a asp-controller="Home"
                asp-action="Privacy">
@@ -198,7 +384,6 @@
 
 
         </div>
-
 
     </footer>
 

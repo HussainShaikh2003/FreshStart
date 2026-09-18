@@ -1,0 +1,91 @@
+﻿@model FreshStart.Models.Employer.EmployerProfile
+
+@{
+    ViewData["Title"] = "Company Profile";
+}
+
+
+<div class="container mt-5">
+
+
+    <div class="card shadow p-4">
+
+
+        <div class="text-center">
+
+
+            @if (!string.IsNullOrEmpty(Model.CompanyLogo))
+            {
+                <img src="@Model.CompanyLogo"
+                     width="120"
+                     height="120"
+                     class="rounded mb-3" />
+            }
+            else
+            {
+                <p>No Logo</p>
+            }
+
+
+
+            <h2>
+                @Model.CompanyName
+            </h2>
+
+
+            <p class="text-muted">
+                @Model.Industry
+            </p>
+
+
+        </div>
+
+
+
+
+        <hr />
+
+
+
+        <h4>
+            Company Details
+        </h4>
+
+
+
+        <p>
+            <strong>Email:</strong>
+            @Model.CompanyEmail
+        </p>
+
+
+
+        <p>
+            <strong>Phone:</strong>
+            @Model.Phone
+        </p>
+
+
+
+        <p>
+            <strong>Website:</strong>
+            @Model.Website
+        </p>
+
+
+
+        <p>
+            <strong>Description:</strong>
+        </p>
+
+
+        <p>
+            @Model.CompanyDescription
+        </p>
+
+
+
+    </div>
+
+
+</div>

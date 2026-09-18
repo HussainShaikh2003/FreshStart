@@ -183,5 +183,20 @@ namespace FreshStart.Controllers
             return View(model);
         }
 
+
+
+
+        // Logout
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+
+
+            return RedirectToAction(
+                "Index",
+                "Home");
+        }
+
+
     }
 }

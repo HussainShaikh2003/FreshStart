@@ -159,7 +159,15 @@
 
 
                         <p>
-                            @job.Employer.CompanyName
+
+                            <a asp-controller="Employer"
+                               asp-action="CompanyProfile"
+                               asp-route-id="@job.EmployerId">
+
+                                @job.Employer.CompanyName
+
+                            </a>
+
                         </p>
 
 

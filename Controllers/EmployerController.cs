@@ -575,7 +575,22 @@ namespace FreshStart.Controllers
                 new { id = application.JobId }
             );
         }
+        // Public Company Profile
+        public async Task<IActionResult> CompanyProfile(int id)
+        {
+            var company = await _context.EmployerProfiles
+                .Include(x => x.User)
+                .FirstOrDefaultAsync(x => x.EmployerId == id);
 
+
+            if (company == null)
+            {
+                return NotFound();
+            }
+
+
+            return View(company);
+        }
         // Schedule Interview Page
         [HttpGet]
         public async Task<IActionResult> ScheduleInterview(int id)
