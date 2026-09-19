@@ -487,8 +487,8 @@ namespace FreshStart.Controllers
             string status)
         {
             var application = await _context.JobApplications
-                .Include(x => x.Job)
-                .FirstOrDefaultAsync(x => x.ApplicationId == applicationId);
+     .Include(x => x.Job)
+     .FirstOrDefaultAsync(x => x.ApplicationId == applicationId);
 
 
             if (application == null)
@@ -633,6 +633,20 @@ namespace FreshStart.Controllers
             application.InterviewTime = interviewTime;
 
             application.InterviewLocation = interviewLocation;
+            var student = await _context.StudentProfiles
+    .FirstOrDefaultAsync(x => x.StudentId == application.StudentId);
+
+            if (student != null)
+            {
+                var notification = new Notification
+                {
+                    UserId = student.UserId,
+                    Message = "Your interview has been scheduled.",
+                    CreatedDate = DateTime.Now
+                };
+
+                _context.Notifications.Add(notification);
+            }
 
 
             await _context.SaveChangesAsync();

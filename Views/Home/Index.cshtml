@@ -1,8 +1,344 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<FreshStart.Models.Job.Job>
+
+@{
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+<!-- Hero Section -->
+
+<div class="container-fluid p-0">
+
+    <div class="position-relative">
+
+        <img src="~/img/carousel-1.jpg"
+             class="img-fluid w-100"
+             style="height:550px; object-fit:cover;" />
+
+
+        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center"
+             style="background:rgba(0,0,0,0.5);">
+
+
+            <div class="container">
+
+
+                <div class="col-lg-8 text-white">
+
+
+                    <h1 class="display-3 fw-bold">
+                        Find The Perfect Job For Your Future 🚀
+                    </h1>
+
+
+                    <p class="fs-5 mt-3">
+                        Connect with companies and start your professional career with FreshStart.
+                    </p>
+
+
+
+                    <a asp-controller="Account"
+                       asp-action="Register"
+                       class="btn btn-primary btn-lg me-2">
+
+                        Get Started
+
+                    </a>
+
+
+
+                    <a asp-controller="Student"
+                       asp-action="Jobs"
+                       class="btn btn-light btn-lg">
+
+                        Browse Jobs
+
+                    </a>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</div>
+<!-- Search Jobs Section -->
+
+<div class="container mt-5">
+
+
+    <div class="card shadow p-4">
+
+
+        <h2 class="text-center mb-4 fw-bold">
+            Search Jobs
+        </h2>
+
+
+
+        <div class="row">
+
+
+            <div class="col-md-4 mb-3">
+
+                <input class="form-control form-control-lg"
+                       placeholder="Job title or skills" />
+
+            </div>
+
+
+
+            <div class="col-md-4 mb-3">
+
+                <input class="form-control form-control-lg"
+                       placeholder="Location" />
+
+            </div>
+
+
+
+            <div class="col-md-4 mb-3">
+
+                <button class="btn btn-primary btn-lg w-100">
+
+                    🔍 Search Jobs
+
+                </button>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+<!-- Featured Jobs Section -->
+
+<div class="container mt-5">
+
+
+    <h2 class="text-center fw-bold mb-5">
+        Featured Jobs
+    </h2>
+
+
+
+    <div class="row">
+
+
+        @foreach (var job in Model)
+        {
+
+
+            <div class="col-lg-4 col-md-6 mb-4">
+
+
+                <div class="card shadow h-100 p-4">
+
+
+                    <h3 class="fw-bold">
+                        @job.JobTitle
+                    </h3>
+
+
+                    <hr />
+
+
+
+                    <p>
+                        <strong>
+                            Company:
+                        </strong>
+
+                        @job.Employer.CompanyName
+                    </p>
+
+
+
+                    <p>
+                        📍 @job.Location
+                    </p>
+
+
+
+                    <p>
+                        💰 @job.Salary
+                    </p>
+
+
+
+                    <p>
+                        💼 @job.JobType
+                    </p>
+
+
+
+                    <p>
+                        🛠 @job.RequiredSkills
+                    </p>
+
+
+
+
+                    <a asp-controller="Student"
+                       asp-action="JobDetails"
+                       asp-route-id="@job.JobId"
+                       class="btn btn-primary mt-auto">
+
+
+                        View Job
+
+
+                    </a>
+
+
+
+                </div>
+
+
+            </div>
+
+
+        }
+
+
+    </div>
+
+
+</div>
+
+<!-- Companies Section -->
+
+<div class="container mt-5">
+
+
+    <h2 class="text-center fw-bold mb-5">
+        Top Companies
+    </h2>
+
+
+
+    <div class="row">
+
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow text-center p-4 h-100">
+
+
+                <img src="~/img/com-logo-1.jpg"
+                     class="mx-auto mb-3"
+                     style="width:120px;height:80px;object-fit:contain;" />
+
+
+                <h4>
+                    TechNova Solutions
+                </h4>
+
+
+                <p>
+                    Leading technology company hiring fresh talent.
+                </p>
+
+
+                <a asp-controller="Student"
+                   asp-action="Jobs"
+                   class="btn btn-primary">
+
+                    View Jobs
+
+                </a>
+
+
+            </div>
+
+        </div>
+
+
+
+
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow text-center p-4 h-100">
+
+
+                <img src="~/img/com-logo-2.jpg"
+                     class="mx-auto mb-3"
+                     style="width:120px;height:80px;object-fit:contain;" />
+
+
+                <h4>
+                    Logic Era
+                </h4>
+
+
+                <p>
+                    Build your career with innovative teams.
+                </p>
+
+
+                <a asp-controller="Student"
+                   asp-action="Jobs"
+                   class="btn btn-primary">
+
+                    View Jobs
+
+                </a>
+
+
+            </div>
+
+        </div>
+
+
+
+
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow text-center p-4 h-100">
+
+
+                <img src="~/img/com-logo-3.jpg"
+                     class="mx-auto mb-3"
+                     style="width:120px;height:80px;object-fit:contain;" />
+
+
+                <h4>
+                    Future Tech
+                </h4>
+
+
+                <p>
+                    Opportunities for developers and graduates.
+                </p>
+
+
+                <a asp-controller="Student"
+                   asp-action="Jobs"
+                   class="btn btn-primary">
+
+                    View Jobs
+
+                </a>
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
 </div>

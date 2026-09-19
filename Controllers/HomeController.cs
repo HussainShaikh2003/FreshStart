@@ -1,5 +1,7 @@
-﻿using FreshStart.Models;
+﻿using FreshStart.Data;
+using FreshStart.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace FreshStart.Controllers
@@ -7,26 +9,50 @@ namespace FreshStart.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+
+        public HomeController(
+            ILogger<HomeController> logger,
+            ApplicationDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
-        public IActionResult Index()
+
+
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var jobs = await _context.Jobs
+                .Include(x => x.Employer)
+                .OrderByDescending(x => x.CreatedDate)
+                .Take(3)
+                .ToListAsync();
+
+
+            return View(jobs);
         }
+
+
 
         public IActionResult Privacy()
         {
             return View();
         }
 
+
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(
+                new ErrorViewModel
+                {
+                    RequestId = Activity.Current?.Id
+                    ?? HttpContext.TraceIdentifier
+                });
         }
+
     }
 }
