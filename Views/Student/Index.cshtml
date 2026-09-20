@@ -5,261 +5,180 @@
 }
 
 
-<div class="container mt-5">
+<div class="container-fluid mt-4">
 
 
-    <h1 class="mb-4">
-        Student Dashboard
-    </h1>
+    <div class="row">
 
 
+        <!-- Sidebar -->
 
-    <div class="row mb-4">
-
-
-        <div class="col-md-4">
-
-            <div class="card shadow p-3 text-center">
-
-                <h5>
-                    Profile Completion
-                </h5>
-
-                <h2>
-                    @Model.ProfileCompletion%
-                </h2>
-
-            </div>
-
-        </div>
+        <div class="col-md-3 mb-4">
 
 
+            <div class="card shadow p-4">
 
 
-        <div class="col-md-4">
-
-            <div class="card shadow p-3 text-center">
-
-                <h5>
-                    Applications
-                </h5>
-
-                <h2>
-                    @Model.TotalApplications
-                </h2>
-
-            </div>
-
-        </div>
+                <h3 class="fw-bold text-primary">
+                    FreshStart
+                </h3>
 
 
+                <hr />
 
 
-        <div class="col-md-4">
+                <a asp-controller="Student"
+                   asp-action="Index"
+                   class="btn btn-light text-start mb-2">
 
-            <div class="card shadow p-3 text-center">
+                    🏠 Dashboard
 
-                <h5>
-                    Saved Jobs
-                </h5>
+                </a>
 
-                <h2>
-                    @Model.SavedJobs
-                </h2>
+
+                <a asp-controller="Student"
+                   asp-action="EditProfile"
+                   class="btn btn-light text-start mb-2">
+
+                    👤 My Profile
+
+                </a>
+
+
+                <a asp-controller="Student"
+                   asp-action="Jobs"
+                   class="btn btn-light text-start mb-2">
+
+                    🔍 Browse Jobs
+
+                </a>
+
+
+                <a asp-controller="Student"
+                   asp-action="MyApplications"
+                   class="btn btn-light text-start mb-2">
+
+                    📄 Applications
+
+                </a>
 
 
                 <a asp-controller="Student"
                    asp-action="SavedJobs"
-                   class="btn btn-warning btn-sm mt-2">
+                   class="btn btn-light text-start mb-2">
 
-                    View Saved Jobs
+                    ⭐ Saved Jobs
 
                 </a>
 
+
+                <a asp-controller="Notification"
+                   asp-action="Index"
+                   class="btn btn-light text-start">
+
+                    🔔 Notifications
+
+                </a>
+
+
             </div>
 
-        </div>
-
-
-    </div>
-
-
-
-
-
-    @if (Model.Profile == null)
-    {
-
-        <div class="card shadow p-4 text-center">
-
-
-            <h3>
-                Welcome to FreshStart!
-            </h3>
-
-
-            <p class="text-muted">
-                Your student profile is not completed yet.
-            </p>
-
-
-
-            <a asp-controller="Student"
-               asp-action="CreateProfile"
-               class="btn btn-primary">
-
-                Create My Profile
-
-            </a>
-
-
-            <br />
-
-            <a asp-controller="Student"
-               asp-action="Jobs"
-               class="btn btn-info mt-2">
-
-                Browse Jobs
-
-            </a>
-
 
         </div>
 
-    }
-    else
-    {
-
-
-        <div class="card shadow p-4">
-
-
-            <div class="row align-items-center">
-
-
-                <div class="col-md-3 text-center">
-
-
-                    @if (!string.IsNullOrEmpty(Model.Profile.ProfileImage))
-                    {
-
-                        <img src="@Model.Profile.ProfileImage"
-                             width="150"
-                             height="150"
-                             class="rounded-circle shadow" />
-
-                    }
-                    else
-                    {
-
-                        <div class="rounded-circle bg-secondary text-white p-5">
-
-                            No Image
-
-                        </div>
-
-                    }
-
-
-                </div>
 
 
 
 
 
-                <div class="col-md-9">
+        <!-- Main Dashboard -->
 
 
-                    <div class="d-flex justify-content-between">
-
-
-                        <h2>
-                            @Model.Profile.FullName
-                        </h2>
+        <div class="col-md-9">
 
 
 
-                        <a asp-controller="Student"
-                           asp-action="EditProfile"
-                           class="btn btn-success">
+            <h1 class="fw-bold mb-4">
+                Welcome to FreshStart 👋
+            </h1>
 
-                            Edit Profile
 
-                        </a>
+
+
+
+            <!-- Stats Cards -->
+
+
+            <div class="row mb-4">
+
+
+                <div class="col-md-4">
+
+
+                    <div class="card shadow text-center p-4">
+
+
+                        <h5>
+                            Profile Completion
+                        </h5>
+
+
+                        <h1 class="text-primary">
+                            @Model.ProfileCompletion%
+                        </h1>
 
 
                     </div>
 
 
-                    <hr />
-
-
-
-                    <p>
-                        <strong>University:</strong>
-                        @Model.Profile.University
-                    </p>
-
-
-
-                    <p>
-                        <strong>Degree:</strong>
-                        @Model.Profile.Degree
-                    </p>
-
-
-
-                    <p>
-                        <strong>Skills:</strong>
-                        @Model.Profile.Skills
-                    </p>
-
-
-
-                    <p>
-                        <strong>Experience:</strong>
-                        @Model.Profile.Experience
-                    </p>
-
-
-
-                    <p>
-                        <strong>Bio:</strong>
-                        @Model.Profile.Bio
-                    </p>
+                </div>
 
 
 
 
-                    @if (!string.IsNullOrEmpty(Model.Profile.ResumePath))
-                    {
 
-                        <a href="@Model.Profile.ResumePath"
-                           target="_blank"
-                           class="btn btn-primary">
-
-                            View Resume
-
-                        </a>
-
-                    }
+                <div class="col-md-4">
 
 
+                    <div class="card shadow text-center p-4">
 
-                    <a asp-controller="Student"
-                       asp-action="Jobs"
-                       class="btn btn-info ms-2">
 
-                        Browse Jobs
+                        <h5>
+                            Applications
+                        </h5>
 
-                    </a>
-                    <a asp-controller="Student"
-                       asp-action="MyApplications"
-                       class="btn btn-dark ms-2">
 
-                        My Applications
+                        <h1 class="text-success">
+                            @Model.TotalApplications
+                        </h1>
 
-                    </a>
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+                <div class="col-md-4">
+
+
+                    <div class="card shadow text-center p-4">
+
+
+                        <h5>
+                            Saved Jobs
+                        </h5>
+
+
+                        <h1 class="text-warning">
+                            @Model.SavedJobs
+                        </h1>
+
+
+                    </div>
 
 
                 </div>
@@ -268,11 +187,187 @@
             </div>
 
 
+
+
+
+
+            @if (Model.Profile == null)
+            {
+
+
+                <div class="card shadow p-5 text-center">
+
+
+                    <h2>
+                        Complete Your Profile
+                    </h2>
+
+
+                    <p class="text-muted">
+                        Create your profile to apply for jobs.
+                    </p>
+
+
+
+                    <a asp-controller="Student"
+                       asp-action="CreateProfile"
+                       class="btn btn-primary">
+
+                        Create Profile
+
+                    </a>
+
+
+
+                </div>
+
+
+            }
+
+            else
+            {
+
+
+                <div class="card shadow p-4">
+
+
+
+                    <div class="row align-items-center">
+
+
+
+                        <div class="col-md-4 text-center">
+
+
+
+                            @if (!string.IsNullOrEmpty(Model.Profile.ProfileImage))
+                            {
+
+                                <img src="@Model.Profile.ProfileImage"
+                                     class="rounded-circle shadow"
+                                     width="170"
+                                     height="170" />
+
+                            }
+                            else
+                            {
+
+                                <div class="rounded-circle bg-secondary text-white p-5">
+
+                                    No Image
+
+                                </div>
+
+                            }
+
+
+                        </div>
+
+
+
+
+
+                        <div class="col-md-8">
+
+
+                            <div class="d-flex justify-content-between">
+
+
+                                <h2 class="fw-bold">
+
+                                    @Model.Profile.FullName
+
+                                </h2>
+
+
+
+                                <a asp-controller="Student"
+                                   asp-action="EditProfile"
+                                   class="btn btn-success">
+
+                                    Edit
+
+                                </a>
+
+
+                            </div>
+
+
+
+                            <hr />
+
+
+
+                            <p>
+                                🎓 <strong>University:</strong>
+                                @Model.Profile.University
+                            </p>
+
+
+
+                            <p>
+                                📚 <strong>Degree:</strong>
+                                @Model.Profile.Degree
+                            </p>
+
+
+
+                            <p>
+                                🛠 <strong>Skills:</strong>
+                                @Model.Profile.Skills
+                            </p>
+
+
+
+                            <p>
+                                💼 <strong>Experience:</strong>
+                                @Model.Profile.Experience
+                            </p>
+
+
+
+                            <p>
+                                About:
+                                @Model.Profile.Bio
+                            </p>
+
+
+
+
+
+                            @if (!string.IsNullOrEmpty(Model.Profile.ResumePath))
+                            {
+
+                                <a href="@Model.Profile.ResumePath"
+                                   target="_blank"
+                                   class="btn btn-primary">
+
+                                    View Resume
+
+                                </a>
+
+                            }
+
+
+
+                        </div>
+
+
+
+                    </div>
+
+
+                </div>
+
+
+            }
+
+
+
         </div>
 
 
-    }
-
+    </div>
 
 
 </div>

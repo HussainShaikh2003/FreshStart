@@ -5,53 +5,144 @@
 }
 
 
-<div class="container mt-5">
+<div class="container-fluid mt-4">
 
 
-    <h1 class="mb-4">
-        🔔 Notifications
-    </h1>
+    <div class="row">
 
 
+        <!-- Sidebar -->
 
-    @if (Model.Count == 0)
-    {
-
-        <div class="alert alert-info">
-
-            No notifications available.
-
-        </div>
-
-    }
-    else
-    {
+        <div class="col-md-3 mb-4">
 
 
-        @foreach (var notification in Model)
-        {
-
-            <div class="card shadow p-3 mb-3">
+            <div class="card shadow p-4">
 
 
-                <h5>
-                    @notification.Message
-                </h5>
+                <h3 class="fw-bold text-primary">
+                    FreshStart
+                </h3>
 
 
-                <p class="text-muted mb-0">
+                <hr />
 
-                    @notification.CreatedDate.ToString("dd MMM yyyy hh:mm tt")
 
-                </p>
+                <a asp-controller="Student"
+                   asp-action="Index"
+                   class="btn btn-light text-start mb-2">
+
+                    🏠 Dashboard
+
+                </a>
+
+
+                <a asp-controller="Student"
+                   asp-action="Jobs"
+                   class="btn btn-light text-start mb-2">
+
+                    🔍 Browse Jobs
+
+                </a>
+
+
+                <a asp-controller="Student"
+                   asp-action="MyApplications"
+                   class="btn btn-light text-start mb-2">
+
+                    📄 Applications
+
+                </a>
+
+
+                <a asp-controller="Student"
+                   asp-action="SavedJobs"
+                   class="btn btn-light text-start">
+
+                    ⭐ Saved Jobs
+
+                </a>
 
 
             </div>
 
-        }
+
+        </div>
 
 
-    }
+
+
+
+
+        <!-- Notifications -->
+
+        <div class="col-md-9">
+
+
+            <h1 class="fw-bold mb-4">
+                🔔 Notifications
+            </h1>
+
+
+
+            @if (Model.Count == 0)
+            {
+
+                <div class="alert alert-info shadow">
+
+                    No notifications available.
+
+                </div>
+
+            }
+
+            else
+            {
+
+
+                @foreach (var notification in Model)
+                {
+
+
+                    <div class="card shadow p-4 mb-3">
+
+
+                        <div class="d-flex justify-content-between align-items-center">
+
+
+                            <h5 class="fw-bold mb-0">
+
+                                🔔 @notification.Message
+
+                            </h5>
+
+
+                        </div>
+
+
+
+                        <hr />
+
+
+                        <p class="text-muted mb-0">
+
+                            📅 @notification.CreatedDate.ToString("dd MMM yyyy hh:mm tt")
+
+                        </p>
+
+
+                    </div>
+
+
+                }
+
+
+            }
+
+
+        </div>
+
+
+    </div>
 
 
 </div>

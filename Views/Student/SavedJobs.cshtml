@@ -5,103 +5,187 @@
 }
 
 
-<div class="container mt-5">
+
+<div class="container-fluid mt-4">
 
 
-    <h1 class="mb-4">
-        Saved Jobs
-    </h1>
+    <div class="row">
 
 
 
-    @if (Model.Count == 0)
-    {
-
-        <div class="alert alert-info">
-
-            No saved jobs found.
-
-        </div>
-
-    }
-    else
-    {
-
-        @foreach (var saved in Model)
-        {
-
-            <div class="card shadow p-4 mb-4">
+        <div class="col-md-3 mb-4">
 
 
-                <h3>
-                    @saved.Job.JobTitle
+            <div class="card shadow p-4">
+
+
+                <h3 class="fw-bold text-primary">
+                    FreshStart
                 </h3>
 
 
                 <hr />
 
 
-                <p>
-                    <strong>Company:</strong>
-                    @saved.Job.Employer.CompanyName
-                </p>
-
-
-                <p>
-                    <strong>Location:</strong>
-                    @saved.Job.Location
-                </p>
-
-
-                <p>
-                    <strong>Salary:</strong>
-                    @saved.Job.Salary
-                </p>
-
-
-                <p>
-                    <strong>Job Type:</strong>
-                    @saved.Job.JobType
-                </p>
-
-
-                <p>
-                    <strong>Saved Date:</strong>
-                    @saved.SavedDate.ToShortDateString()
-                </p>
-
+                <a asp-controller="Student"
+                   asp-action="Index"
+                   class="btn btn-light text-start mb-2">
+                    🏠 Dashboard
+                </a>
 
 
                 <a asp-controller="Student"
-                   asp-action="JobDetails"
-                   asp-route-id="@saved.JobId"
-                   class="btn btn-primary">
-
-                    View Job
-
+                   asp-action="Jobs"
+                   class="btn btn-light text-start mb-2">
+                    🔍 Browse Jobs
                 </a>
 
-                <form asp-controller="Student"
-                      asp-action="RemoveSavedJob"
-                      asp-route-id="@saved.SavedJobId"
-                      method="post"
-                      class="d-inline">
 
-                    <button type="submit"
-                            class="btn btn-danger ms-2">
-
-                        Remove
-
-                    </button>
-
-                </form>
+                <a asp-controller="Student"
+                   asp-action="MyApplications"
+                   class="btn btn-light text-start">
+                    📄 Applications
+                </a>
 
 
             </div>
 
-        }
 
-    }
+        </div>
+
+
+
+
+
+
+        <div class="col-md-9">
+
+
+            <h1 class="fw-bold mb-4">
+                ⭐ Saved Jobs
+            </h1>
+
+
+
+
+            @if (Model.Count == 0)
+            {
+
+                <div class="alert alert-info shadow">
+                    No saved jobs found.
+                </div>
+
+            }
+
+            else
+            {
+
+
+                <div class="row">
+
+
+                    @foreach (var saved in Model)
+                    {
+
+
+                        <div class="col-md-6 mb-4">
+
+
+                            <div class="card shadow p-4 h-100">
+
+
+                                <h3 class="fw-bold">
+                                    @saved.Job.JobTitle
+                                </h3>
+
+
+                                <hr />
+
+
+                                <p>
+                                    🏢 <strong>Company:</strong>
+                                    @saved.Job.Employer.CompanyName
+                                </p>
+
+
+                                <p>
+                                    📍 <strong>Location:</strong>
+                                    @saved.Job.Location
+                                </p>
+
+
+                                <p>
+                                    💰 <strong>Salary:</strong>
+                                    @saved.Job.Salary
+                                </p>
+
+
+                                <p>
+                                    💼 <strong>Type:</strong>
+                                    @saved.Job.JobType
+                                </p>
+
+
+                                <p>
+                                    📅 <strong>Saved:</strong>
+                                    @saved.SavedDate.ToShortDateString()
+                                </p>
+
+
+
+                                <div>
+
+
+                                    <a asp-controller="Student"
+                                       asp-action="JobDetails"
+                                       asp-route-id="@saved.JobId"
+                                       class="btn btn-primary">
+
+                                        View Job
+
+                                    </a>
+
+
+
+                                    <form asp-controller="Student"
+                                          asp-action="RemoveSavedJob"
+                                          asp-route-id="@saved.SavedJobId"
+                                          method="post"
+                                          class="d-inline">
+
+
+                                        <button class="btn btn-danger ms-2">
+
+                                            Remove
+
+                                        </button>
+
+
+                                    </form>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    }
+
+
+                </div>
+
+
+            }
+
+
+        </div>
+
+
+    </div>
 
 
 </div>

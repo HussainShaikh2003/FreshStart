@@ -5,292 +5,276 @@
 }
 
 
-<div class="container mt-5">
+<div class="container-fluid mt-4">
+
+    <div class="row">
 
 
-    <h1 class="mb-4">
-        My Applications
-    </h1>
+        <div class="col-md-3 mb-4">
+
+            <div class="card shadow p-4">
+
+                <h3 class="fw-bold text-primary">
+                    FreshStart
+                </h3>
+
+                <hr />
+
+                <a asp-controller="Student"
+                   asp-action="Index"
+                   class="btn btn-light text-start mb-2">
+                    🏠 Dashboard
+                </a>
 
 
+                <a asp-controller="Student"
+                   asp-action="Jobs"
+                   class="btn btn-light text-start mb-2">
+                    🔍 Browse Jobs
+                </a>
 
-    @if (Model.Count == 0)
-    {
 
-        <div class="alert alert-info">
+                <a asp-controller="Student"
+                   asp-action="SavedJobs"
+                   class="btn btn-light text-start">
+                    ⭐ Saved Jobs
+                </a>
 
-            You have not applied for any jobs yet.
+            </div>
 
         </div>
 
-    }
-    else
-    {
-
-
-        @foreach (var application in Model)
-        {
-
-            <div class="card shadow p-4 mb-4">
-
-
-                <div class="d-flex justify-content-between align-items-center">
-
-
-                    <h3>
-                        @application.Job.JobTitle
-                    </h3>
 
 
 
-                    @if (application.Status == "Rejected")
-                    {
-                        <span class="badge bg-danger p-2">
-                            Rejected
-                        </span>
-                    }
-                    else if (application.Status == "Selected")
-                    {
-                        <span class="badge bg-success p-2">
-                            Selected
-                        </span>
-                    }
-                    else if (application.Status == "Interview Scheduled")
-                    {
-                        <span class="badge bg-info p-2">
-                            Interview Scheduled
-                        </span>
-                    }
-                    else if (application.Status == "Shortlisted")
-                    {
-                        <span class="badge bg-primary p-2">
-                            Shortlisted
-                        </span>
-                    }
-                    else if (application.Status == "Reviewed")
-                    {
-                        <span class="badge bg-secondary p-2">
-                            Reviewed
-                        </span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-warning p-2">
-                            Pending
-                        </span>
-                    }
+
+        <div class="col-md-9">
 
 
+            <h1 class="fw-bold mb-4">
+                📄 My Applications
+            </h1>
+
+
+
+            @if (Model.Count == 0)
+            {
+
+                <div class="alert alert-info shadow">
+                    You have not applied for any jobs yet.
                 </div>
 
+            }
 
-                <hr />
-
-
-
-                <p>
-                    <strong>Company:</strong>
-
-                    @application.Job.Employer.CompanyName
-                </p>
+            else
+            {
 
 
-
-                <p>
-                    <strong>Location:</strong>
-
-                    @application.Job.Location
-                </p>
-
-
-
-                <p>
-                    <strong>Salary:</strong>
-
-                    @application.Job.Salary
-                </p>
-
-
-
-                <p>
-                    <strong>Job Type:</strong>
-
-                    @application.Job.JobType
-                </p>
-
-
-
-                <p>
-                    <strong>Applied Date:</strong>
-
-                    @application.AppliedDate.ToShortDateString()
-                </p>
-
-
-
-
-                <!-- Application Timeline -->
-
-                <hr />
-
-                <h5>
-                    Application Progress
-                </h5>
-
-
-                <div class="mt-3">
-
-
-                    <p>
-                        ✅ Applied
-                    </p>
-
-
-
-                    @if (application.Status == "Reviewed" ||
-                   application.Status == "Shortlisted" ||
-                   application.Status == "Interview Scheduled" ||
-                   application.Status == "Selected")
-                    {
-                        <p>
-                            ✅ Reviewed
-                        </p>
-                    }
-                    else
-                    {
-                        <p>
-                            ⭕ Reviewed
-                        </p>
-                    }
-
-
-
-
-                    @if (application.Status == "Shortlisted" ||
-                   application.Status == "Interview Scheduled" ||
-                   application.Status == "Selected")
-                    {
-                        <p>
-                            ✅ Shortlisted
-                        </p>
-                    }
-                    else
-                    {
-                        <p>
-                            ⭕ Shortlisted
-                        </p>
-                    }
-
-
-
-
-
-                    @if (application.Status == "Interview Scheduled" ||
-                   application.Status == "Selected")
-                    {
-                        <p>
-                            ✅ Interview Scheduled
-                        </p>
-                    }
-                    else
-                    {
-                        <p>
-                            ⭕ Interview Scheduled
-                        </p>
-                    }
-
-
-
-
-
-                    @if (application.Status == "Selected")
-                    {
-                        <p>
-                            ✅ Selected
-                        </p>
-                    }
-                    else
-                    {
-                        <p>
-                            ⭕ Selected
-                        </p>
-                    }
-
-
-                </div>
-
-
-
-
-
-                <!-- Interview Details -->
-                @if (application.Status == "Interview Scheduled")
+                @foreach (var application in Model)
                 {
 
-                    <hr />
 
-                    <div class="card bg-light p-3">
+                    <div class="card shadow p-4 mb-4">
 
 
-                        <h5>
-                            Interview Details
+                        <div class="d-flex justify-content-between">
+
+
+                            <h3 class="fw-bold">
+                                @application.Job.JobTitle
+                            </h3>
+
+
+
+                            @if (application.Status == "Rejected")
+                            {
+                                <span class="badge bg-danger p-2">
+                                    Rejected
+                                </span>
+                            }
+                            else if (application.Status == "Selected")
+                            {
+                                <span class="badge bg-success p-2">
+                                    Selected
+                                </span>
+                            }
+                            else if (application.Status == "Interview Scheduled")
+                            {
+                                <span class="badge bg-info p-2">
+                                    Interview Scheduled
+                                </span>
+                            }
+                            else if (application.Status == "Shortlisted")
+                            {
+                                <span class="badge bg-primary p-2">
+                                    Shortlisted
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning p-2">
+                                    Pending
+                                </span>
+                            }
+
+
+                        </div>
+
+
+                        <hr />
+
+
+                        <p>
+                            🏢 <strong>Company:</strong>
+                            @application.Job.Employer.CompanyName
+                        </p>
+
+
+                        <p>
+                            📍 <strong>Location:</strong>
+                            @application.Job.Location
+                        </p>
+
+
+                        <p>
+                            💰 <strong>Salary:</strong>
+                            @application.Job.Salary
+                        </p>
+
+
+                        <p>
+                            💼 <strong>Type:</strong>
+                            @application.Job.JobType
+                        </p>
+
+
+                        <p>
+                            📅 <strong>Applied:</strong>
+                            @application.AppliedDate.ToShortDateString()
+                        </p>
+
+
+
+                        <hr />
+
+                        <h5 class="fw-bold">
+                            Application Progress
                         </h5>
 
 
-                        <p>
-                            <strong>Date:</strong>
+                        <div class="mt-3">
 
-                            @application.InterviewDate?.ToShortDateString()
-                        </p>
+                            <p>✅ Applied</p>
 
 
-                        <p>
-                            <strong>Time:</strong>
+                            @if (application.Status != "Pending")
+                            {
+                                <p>✅ Reviewed</p>
+                            }
+                            else
+                            {
+                                <p>⭕ Reviewed</p>
+                            }
 
-                            @application.InterviewTime
-                        </p>
 
 
-                        <p>
-                            <strong>Location:</strong>
+                            @if (application.Status == "Shortlisted" ||
+                           application.Status == "Interview Scheduled" ||
+                           application.Status == "Selected")
+                            {
+                                <p>✅ Shortlisted</p>
+                            }
+                            else
+                            {
+                                <p>⭕ Shortlisted</p>
+                            }
 
-                            @application.InterviewLocation
-                        </p>
+
+
+                            @if (application.Status == "Interview Scheduled" ||
+                           application.Status == "Selected")
+                            {
+                                <p>✅ Interview Scheduled</p>
+                            }
+                            else
+                            {
+                                <p>⭕ Interview Scheduled</p>
+                            }
+
+
+
+                            @if (application.Status == "Selected")
+                            {
+                                <p>🎉 Selected</p>
+                            }
+                            else
+                            {
+                                <p>⭕ Selected</p>
+                            }
+
+
+                        </div>
+
+
+
+                        @if (application.Status == "Interview Scheduled")
+                        {
+
+                            <hr />
+
+                            <div class="card bg-light p-3">
+
+
+                                <h5>
+                                    Interview Details
+                                </h5>
+
+
+                                <p>
+                                    📅 @application.InterviewDate?.ToShortDateString()
+                                </p>
+
+
+                                <p>
+                                    ⏰ @application.InterviewTime
+                                </p>
+
+
+                                <p>
+                                    📍 @application.InterviewLocation
+                                </p>
+
+
+                            </div>
+
+                        }
+
+
+
+                        @if (!string.IsNullOrEmpty(application.EmployerNotes))
+                        {
+
+                            <hr />
+
+                            <p>
+                                <strong>Employer Note:</strong>
+                                @application.EmployerNotes
+                            </p>
+
+                        }
 
 
                     </div>
 
-                }
-
-
-
-
-
-                <!-- Employer Notes -->
-                @if (!string.IsNullOrEmpty(application.EmployerNotes))
-                {
-
-                    <hr />
-
-                    <p>
-
-                        <strong>Employer Note:</strong>
-
-                        @application.EmployerNotes
-
-                    </p>
 
                 }
 
 
-
-            </div>
-
-        }
+            }
 
 
-    }
+        </div>
 
-
+    </div>
 
 </div>

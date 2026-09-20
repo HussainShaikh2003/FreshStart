@@ -5,263 +5,388 @@
 }
 
 
-<div class="container mt-5">
+<div class="container-fluid mt-4">
 
-    <div class="card shadow p-4">
-
-        <h2 class="mb-4">
-            Edit Student Profile
-        </h2>
+    <div class="row">
 
 
-        <form asp-action="EditProfile"
-              method="post"
-              enctype="multipart/form-data">
+        <!-- Sidebar -->
+
+        <div class="col-md-3 mb-4">
 
 
-            <div class="mb-3">
+            <div class="card shadow p-4">
 
-                <label class="form-label">
-                    Full Name
-                </label>
 
-                <input asp-for="FullName"
-                       class="form-control" />
+                <h3 class="fw-bold text-primary">
+                    FreshStart
+                </h3>
+
+
+                <hr />
+
+
+                <a asp-controller="Student"
+                   asp-action="Index"
+                   class="btn btn-light text-start mb-2">
+
+                    🏠 Dashboard
+
+                </a>
+
+
+                <a asp-controller="Student"
+                   asp-action="Jobs"
+                   class="btn btn-light text-start mb-2">
+
+                    🔍 Browse Jobs
+
+                </a>
+
+
+                <a asp-controller="Student"
+                   asp-action="MyApplications"
+                   class="btn btn-light text-start mb-2">
+
+                    📄 Applications
+
+                </a>
+
+
+                <a asp-controller="Student"
+                   asp-action="SavedJobs"
+                   class="btn btn-light text-start">
+
+                    ⭐ Saved Jobs
+
+                </a>
+
 
             </div>
 
 
+        </div>
 
-            <div class="mb-3">
 
-                <label class="form-label">
-                    Phone Number
-                </label>
 
-                <input asp-for="Phone"
-                       class="form-control" />
 
-            </div>
 
 
+        <!-- Edit Form -->
 
-            <div class="mb-3">
 
-                <label class="form-label">
-                    City
-                </label>
+        <div class="col-md-9">
 
-                <input asp-for="City"
-                       class="form-control" />
 
-            </div>
+            <div class="card shadow p-5">
 
 
+                <h2 class="fw-bold text-center mb-4">
+                    Edit Student Profile ✏️
+                </h2>
 
-            <div class="mb-3">
 
-                <label class="form-label">
-                    University
-                </label>
 
-                <input asp-for="University"
-                       class="form-control" />
+                <form asp-action="EditProfile"
+                      method="post"
+                      enctype="multipart/form-data">
 
-            </div>
 
 
+                    <div class="row">
 
-            <div class="mb-3">
 
-                <label class="form-label">
-                    Degree
-                </label>
+                        <div class="col-md-6 mb-3">
 
-                <input asp-for="Degree"
-                       class="form-control" />
+                            <label class="form-label">
+                                Full Name
+                            </label>
 
-            </div>
+                            <input asp-for="FullName"
+                                   class="form-control" />
 
+                        </div>
 
 
-            <div class="mb-3">
 
-                <label class="form-label">
-                    Graduation Year
-                </label>
 
-                <input asp-for="GraduationYear"
-                       class="form-control" />
+                        <div class="col-md-6 mb-3">
 
-            </div>
+                            <label class="form-label">
+                                Phone
+                            </label>
 
+                            <input asp-for="Phone"
+                                   class="form-control" />
 
+                        </div>
 
-            <div class="mb-3">
 
-                <label class="form-label">
-                    Skills
-                </label>
 
-                <input asp-for="Skills"
-                       class="form-control" />
 
-            </div>
 
+                        <div class="col-md-6 mb-3">
 
+                            <label class="form-label">
+                                City
+                            </label>
 
-            <div class="mb-3">
+                            <input asp-for="City"
+                                   class="form-control" />
 
-                <label class="form-label">
-                    Experience
-                </label>
+                        </div>
 
-                <textarea asp-for="Experience"
-                          class="form-control"
-                          rows="4"></textarea>
 
-            </div>
 
 
 
-            <div class="mb-3">
+                        <div class="col-md-6 mb-3">
 
-                <label class="form-label">
-                    Professional Bio
-                </label>
+                            <label class="form-label">
+                                University
+                            </label>
 
-                <textarea asp-for="Bio"
-                          class="form-control"
-                          rows="4"></textarea>
+                            <input asp-for="University"
+                                   class="form-control" />
 
-            </div>
+                        </div>
 
 
 
-            <div class="mb-3">
 
-                <label class="form-label">
-                    LinkedIn Profile
-                </label>
 
-                <input asp-for="LinkedIn"
-                       class="form-control" />
+                        <div class="col-md-6 mb-3">
 
-            </div>
+                            <label class="form-label">
+                                Degree
+                            </label>
 
+                            <input asp-for="Degree"
+                                   class="form-control" />
 
+                        </div>
 
-            <div class="mb-3">
 
-                <label class="form-label">
-                    GitHub Profile
-                </label>
 
-                <input asp-for="GitHub"
-                       class="form-control" />
 
-            </div>
 
+                        <div class="col-md-6 mb-3">
 
+                            <label class="form-label">
+                                Graduation Year
+                            </label>
 
+                            <input asp-for="GraduationYear"
+                                   class="form-control" />
 
-            <div class="mb-3">
+                        </div>
 
-                <label class="form-label">
-                    Upload New Resume (PDF)
-                </label>
 
-                <input type="file"
-                       name="ResumeFile"
-                       class="form-control"
-                       accept=".pdf" />
 
-            </div>
+                    </div>
 
 
 
 
-            @if (!string.IsNullOrEmpty(Model.ResumePath))
-            {
-                <div class="mb-3">
 
-                    <label class="form-label">
-                        Current Resume
-                    </label>
+                    <div class="mb-3">
 
-                    <br />
+                        <label class="form-label">
+                            Skills
+                        </label>
 
-                    <a href="@Model.ResumePath"
-                       target="_blank"
-                       class="btn btn-outline-primary">
+                        <input asp-for="Skills"
+                               class="form-control" />
 
-                        View Current Resume
+                    </div>
+
+
+
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Experience
+                        </label>
+
+<textarea asp-for="Experience"
+          class="form-control"
+          rows="4"></textarea>
+
+                    </div>
+
+
+
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Professional Bio
+                        </label>
+
+<textarea asp-for="Bio"
+          class="form-control"
+          rows="4"></textarea>
+
+                    </div>
+
+
+
+
+
+
+                    <div class="row">
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                LinkedIn
+                            </label>
+
+                            <input asp-for="LinkedIn"
+                                   class="form-control" />
+
+                        </div>
+
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                GitHub
+                            </label>
+
+                            <input asp-for="GitHub"
+                                   class="form-control" />
+
+                        </div>
+
+
+                    </div>
+
+
+
+
+
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Upload New Resume
+                        </label>
+
+
+                        <input type="file"
+                               name="ResumeFile"
+                               class="form-control"
+                               accept=".pdf" />
+
+
+                    </div>
+
+
+
+
+
+                    @if (!string.IsNullOrEmpty(Model.ResumePath))
+                    {
+
+                        <div class="card bg-light p-3 mb-3">
+
+
+                            <h6>
+                                Current Resume
+                            </h6>
+
+
+                            <a href="@Model.ResumePath"
+                               target="_blank"
+                               class="btn btn-outline-primary">
+
+                                View Resume
+
+                            </a>
+
+
+                        </div>
+
+                    }
+
+
+
+
+
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Change Profile Picture
+                        </label>
+
+
+                        <input type="file"
+                               name="ProfileImageFile"
+                               class="form-control"
+                               accept="image/*" />
+
+                    </div>
+
+
+
+
+
+                    @if (!string.IsNullOrEmpty(Model.ProfileImage))
+                    {
+
+                        <div class="text-center mb-4">
+
+
+                            <img src="@Model.ProfileImage"
+                                 width="130"
+                                 height="130"
+                                 class="rounded-circle shadow" />
+
+
+                        </div>
+
+                    }
+
+
+
+
+
+
+                    <button type="submit"
+                            class="btn btn-success">
+
+                        Update Profile
+
+                    </button>
+
+
+
+                    <a asp-action="Index"
+                       class="btn btn-secondary ms-2">
+
+                        Cancel
 
                     </a>
 
-                </div>
-            }
 
 
 
+                </form>
 
-
-            <div class="mb-3">
-
-                <label class="form-label">
-                    Change Profile Picture
-                </label>
-
-
-                <input type="file"
-                       name="ProfileImageFile"
-                       class="form-control"
-                       accept="image/*" />
 
             </div>
 
 
-
-
-            @if (!string.IsNullOrEmpty(Model.ProfileImage))
-            {
-                <div class="mb-3">
-
-                    <label class="form-label">
-                        Current Profile Picture
-                    </label>
-
-                    <br />
-
-                    <img src="@Model.ProfileImage"
-                         width="120"
-                         height="120"
-                         class="rounded-circle mt-2" />
-
-                </div>
-            }
-
-
-
-
-            <button type="submit"
-                    class="btn btn-primary">
-
-                Update Profile
-
-            </button>
-
-
-
-            <a asp-action="Index"
-               class="btn btn-secondary ms-2">
-
-                Cancel
-
-            </a>
-
-
-        </form>
+        </div>
 
 
     </div>
