@@ -367,11 +367,25 @@ namespace FreshStart.Controllers
                 return RedirectToAction("CreateProfile");
             }
 
+            if (company.ApprovalStatus != "Approved")
+            {
+                return RedirectToAction("Index");
+            }
+
+
+            // Check Admin Approval
+
+            if (company.ApprovalStatus != "Approved")
+            {
+                TempData["Error"] = "Your company profile is waiting for admin approval.";
+                return RedirectToAction("Index");
+            }
+
+
 
 
             return View();
         }
-
 
 
 

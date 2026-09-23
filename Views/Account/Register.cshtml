@@ -5,103 +5,216 @@
 }
 
 
-<div class="container mt-5">
-
-    <div class="card p-4 shadow">
-
-        <h2 class="text-center">
-            Create FreshStart Account
-        </h2>
+<div class="container d-flex justify-content-center align-items-center"
+     style="min-height:100vh; padding-top:40px; padding-bottom:40px;">
 
 
-        <form method="post" asp-action="Register" asp-controller="Account">
+    <div class="card shadow-lg border-0 p-5"
+         style="max-width:500px; width:100%; border-radius:20px;">
 
 
-            <div asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="text-center mb-4">
+
+
+            <h1 class="fw-bold">
+                🚀 Join FreshStart
+            </h1>
+
+
+            <p class="text-muted">
+                Create your account and start your journey
+            </p>
+
+
+        </div>
+
+
+
+
+
+        <form method="post"
+              asp-action="Register"
+              asp-controller="Account">
+
+
+
+            <div asp-validation-summary="All"
+                 class="text-danger mb-3">
+            </div>
+
+
+
+
 
 
             <div class="mb-3">
-                <label>Email</label>
+
+                <label class="form-label fw-bold">
+                    📧 Email
+                </label>
+
 
                 <input asp-for="Email"
-                       class="form-control"
-                       placeholder="Enter Email" />
+                       class="form-control form-control-lg"
+                       placeholder="Enter your email" />
+
 
                 <span asp-validation-for="Email"
                       class="text-danger">
                 </span>
+
+
             </div>
 
 
+
+
+
+
+
             <div class="mb-3">
-                <label>Password</label>
+
+                <label class="form-label fw-bold">
+                    🔒 Password
+                </label>
+
 
                 <input asp-for="Password"
-                       class="form-control"
-                       placeholder="Enter Password" />
+                       class="form-control form-control-lg"
+                       placeholder="Create password" />
+
 
                 <span asp-validation-for="Password"
                       class="text-danger">
                 </span>
+
+
             </div>
 
 
+
+
+
+
+
             <div class="mb-3">
-                <label>Confirm Password</label>
+
+                <label class="form-label fw-bold">
+                    🔐 Confirm Password
+                </label>
+
 
                 <input asp-for="ConfirmPassword"
-                       class="form-control"
-                       placeholder="Confirm Password" />
+                       class="form-control form-control-lg"
+                       placeholder="Confirm password" />
+
 
                 <span asp-validation-for="ConfirmPassword"
                       class="text-danger">
                 </span>
+
+
             </div>
 
 
-            <div class="mb-3">
 
-                <label>Select Role</label>
+
+
+
+
+            <div class="mb-4">
+
+                <label class="form-label fw-bold">
+                    👤 Register As
+                </label>
+
 
                 <select asp-for="Role"
-                        class="form-control">
+                        class="form-select form-select-lg">
+
 
                     <option value="">
                         Select Role
                     </option>
 
+
                     <option value="Student">
-                        Student
+                        🎓 Student
                     </option>
+
 
                     <option value="Employer">
-                        Employer
+                        🏢 Employer
                     </option>
 
+
                 </select>
+
 
                 <span asp-validation-for="Role"
                       class="text-danger">
                 </span>
 
+
             </div>
 
 
-            <button type="submit"
-                    class="btn btn-primary w-100">
 
-                Register
+
+
+
+
+
+            <button type="submit"
+                    class="btn btn-primary btn-lg w-100 rounded-pill">
+
+                Create Account 🚀
 
             </button>
 
 
+
+
+
         </form>
 
+
+
+
+
+
+        <div class="text-center mt-4">
+
+            <p class="mb-0">
+                Already have an account?
+            </p>
+
+
+            <a asp-controller="Account"
+               asp-action="Login"
+               class="fw-bold text-decoration-none">
+
+                Login Here
+
+            </a>
+
+
+        </div>
+
+
+
+
     </div>
+
 
 </div>
 
 
+
+
 @section Scripts {
+
     <partial name="_ValidationScriptsPartial" />
+
 }

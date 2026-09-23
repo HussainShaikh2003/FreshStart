@@ -5,30 +5,47 @@
 }
 
 
+
 <div class="container mt-5">
 
 
-    <div class="card shadow p-4">
+    <div class="card shadow p-5">
 
 
-        <h2>
-            Schedule Interview
-        </h2>
+        <h1 class="text-center fw-bold mb-4">
+            Schedule Interview 📅
+        </h1>
 
 
-        <hr />
 
 
-        <h4>
-            Student:
-            @Model.Student.FullName
-        </h4>
+        <div class="card bg-light p-4 mb-4">
 
 
-        <h5>
-            Job:
-            @Model.Job.JobTitle
-        </h5>
+            <h4 class="fw-bold">
+                Candidate Information
+            </h4>
+
+
+            <hr />
+
+
+            <p>
+                👤 <strong>Student:</strong>
+                @Model.Student.FullName
+            </p>
+
+
+
+            <p>
+                💼 <strong>Job:</strong>
+                @Model.Job.JobTitle
+            </p>
+
+
+        </div>
+
+
 
 
 
@@ -43,57 +60,70 @@
 
 
 
+
             <div class="mb-3">
 
-                <label>
+
+                <label class="form-label fw-bold">
                     Interview Date
                 </label>
+
 
                 <input type="date"
                        name="interviewDate"
                        class="form-control" />
+
 
             </div>
 
 
 
 
+
             <div class="mb-3">
 
-                <label>
+
+                <label class="form-label fw-bold">
                     Interview Time
                 </label>
+
 
                 <input type="text"
                        name="interviewTime"
                        class="form-control"
                        placeholder="10:00 AM" />
 
+
             </div>
+
 
 
 
 
             <div class="mb-3">
 
-                <label>
+
+                <label class="form-label fw-bold">
                     Interview Location / Link
                 </label>
+
 
                 <input type="text"
                        name="interviewLocation"
                        class="form-control"
                        placeholder="Google Meet Link" />
 
+
             </div>
 
 
 
 
-            <button type="submit"
-                    class="btn btn-success">
 
-                Schedule Interview
+            <button type="submit"
+                    class="btn btn-success w-100">
+
+                Schedule Interview ✅
 
             </button>
 

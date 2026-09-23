@@ -5,211 +5,325 @@
 }
 
 
-<div class="container mt-5">
+<div class="container-fluid mt-4">
+
+    <div class="row">
+
+        <!-- Sidebar -->
+        <div class="col-md-3 mb-4">
+
+            <div class="card shadow p-4">
+
+                <h3 class="fw-bold text-primary">
+                    FreshStart
+                </h3>
+
+                <hr />
+
+                <a asp-controller="Employer"
+                   asp-action="Index"
+                   class="btn btn-light text-start mb-2">
+                    🏠 Dashboard
+                </a>
 
 
-    <h1 class="mb-4">
-        Employer Dashboard
-    </h1>
+                <a asp-controller="Employer"
+                   asp-action="EditProfile"
+                   class="btn btn-light text-start mb-2">
+                    🏢 Company Profile
+                </a>
 
 
+                @if (Model != null && Model.ApprovalStatus == "Approved")
+                {
+                    <a asp-controller="Employer"
+                       asp-action="CreateJob"
+                       class="btn btn-light text-start mb-2">
+                        ➕ Post Job
+                    </a>
+                }
+                else
+                {
+                    <button class="btn btn-secondary text-start mb-2" disabled>
+                        ⏳ Awaiting Approval
+                    </button>
+                }
 
 
-    @if (Model == null)
-    {
-
-        <div class="card shadow p-4 text-center">
-
-
-            <h3>
-                Welcome to FreshStart!
-            </h3>
+                <a asp-controller="Employer"
+                   asp-action="Jobs"
+                   class="btn btn-light text-start mb-2">
+                    💼 My Jobs
+                </a>
 
 
-            <p class="text-muted">
-                Your company profile is not created yet.
-            </p>
+                <a asp-controller="Notification"
+                   asp-action="Index"
+                   class="btn btn-light text-start">
+                    🔔 Notifications
+                </a>
 
-
-
-            <a asp-controller="Employer"
-               asp-action="CreateProfile"
-               class="btn btn-primary">
-
-                Create Company Profile
-
-            </a>
-
+            </div>
 
         </div>
 
-    }
-    else
-    {
 
 
-        <div class="card shadow p-4">
+        <!-- Dashboard -->
+        <div class="col-md-9">
 
 
-            <div class="row align-items-center">
+            <h1 class="fw-bold mb-4">
+                Welcome Employer 👋
+            </h1>
 
 
-                <div class="col-md-3 text-center">
+
+            @if (Model == null)
+            {
+
+                <div class="card shadow p-5 text-center">
+
+                    <h2>
+                        Welcome to FreshStart
+                    </h2>
 
 
-                    @if (!string.IsNullOrEmpty(Model.CompanyLogo))
-                    {
+                    <p class="text-muted">
+                        Create your company profile to start posting jobs.
+                    </p>
 
-                        <img src="@Model.CompanyLogo"
-                             width="150"
-                             height="150"
-                             class="rounded shadow" />
 
-                    }
-                    else
-                    {
+                    <a asp-controller="Employer"
+                       asp-action="CreateProfile"
+                       class="btn btn-primary">
 
-                        <div class="bg-secondary text-white p-5">
+                        Create Company Profile
 
-                            No Logo
-
-                        </div>
-
-                    }
-
+                    </a>
 
                 </div>
 
+            }
+
+            else
+            {
+
+
+                <!-- Company Profile Card -->
+
+                <div class="card shadow p-4">
+
+
+                    <div class="row align-items-center">
+
+
+                        <div class="col-md-4 text-center">
+
+
+                            @if (!string.IsNullOrEmpty(Model.CompanyLogo))
+                            {
+
+                                <img src="@Model.CompanyLogo"
+                                     class="rounded-circle shadow"
+                                     width="170"
+                                     height="170" />
+
+                            }
+                            else
+                            {
+
+                                <div class="rounded-circle bg-secondary text-white p-5">
+                                    No Logo
+                                </div>
+
+                            }
+
+
+                        </div>
 
 
 
 
-                <div class="col-md-9">
+
+                        <div class="col-md-8">
 
 
-                    <div class="d-flex justify-content-between">
+                            <div class="d-flex justify-content-between">
 
 
-                        <h2>
-                            @Model.CompanyName
-                        </h2>
+                                <h2 class="fw-bold">
+                                    @Model.CompanyName
+                                </h2>
+
+
+                                <a asp-controller="Employer"
+                                   asp-action="EditProfile"
+                                   class="btn btn-success">
+
+                                    Edit Profile
+
+                                </a>
+
+
+                            </div>
+
+
+                            <hr />
+
+
+                            <p>
+                                📧 <strong>Email:</strong>
+                                @Model.CompanyEmail
+                            </p>
+
+
+                            <p>
+                                📞 <strong>Phone:</strong>
+                                @Model.Phone
+                            </p>
+
+
+                            <p>
+                                🌐 <strong>Website:</strong>
+                                @Model.Website
+                            </p>
+
+
+                            <p>
+                                🏭 <strong>Industry:</strong>
+                                @Model.Industry
+                            </p>
+
+
+                            <p>
+                                📝 <strong>Description:</strong>
+                                @Model.CompanyDescription
+                            </p>
 
 
 
-                        <a asp-controller="Employer"
-                           asp-action="EditProfile"
-                           class="btn btn-success">
+                            <p>
 
-                            Edit Profile
+                                <strong>Status:</strong>
 
-                        </a>
+                                @if (Model.ApprovalStatus == "Approved")
+                                {
+                                    <span class="badge bg-success">
+                                        Approved
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        @Model.ApprovalStatus
+                                    </span>
+                                }
+
+                            </p>
+
+
+                        </div>
 
 
                     </div>
 
 
-
-                    <hr />
-
-
-
-                    <p>
-                        <strong>Email:</strong>
-                        @Model.CompanyEmail
-                    </p>
-
-
-
-                    <p>
-                        <strong>Phone:</strong>
-                        @Model.Phone
-                    </p>
-
-
-
-                    <p>
-                        <strong>Website:</strong>
-                        @Model.Website
-                    </p>
-
-
-
-                    <p>
-                        <strong>Industry:</strong>
-                        @Model.Industry
-                    </p>
-
-
-
-                    <p>
-                        <strong>Description:</strong>
-                        @Model.CompanyDescription
-                    </p>
+                </div>
 
 
 
 
-                    <p>
-                        <strong>Status:</strong>
 
-                        @if (Model.ApprovalStatus == "Approved")
-                        {
-                            <span class="badge bg-success">
-                                Approved
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-warning">
-                                @Model.ApprovalStatus
-                            </span>
-                        }
+                <!-- Job Management -->
 
-                    </p>
+                <div class="card shadow mt-4 p-4">
 
 
-
-                    <hr />
-
-
-
-                    <h4>
+                    <h3 class="fw-bold">
                         Job Management
-                    </h4>
+                    </h3>
+
+
+                    <hr />
+
+
+                    <div class="row">
+
+
+                        <div class="col-md-6">
+
+                            <div class="card bg-light p-4 text-center">
+
+                                <h5>
+                                    Create New Opportunity
+                                </h5>
+
+                                <p class="text-muted">
+                                    Post jobs and find talented fresh graduates.
+                                </p>
+
+
+                                <a asp-controller="Employer"
+                                   asp-action="CreateJob"
+                                   class="btn btn-primary">
+
+                                    Post New Job
+
+                                </a>
+
+                            </div>
+
+                        </div>
 
 
 
-                    <a asp-controller="Employer"
-                       asp-action="CreateJob"
-                       class="btn btn-primary me-2">
 
-                        Post New Job
-
-                    </a>
+                        <div class="col-md-6">
 
 
+                            <div class="card bg-light p-4 text-center">
 
-                    <a asp-controller="Employer"
-                       asp-action="Jobs"
-                       class="btn btn-info">
 
-                        My Jobs
+                                <h5>
+                                    Manage Jobs
+                                </h5>
 
-                    </a>
 
+                                <p class="text-muted">
+                                    View applicants and manage your jobs.
+                                </p>
+
+
+                                <a asp-controller="Employer"
+                                   asp-action="Jobs"
+                                   class="btn btn-info">
+
+                                    My Jobs
+
+                                </a>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
 
 
                 </div>
 
 
-            </div>
+            }
+
 
 
         </div>
 
 
-    }
-
+    </div>
 
 
 </div>

@@ -5,175 +5,226 @@
 }
 
 
-<div class="container mt-5">
+<div class="container-fluid mt-4">
 
 
-    <h1 class="mb-4">
-        Manage Employers
-    </h1>
+    <div class="p-4 mb-4 rounded shadow bg-dark text-white">
 
+        <h1 class="fw-bold">
+            🏢 Employer Management
+        </h1>
 
+        <p class="mb-0">
+            Review company profiles and manage approval status.
+        </p>
 
-    <div class="card shadow p-4">
-
-
-        <table class="table table-bordered table-striped">
-
-
-            <thead>
-
-                <tr>
-
-                    <th>
-                        Logo
-                    </th>
-
-                    <th>
-                        Company Name
-                    </th>
-
-                    <th>
-                        Email
-                    </th>
-
-                    <th>
-                        Industry
-                    </th>
-
-                    <th>
-                        Status
-                    </th>
-
-                    <th>
-                        Actions
-                    </th>
-
-                </tr>
-
-            </thead>
+    </div>
 
 
 
-            <tbody>
 
 
-                @foreach (var employer in Model)
-                {
+    <div class="card shadow border-0 p-4">
+
+
+        <h3 class="mb-4">
+            Registered Companies
+        </h3>
+
+
+
+
+        <div class="table-responsive">
+
+
+            <table class="table table-hover align-middle">
+
+
+                <thead class="table-dark">
 
                     <tr>
 
-
-                        <td>
-
-                            @if (!string.IsNullOrEmpty(employer.CompanyLogo))
-                            {
-
-                                <img src="@employer.CompanyLogo"
-                                     width="60"
-                                     height="60"
-                                     class="rounded" />
-
-                            }
-                            else
-                            {
-                                <span>
-                                    No Logo
-                                </span>
-                            }
-
-                        </td>
+                        <th>
+                            Logo
+                        </th>
 
 
+                        <th>
+                            Company
+                        </th>
 
 
-                        <td>
-                            @employer.CompanyName
-                        </td>
+                        <th>
+                            Email
+                        </th>
 
 
-
-                        <td>
-                            @employer.CompanyEmail
-                        </td>
-
+                        <th>
+                            Industry
+                        </th>
 
 
-
-                        <td>
-                            @employer.Industry
-                        </td>
-
+                        <th>
+                            Status
+                        </th>
 
 
-
-                        <td>
-
-                            @if (employer.ApprovalStatus == "Approved")
-                            {
-                                <span class="badge bg-success">
-                                    Approved
-                                </span>
-                            }
-                            else if (employer.ApprovalStatus == "Rejected")
-                            {
-                                <span class="badge bg-danger">
-                                    Rejected
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-warning">
-                                    Pending
-                                </span>
-                            }
-
-                        </td>
-
-
-
-
-
-                        <td>
-
-
-                            <a asp-controller="Admin"
-                               asp-action="ApproveEmployer"
-                               asp-route-id="@employer.EmployerId"
-                               class="btn btn-success btn-sm">
-
-                                Approve
-
-                            </a>
-
-
-
-                            <a asp-controller="Admin"
-                               asp-action="RejectEmployer"
-                               asp-route-id="@employer.EmployerId"
-                               class="btn btn-danger btn-sm">
-
-                                Reject
-
-                            </a>
-
-
-                        </td>
-
+                        <th>
+                            Action
+                        </th>
 
 
                     </tr>
 
 
-                }
+                </thead>
 
 
-            </tbody>
 
 
-        </table>
+                <tbody>
+
+
+                    @foreach (var employer in Model)
+                    {
+
+                        <tr>
+
+
+                            <td>
+
+                                @if (!string.IsNullOrEmpty(employer.CompanyLogo))
+                                {
+                                    <img src="@employer.CompanyLogo"
+                                         width="70"
+                                         height="70"
+                                         class="rounded-circle shadow" />
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">
+                                        No Logo
+                                    </span>
+                                }
+
+                            </td>
+
+
+
+
+
+                            <td>
+
+                                <strong>
+                                    @employer.CompanyName
+                                </strong>
+
+                            </td>
+
+
+
+
+
+                            <td>
+                                @employer.CompanyEmail
+                            </td>
+
+
+
+
+
+                            <td>
+                                <span class="badge bg-info text-dark">
+                                    @employer.Industry
+                                </span>
+                            </td>
+
+
+
+
+
+                            <td>
+
+
+                                @if (employer.ApprovalStatus == "Approved")
+                                {
+                                    <span class="badge bg-success">
+                                        ✅ Approved
+                                    </span>
+                                }
+                                else if (employer.ApprovalStatus == "Rejected")
+                                {
+                                    <span class="badge bg-danger">
+                                        ❌ Rejected
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        ⏳ Pending
+                                    </span>
+                                }
+
+
+                            </td>
+
+
+
+
+
+                            <td>
+
+
+                                <a asp-controller="Admin"
+                                   asp-action="ApproveEmployer"
+                                   asp-route-id="@employer.EmployerId"
+                                   class="btn btn-success btn-sm me-1">
+
+                                    ✔ Approve
+
+                                </a>
+
+
+
+
+                                <a asp-controller="Admin"
+                                   asp-action="RejectEmployer"
+                                   asp-route-id="@employer.EmployerId"
+                                   class="btn btn-danger btn-sm">
+
+                                    ✖ Reject
+
+                                </a>
+                                <a asp-controller="Admin"
+                                   asp-action="DeleteEmployer"
+                                   asp-route-id="@employer.EmployerId"
+                                   class="btn btn-dark btn-sm ms-1"
+                                   onclick="return confirm('Delete this employer permanently?');">
+
+                                    Delete
+
+                                </a>
+
+                            </td>
+
+
+
+                        </tr>
+
+                    }
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
 
 
     </div>
+
 
 
 </div>

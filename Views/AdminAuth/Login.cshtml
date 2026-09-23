@@ -1,0 +1,97 @@
+﻿@model FreshStart.Models.ViewModels.LoginViewModel
+
+@{
+    ViewData["Title"] = "Admin Login";
+}
+
+
+<div class="container d-flex justify-content-center align-items-center"
+     style="min-height:85vh;">
+
+
+    <div class="card shadow-lg border-0 p-5"
+         style="max-width:450px; width:100%; border-radius:20px;">
+
+
+        <div class="text-center mb-4">
+
+            <h1 class="fw-bold">
+                🔐 FreshStart Admin
+            </h1>
+
+            <p class="text-muted">
+                Login to Admin Portal
+            </p>
+
+        </div>
+
+
+
+
+        <form method="post"
+              asp-controller="AdminAuth"
+              asp-action="Login">
+
+
+            <div asp-validation-summary="All"
+                 class="text-danger mb-3">
+            </div>
+
+
+
+
+            <div class="mb-3">
+
+                <label class="form-label fw-bold">
+                    📧 Admin Email
+                </label>
+
+
+                <input asp-for="Email"
+                       class="form-control form-control-lg"
+                       placeholder="Enter admin email" />
+
+            </div>
+
+
+
+
+
+            <div class="mb-3">
+
+                <label class="form-label fw-bold">
+                    🔒 Password
+                </label>
+
+
+                <input asp-for="Password"
+                       class="form-control form-control-lg"
+                       placeholder="Enter password" />
+
+            </div>
+
+
+
+
+            <button type="submit"
+                    class="btn btn-dark btn-lg w-100 rounded-pill">
+
+                Login As Admin
+
+            </button>
+
+
+
+        </form>
+
+
+    </div>
+
+
+</div>
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

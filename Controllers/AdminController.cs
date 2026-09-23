@@ -35,13 +35,12 @@ namespace FreshStart.Controllers
         public async Task<IActionResult> Index()
         {
 
-            var totalStudents = await _userManager
-                .GetUsersInRoleAsync("Student");
+            var totalStudents = await _context.StudentProfiles
+     .CountAsync();
 
 
-
-            var totalEmployers = await _userManager
-                .GetUsersInRoleAsync("Employer");
+            var totalEmployers = await _context.EmployerProfiles
+                .CountAsync();
 
 
 
@@ -57,9 +56,9 @@ namespace FreshStart.Controllers
 
 
 
-            ViewBag.TotalStudents = totalStudents.Count;
+            ViewBag.TotalStudents = totalStudents;
 
-            ViewBag.TotalEmployers = totalEmployers.Count;
+            ViewBag.TotalEmployers = totalEmployers;
 
             ViewBag.PendingEmployers = pendingEmployers;
 
@@ -156,6 +155,54 @@ namespace FreshStart.Controllers
 
         }
 
+        // Delete Employer
+        public async Task<IActionResult> DeleteEmployer(int id)
+        {
+            var employer = await _context.EmployerProfiles
+                .FirstOrDefaultAsync(x => x.EmployerId == id);
+
+
+            if (employer == null)
+            {
+                return NotFound();
+            }
+
+
+            // Get employer jobs
+            var jobs = await _context.Jobs
+                .Where(x => x.EmployerId == id)
+                .ToListAsync();
+
+
+
+            foreach (var job in jobs)
+            {
+                var applications = await _context.JobApplications
+                    .Where(x => x.JobId == job.JobId)
+                    .ToListAsync();
+
+
+                _context.JobApplications.RemoveRange(applications);
+            }
+
+
+
+            // Delete Jobs
+            _context.Jobs.RemoveRange(jobs);
+
+
+
+            // Delete Employer
+            _context.EmployerProfiles.Remove(employer);
+
+
+
+            await _context.SaveChangesAsync();
+
+
+            return RedirectToAction("Employers");
+        }
+
         // View All Jobs
         public async Task<IActionResult> Jobs()
         {
@@ -178,8 +225,87 @@ namespace FreshStart.Controllers
 
             return View(students);
         }
+        // Delete Job
+        public async Task<IActionResult> DeleteJob(int id)
+        {
+            var job = await _context.Jobs
+                .FirstOrDefaultAsync(x => x.JobId == id);
 
 
+            if (job == null)
+            {
+                return NotFound();
+            }
+
+
+
+            var applications = await _context.JobApplications
+                .Where(x => x.JobId == id)
+                .ToListAsync();
+
+
+
+            _context.JobApplications.RemoveRange(applications);
+
+
+
+            _context.Jobs.Remove(job);
+
+
+
+            await _context.SaveChangesAsync();
+
+
+
+            return RedirectToAction("Jobs");
+        }
+        // Delete Student
+        public async Task<IActionResult> DeleteStudent(int id)
+        {
+            var student = await _context.StudentProfiles
+                .FirstOrDefaultAsync(x => x.StudentId == id);
+
+
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+
+
+            // Delete Student Applications first
+            var applications = await _context.JobApplications
+                .Where(x => x.StudentId == id)
+                .ToListAsync();
+
+
+            _context.JobApplications.RemoveRange(applications);
+
+
+
+            // Get Student User
+            var user = await _userManager.FindByIdAsync(student.UserId);
+
+
+
+            // Delete Student Profile
+            _context.StudentProfiles.Remove(student);
+
+
+
+            // Delete Identity User
+            if (user != null)
+            {
+                await _userManager.DeleteAsync(user);
+            }
+
+
+
+            await _context.SaveChangesAsync();
+
+
+            return RedirectToAction("Students");
+        }
     }
 
 }

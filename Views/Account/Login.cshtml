@@ -5,30 +5,56 @@
 }
 
 
-<div class="container mt-5">
-
-    <div class="card shadow p-4">
-
-        <h2 class="text-center mb-4">
-            Login To FreshStart
-        </h2>
+<div class="container d-flex justify-content-center align-items-center"
+     style="min-height:80vh;">
 
 
-        <form method="post" asp-action="Login" asp-controller="Account">
+    <div class="card shadow-lg border-0 p-5"
+         style="max-width:450px; width:100%; border-radius:20px;">
+
+
+        <div class="text-center mb-4">
+
+
+            <h1 class="fw-bold">
+                🚀 FreshStart
+            </h1>
+
+
+            <p class="text-muted">
+                Login to continue your journey
+            </p>
+
+
+        </div>
+
+
+
+
+        <form method="post"
+              asp-action="Login"
+              asp-controller="Account">
+
 
 
             <div asp-validation-summary="All"
-                 class="text-danger">
+                 class="text-danger mb-3">
             </div>
+
+
 
 
             <div class="mb-3">
 
-                <label>Email</label>
+                <label class="form-label fw-bold">
+                    📧 Email
+                </label>
+
 
                 <input asp-for="Email"
-                       class="form-control"
-                       placeholder="Enter Email" />
+                       class="form-control form-control-lg"
+                       placeholder="Enter your email" />
+
 
                 <span asp-validation-for="Email"
                       class="text-danger">
@@ -37,13 +63,20 @@
             </div>
 
 
+
+
+
             <div class="mb-3">
 
-                <label>Password</label>
+                <label class="form-label fw-bold">
+                    🔒 Password
+                </label>
+
 
                 <input asp-for="Password"
-                       class="form-control"
-                       placeholder="Enter Password" />
+                       class="form-control form-control-lg"
+                       placeholder="Enter your password" />
+
 
                 <span asp-validation-for="Password"
                       class="text-danger">
@@ -52,7 +85,10 @@
             </div>
 
 
-            <div class="mb-3">
+
+
+
+            <div class="mb-4">
 
                 <input asp-for="RememberMe" />
 
@@ -63,21 +99,55 @@
             </div>
 
 
-            <button type="submit"
-                    class="btn btn-primary w-100">
 
-                Login
+
+
+
+            <button type="submit"
+                    class="btn btn-primary btn-lg w-100 rounded-pill">
+
+                Login 🚀
 
             </button>
 
 
+
+
         </form>
 
+
+
+
+
+        <div class="text-center mt-4">
+
+            <p class="mb-0">
+                Don't have an account?
+            </p>
+
+
+            <a asp-controller="Account"
+               asp-action="Register"
+               class="fw-bold text-decoration-none">
+
+                Create Account
+
+            </a>
+
+
+        </div>
+
+
+
     </div>
+
 
 </div>
 
 
+
 @section Scripts {
+
     <partial name="_ValidationScriptsPartial" />
+
 }
