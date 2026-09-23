@@ -41,12 +41,13 @@
             <div class="container">
 
 
-                <a class="navbar-brand"
+                <a class="navbar-brand fw-bold fs-4"
                    asp-controller="Home"
                    asp-action="Index">
-                    🚀 FreshStart
-                </a>
 
+                    🚀 FreshStart
+
+                </a>
 
 
                 <button class="navbar-toggler"
@@ -308,31 +309,24 @@
                         {
 
 
-                            <li class="nav-item">
+                            <a class="btn btn-outline-primary rounded-pill px-4 ms-2"
+                               asp-controller="Account"
+                               asp-action="Login">
 
-                                <a class="nav-link text-dark"
-                                   asp-controller="Account"
-                                   asp-action="Login">
+                                Login
 
-                                    Login
-
-                                </a>
-
-                            </li>
+                            </a>
 
 
 
-                            <li class="nav-item">
 
-                                <a class="nav-link text-dark"
-                                   asp-controller="Account"
-                                   asp-action="Register">
+                            <a class="btn btn-primary rounded-pill px-4 ms-2"
+                               asp-controller="Account"
+                               asp-action="Register">
 
-                                    Register
+                                Register
 
-                                </a>
-
-                            </li>
+                            </a>
 
 
                         }
