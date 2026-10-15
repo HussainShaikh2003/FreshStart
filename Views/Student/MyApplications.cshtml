@@ -138,7 +138,10 @@
 
                         <p>
                             💰 <strong>Salary:</strong>
-                            @application.Job.Salary
+                            @application.Job.MinimumSalary.ToString("N0")
+                            –
+                            @application.Job.MaximumSalary.ToString("N0")
+                            / @application.Job.SalaryType
                         </p>
 
 

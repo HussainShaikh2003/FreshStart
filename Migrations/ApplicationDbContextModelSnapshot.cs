@@ -220,11 +220,20 @@ namespace FreshStart.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("MaximumSalary")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("MinimumSalary")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("RequiredSkills")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Salary")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SalaryType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

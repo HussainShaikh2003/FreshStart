@@ -180,9 +180,11 @@
 
 
                     <p>
-                        💰 @job.Salary
+                        💰 <strong>Salary:</strong>
+                        @job.MinimumSalary.ToString("N0")
+                        – @job.MaximumSalary.ToString("N0")
+                        / @job.SalaryType
                     </p>
-
 
 
                     <p>

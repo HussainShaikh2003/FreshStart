@@ -396,51 +396,68 @@ namespace FreshStart.Controllers
 
         // Save Job
         // Save Job
+
         [HttpPost]
         public async Task<IActionResult> CreateJob(Job model)
         {
             var user = await _userManager.GetUserAsync(User);
-
 
             if (user == null)
             {
                 return Challenge();
             }
 
-
-
             var company = await _context.EmployerProfiles
                 .FirstOrDefaultAsync(x => x.UserId == user.Id);
-
-
 
             if (company == null)
             {
                 return RedirectToAction("CreateProfile");
             }
 
-
-
-            model.EmployerId = company.EmployerId;
-
-            model.Employer = company;
-
-
-
-            if (ModelState.IsValid)
+            // Only approved employers can post jobs
+            if (company.ApprovalStatus != "Approved")
             {
-                _context.Jobs.Add(model);
-
-
-                await _context.SaveChangesAsync();
-
-
-                return RedirectToAction("Jobs");
+                TempData["Error"] = "Your company profile is waiting for admin approval.";
+                return RedirectToAction("Index");
             }
 
+            // Salary validation
+            if (model.MinimumSalary < 0 || model.MaximumSalary < 0)
+            {
+                ModelState.AddModelError(
+                    nameof(model.MinimumSalary),
+                    "Salary cannot be negative.");
+            }
 
+            if (model.MaximumSalary < model.MinimumSalary)
+            {
+                ModelState.AddModelError(
+                    nameof(model.MaximumSalary),
+                    "Maximum salary must be greater than or equal to minimum salary.");
+            }
 
-            return View(model);
+            if (string.IsNullOrWhiteSpace(model.SalaryType) ||
+                !new[] { "Monthly", "Yearly", "Hourly" }
+                    .Contains(model.SalaryType))
+            {
+                ModelState.AddModelError(
+                    nameof(model.SalaryType),
+                    "Please select a valid salary type.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            model.EmployerId = company.EmployerId;
+            model.Employer = company;
+
+            _context.Jobs.Add(model);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Jobs");
         }
 
         // View Applicants For Job

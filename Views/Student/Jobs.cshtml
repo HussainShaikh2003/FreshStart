@@ -1,4 +1,5 @@
-﻿@model IEnumerable<FreshStart.Models.Job.Job>
+﻿```cshtml
+@model IEnumerable<FreshStart.Models.Job.Job>
 
 @{
     ViewData["Title"] = "Available Jobs";
@@ -69,11 +70,6 @@
         </div>
 
 
-
-
-
-
-
         <!-- Jobs Area -->
 
 
@@ -87,9 +83,6 @@
             </h1>
 
 
-
-
-
             <!-- Search Card -->
 
 
@@ -101,15 +94,12 @@
                 </h4>
 
 
-
                 <form asp-controller="Student"
                       asp-action="Jobs"
                       method="get">
 
 
-
                     <div class="row">
-
 
 
                         <div class="col-md-4 mb-3">
@@ -129,9 +119,6 @@
                         </div>
 
 
-
-
-
                         <div class="col-md-4 mb-3">
 
 
@@ -149,16 +136,12 @@
                         </div>
 
 
-
-
-
                         <div class="col-md-4 mb-3">
 
 
                             <label>
                                 Job Type
                             </label>
-
 
 
                             <select name="jobType"
@@ -191,11 +174,42 @@
                         </div>
 
 
+                        <div class="col-md-6 mb-3">
+
+                            <label>
+                                Minimum Salary (₨)
+                            </label>
+
+                            <input type="number"
+                                   name="minSalary"
+                                   class="form-control"
+                                   min="0"
+                                   step="0.01"
+                                   placeholder="e.g. 30000" />
+
+                        </div>
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>
+                                Maximum Salary (₨)
+                            </label>
+
+                            <input type="number"
+                                   name="maxSalary"
+                                   class="form-control"
+                                   min="0"
+                                   step="0.01"
+                                   placeholder="e.g. 80000" />
+
+                        </div>
+
+
                     </div>
 
 
-
-                    <button class="btn btn-primary mt-2">
+                    <button type="submit" class="btn btn-primary mt-2">
 
                         🔍 Search Jobs
 
@@ -208,11 +222,6 @@
             </div>
 
 
-
-
-
-
-
             <h2 class="fw-bold mb-4">
 
                 Available Jobs
@@ -220,12 +229,8 @@
             </h2>
 
 
-
-
-
             @if (!Model.Any())
             {
-
 
                 <div class="alert alert-info">
 
@@ -233,11 +238,9 @@
 
                 </div>
 
-
             }
             else
             {
-
 
                 <div class="row">
 
@@ -245,13 +248,10 @@
                     @foreach (var job in Model)
                     {
 
-
                         <div class="col-lg-6 mb-4">
 
 
-
                             <div class="card shadow h-100 p-4">
-
 
 
                                 <h3 class="fw-bold">
@@ -259,9 +259,7 @@
                                 </h3>
 
 
-
                                 <hr />
-
 
 
                                 <p>
@@ -271,11 +269,9 @@
                                         Company:
                                     </strong>
 
-                                    @job.Employer.CompanyName
+                                    @job.Employer?.CompanyName
 
                                 </p>
-
-
 
 
                                 <p>
@@ -290,8 +286,6 @@
                                 </p>
 
 
-
-
                                 <p>
                                     📍
 
@@ -300,16 +294,19 @@
                                 </p>
 
 
-
-
                                 <p>
                                     💰
 
-                                    @job.Salary
+                                    <strong>
+                                        Salary:
+                                    </strong>
+
+                                    @job.MinimumSalary.ToString("N0")
+                                    –
+                                    @job.MaximumSalary.ToString("N0")
+                                    / @job.SalaryType
 
                                 </p>
-
-
 
 
                                 <p>
@@ -318,8 +315,6 @@
                                     @job.JobType
 
                                 </p>
-
-
 
 
                                 <p>
@@ -332,37 +327,27 @@
                                 </p>
 
 
-
-
-
                                 <a asp-controller="Student"
                                    asp-action="JobDetails"
                                    asp-route-id="@job.JobId"
                                    class="btn btn-primary">
 
-
                                     View Details
 
-
                                 </a>
-
 
 
                             </div>
 
 
-
                         </div>
-
 
                     }
 
 
                 </div>
 
-
             }
-
 
 
         </div>
@@ -372,3 +357,4 @@
 
 
 </div>
+```

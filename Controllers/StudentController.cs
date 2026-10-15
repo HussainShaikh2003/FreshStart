@@ -361,17 +361,18 @@ namespace FreshStart.Controllers
 
 
         }
+
         // Available Jobs
         public async Task<IActionResult> Jobs(
             string search,
             string location,
-            string jobType)
+            string jobType,
+            decimal? minSalary,
+            decimal? maxSalary)
         {
             var jobs = _context.Jobs
                 .Include(x => x.Employer)
                 .AsQueryable();
-
-
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -380,17 +381,11 @@ namespace FreshStart.Controllers
                     x.RequiredSkills.Contains(search));
             }
 
-
-
-
             if (!string.IsNullOrEmpty(location))
             {
                 jobs = jobs.Where(x =>
                     x.Location.Contains(location));
             }
-
-
-
 
             if (!string.IsNullOrEmpty(jobType))
             {
@@ -398,14 +393,23 @@ namespace FreshStart.Controllers
                     x.JobType == jobType);
             }
 
+            if (minSalary.HasValue)
+            {
+                jobs = jobs.Where(x =>
+                    x.MaximumSalary >= minSalary.Value);
+            }
 
-
+            if (maxSalary.HasValue)
+            {
+                jobs = jobs.Where(x =>
+                    x.MinimumSalary <= maxSalary.Value);
+            }
 
             var result = await jobs.ToListAsync();
 
-
             return View(result);
         }
+
 
         // Job Details
         public async Task<IActionResult> JobDetails(int id)
