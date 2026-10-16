@@ -25,7 +25,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 // MVC Setup
 builder.Services.AddControllersWithViews();
 
-
+builder.Services.AddScoped<FreshStart.Services.JobMatchingService>();
 var app = builder.Build();
 
 

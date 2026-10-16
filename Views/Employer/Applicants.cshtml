@@ -1,233 +1,289 @@
-﻿@model List<FreshStart.Models.Application.JobApplication>
+﻿@model List<FreshStart.Models.ViewModels.ApplicantMatchViewModel>
 
 @{
     ViewData["Title"] = "Applicants";
 }
 
-
 <div class="container-fluid mt-4">
+    <h1 class="fw-bold mb-4">Job Applicants 👥</h1>
 
-
-    <h1 class="fw-bold mb-4">
-        Job Applicants 👥
-    </h1>
-
-
-
-    @if (Model.Count == 0)
+    @if (Model == null || Model.Count == 0)
     {
-
         <div class="alert alert-info shadow">
-
             No applicants found.
-
         </div>
-
     }
     else
     {
+        <div class="card shadow-sm p-3 mb-4">
+            <h5 class="fw-bold mb-3">Filter Candidates</h5>
 
-
-        @foreach (var application in Model)
-        {
-
-
-            <div class="card shadow p-4 mb-4">
-
-
-                <div class="d-flex justify-content-between align-items-center">
-
-
-                    <div>
-
-                        <h3 class="fw-bold">
-                            @application.Student.FullName
-                        </h3>
-
-
-                        <span class="badge bg-primary">
-                            @application.Status
-                        </span>
-
-                    </div>
-
-
-                    <div>
-
-                        <small class="text-muted">
-
-                            Applied:
-                            @application.AppliedDate.ToShortDateString()
-
-                        </small>
-
-                    </div>
-
-
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label for="minMatch" class="form-label">
+                        Minimum Match Percentage
+                    </label>
+                    <select id="minMatch" class="form-select">
+                        <option value="0">All Matches</option>
+                        <option value="40">40% and above</option>
+                        <option value="50">50% and above</option>
+                        <option value="70">70% and above</option>
+                        <option value="80">80% and above</option>
+                        <option value="90">90% and above</option>
+                    </select>
                 </div>
 
-
-
-                <hr />
-
-
-
-                <div class="row">
-
-
-                    <div class="col-md-6">
-
-
-                        <p>
-                            🎓 <strong>University:</strong>
-                            @application.Student.University
-                        </p>
-
-
-                        <p>
-                            📚 <strong>Degree:</strong>
-                            @application.Student.Degree
-                        </p>
-
-
-
-                    </div>
-
-
-
-
-                    <div class="col-md-6">
-
-
-                        <p>
-                            🛠 <strong>Skills:</strong>
-                            @application.Student.Skills
-                        </p>
-
-
-                        <p>
-                            💼 <strong>Experience:</strong>
-                            @application.Student.Experience
-                        </p>
-
-
-                    </div>
-
-
+                <div class="col-md-4">
+                    <label for="skillSearch" class="form-label">
+                        Search Skill
+                    </label>
+                    <input type="text"
+                           id="skillSearch"
+                           class="form-control"
+                           placeholder="e.g. C#, HTML, SQL" />
                 </div>
 
-
-
-
-
-                @if (!string.IsNullOrEmpty(application.Student.ResumePath))
-                {
-
-                    <a href="@application.Student.ResumePath"
-                       target="_blank"
-                       class="btn btn-outline-primary mb-3">
-
-                        📄 View Resume
-
-                    </a>
-
-                }
-
-
-
-
-
-
-
-                <form asp-controller="Employer"
-                      asp-action="UpdateApplicationStatus"
-                      method="post">
-
-
-                    <input type="hidden"
-                           name="applicationId"
-                           value="@application.ApplicationId" />
-
-
-
-                    <div class="d-flex flex-wrap gap-2">
-
-
-                        <button type="submit"
-                                name="status"
-                                value="Reviewed"
-                                class="btn btn-secondary">
-
-                            Review
-
-                        </button>
-
-
-
-
-                        <button type="submit"
-                                name="status"
-                                value="Shortlisted"
-                                class="btn btn-primary">
-
-                            Shortlist
-
-                        </button>
-
-
-
-
-
-                        <a asp-controller="Employer"
-                           asp-action="ScheduleInterview"
-                           asp-route-id="@application.ApplicationId"
-                           class="btn btn-warning">
-
-                            📅 Schedule Interview
-
-                        </a>
-
-
-
-
-
-                        <button type="submit"
-                                name="status"
-                                value="Selected"
-                                class="btn btn-success">
-
-                            Select
-
-                        </button>
-
-
-
-
-
-                        <button type="submit"
-                                name="status"
-                                value="Rejected"
-                                class="btn btn-danger">
-
-                            Reject
-
-                        </button>
-
-
-                    </div>
-
-
-                </form>
-
-
-
+                <div class="col-md-4">
+                    <label for="statusFilter" class="form-label">
+                        Application Status
+                    </label>
+                    <select id="statusFilter" class="form-select">
+                        <option value="">All Statuses</option>
+                        <option value="Applied">Applied</option>
+                        <option value="Reviewed">Reviewed</option>
+                        <option value="Shortlisted">Shortlisted</option>
+                        <option value="Selected">Selected</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+                </div>
             </div>
 
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <span class="text-muted" id="candidateCount">
+                    Showing @Model.Count candidates
+                </span>
 
-        }
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        id="resetFilters">
+                    Reset Filters
+                </button>
+            </div>
+        </div>
 
+        <div id="noFilteredResults"
+             class="alert alert-warning"
+             style="display:none;">
+            No candidates match your filters.
+        </div>
 
+        <div id="applicantList">
+            @foreach (var item in Model.OrderByDescending(x => x.MatchPercentage))
+            {
+                var application = item.Application;
+
+                <div class="card shadow p-4 mb-4 applicant-card"
+                     data-match="@item.MatchPercentage"
+                     data-status="@(application.Status ?? "")"
+                     data-skills="@(application.Student?.Skills ?? "")">
+
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div>
+                            <h3 class="fw-bold">
+                                @application.Student.FullName
+                            </h3>
+
+                            <span class="badge bg-primary applicant-status">
+                                @application.Status
+                            </span>
+                        </div>
+
+                        <div class="text-end">
+                            <small class="text-muted">
+                                Applied: @application.AppliedDate.ToShortDateString()
+                            </small>
+
+                            <div class="mt-2">
+                                <span class="badge @(item.MatchPercentage >= 70 ? "bg-success" : item.MatchPercentage >= 40 ? "bg-warning text-dark" : "bg-secondary") fs-6">
+                                    @item.MatchPercentage% Match
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p>
+                                🎓 <strong>University:</strong>
+                                @application.Student.University
+                            </p>
+
+                            <p>
+                                📚 <strong>Degree:</strong>
+                                @application.Student.Degree
+                            </p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <p>
+                                🛠 <strong>Skills:</strong>
+                                @application.Student.Skills
+                            </p>
+
+                            <p>
+                                💼 <strong>Experience:</strong>
+                                @application.Student.Experience
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6 class="fw-bold text-success">Matched Terms</h6>
+
+                            @if (item.MatchedTerms.Count > 0)
+                            {
+                                @foreach (var term in item.MatchedTerms)
+                                {
+                                    <span class="badge bg-success me-1 mb-1">
+                                        @term
+                                    </span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="text-muted">No matching terms found.</span>
+                            }
+                        </div>
+
+                        <div class="col-md-6">
+                            <h6 class="fw-bold text-danger">Missing Terms</h6>
+
+                            @if (item.MissingTerms.Count > 0)
+                            {
+                                @foreach (var term in item.MissingTerms)
+                                {
+                                    <span class="badge bg-danger me-1 mb-1">
+                                        @term
+                                    </span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="text-muted">No missing terms.</span>
+                            }
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(application.Student.ResumePath))
+                    {
+                        <a href="@application.Student.ResumePath"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="btn btn-outline-primary mb-3">
+                            📄 View Resume
+                        </a>
+                    }
+
+                    <form asp-controller="Employer"
+                          asp-action="UpdateApplicationStatus"
+                          method="post">
+
+                        <input type="hidden"
+                               name="applicationId"
+                               value="@application.ApplicationId" />
+
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="submit"
+                                    name="status"
+                                    value="Reviewed"
+                                    class="btn btn-secondary">
+                                Review
+                            </button>
+
+                            <button type="submit"
+                                    name="status"
+                                    value="Shortlisted"
+                                    class="btn btn-primary">
+                                Shortlist
+                            </button>
+
+                            <a asp-controller="Employer"
+                               asp-action="ScheduleInterview"
+                               asp-route-id="@application.ApplicationId"
+                               class="btn btn-warning">
+                                📅 Schedule Interview
+                            </a>
+
+                            <button type="submit"
+                                    name="status"
+                                    value="Selected"
+                                    class="btn btn-success">
+                                Select
+                            </button>
+
+                            <button type="submit"
+                                    name="status"
+                                    value="Rejected"
+                                    class="btn btn-danger">
+                                Reject
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            }
+        </div>
     }
-
-
 </div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            function filterApplicants() {
+                const minMatch = parseFloat($("#minMatch").val()) || 0;
+                const skill = $.trim($("#skillSearch").val()).toLowerCase();
+                const status = $("#statusFilter").val().toLowerCase();
+
+                let visibleCount = 0;
+
+                $(".applicant-card").each(function () {
+                    const card = $(this);
+                    const match = parseFloat(card.attr("data-match")) || 0;
+                    const skills = (card.attr("data-skills") || "").toLowerCase();
+                    const cardStatus = (card.attr("data-status") || "").toLowerCase();
+
+                    const matchesPercentage = match >= minMatch;
+                    const matchesSkill = skill === "" || skills.includes(skill);
+                    const matchesStatus = status === "" || cardStatus === status;
+
+                    const show = matchesPercentage && matchesSkill && matchesStatus;
+
+                    card.toggle(show);
+
+                    if (show) {
+                        visibleCount++;
+                    }
+                });
+
+                $("#candidateCount").text(
+                    "Showing " + visibleCount + " of " +
+                    $(".applicant-card").length + " candidates"
+                );
+
+                $("#noFilteredResults").toggle(visibleCount === 0);
+            }
+
+            $("#minMatch, #statusFilter").on("change", filterApplicants);
+            $("#skillSearch").on("input", filterApplicants);
+
+            $("#resetFilters").on("click", function () {
+                $("#minMatch").val("0");
+                $("#skillSearch").val("");
+                $("#statusFilter").val("");
+                filterApplicants();
+            });
+        });
+    </script>
+}

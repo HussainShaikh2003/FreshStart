@@ -721,5 +721,55 @@ namespace FreshStart.Controllers
             return RedirectToAction("JobDetails", new { id = id });
         }
 
+
+        // Temporary test: extract text from uploaded CV
+        [HttpGet]
+        public async Task<IActionResult> TestResumeExtraction()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return Challenge();
+            }
+
+            var profile = await _context.StudentProfiles
+                .FirstOrDefaultAsync(x => x.UserId == user.Id);
+
+            if (profile == null || string.IsNullOrWhiteSpace(profile.ResumePath))
+            {
+                return Content("CV not found. Please upload a resume first.");
+            }
+
+            var relativePath = profile.ResumePath.TrimStart('/')
+                .Replace('/', Path.DirectorySeparatorChar);
+
+            var filePath = Path.Combine(
+                _environment.WebRootPath,
+                relativePath);
+
+            if (!System.IO.File.Exists(filePath))
+            {
+                return Content("CV file not found on the server.");
+            }
+
+            try
+            {
+                var extractor = new FreshStart.Services.ResumeTextExtractor();
+                var extractedText = extractor.ExtractText(filePath);
+
+                if (string.IsNullOrWhiteSpace(extractedText))
+                {
+                    return Content("No readable text found. This PDF may be scanned.");
+                }
+
+                return Content(extractedText);
+            }
+            catch (Exception)
+            {
+                return Content("Could not read the PDF. Please check that it is a valid PDF.");
+            }
+        }
+
     }
 }

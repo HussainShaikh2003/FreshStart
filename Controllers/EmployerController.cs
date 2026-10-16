@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FreshStart.Models.Application;
 using FreshStart.Models.Notification;
+using FreshStart.Models.ViewModels;
+using FreshStart.Services;
 
 namespace FreshStart.Controllers
 {
@@ -15,17 +17,18 @@ namespace FreshStart.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _environment;
-
-
+        private readonly JobMatchingService _jobMatchingService;
 
         public EmployerController(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
-            IWebHostEnvironment environment)
+            IWebHostEnvironment environment,
+            JobMatchingService jobMatchingService)
         {
             _context = context;
             _userManager = userManager;
             _environment = environment;
+            _jobMatchingService = jobMatchingService;
         }
 
 
@@ -460,46 +463,34 @@ namespace FreshStart.Controllers
             return RedirectToAction("Jobs");
         }
 
+
         // View Applicants For Job
         public async Task<IActionResult> Applicants(int id)
         {
             var user = await _userManager.GetUserAsync(User);
-
 
             if (user == null)
             {
                 return Challenge();
             }
 
-
-
             var company = await _context.EmployerProfiles
                 .FirstOrDefaultAsync(x => x.UserId == user.Id);
-
-
 
             if (company == null)
             {
                 return RedirectToAction("CreateProfile");
             }
 
-
-
-
             var job = await _context.Jobs
-                .FirstOrDefaultAsync(x => x.JobId == id
-                                       && x.EmployerId == company.EmployerId);
-
-
+                .FirstOrDefaultAsync(x =>
+                    x.JobId == id &&
+                    x.EmployerId == company.EmployerId);
 
             if (job == null)
             {
                 return NotFound();
             }
-
-
-
-
 
             var applications = await _context.JobApplications
                 .Include(x => x.Student)
@@ -507,105 +498,123 @@ namespace FreshStart.Controllers
                 .Where(x => x.JobId == id)
                 .ToListAsync();
 
+            var results = new List<ApplicantMatchViewModel>();
 
+            foreach (var application in applications)
+            {
+                string resumeText = "";
 
-            return View(applications);
+                if (!string.IsNullOrWhiteSpace(
+                    application.Student?.ResumePath))
+                {
+                    var relativePath = application.Student.ResumePath
+                        .TrimStart('/')
+                        .Replace('/', Path.DirectorySeparatorChar);
+
+                    var filePath = Path.Combine(
+                        _environment.WebRootPath,
+                        relativePath);
+
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        try
+                        {
+                            var extractor = new ResumeTextExtractor();
+                            resumeText = extractor.ExtractText(filePath);
+                        }
+                        catch (Exception)
+                        {
+                            resumeText = "";
+                        }
+                    }
+                }
+
+                var match = _jobMatchingService.CalculateMatch(
+                    resumeText,
+                    application.Student?.Skills ?? "",
+                    job.Description ?? "",
+                    job.RequiredSkills ?? "");
+
+                results.Add(new ApplicantMatchViewModel
+                {
+                    Application = application,
+                    MatchPercentage = match.MatchPercentage,
+                    MatchedTerms = match.MatchedTerms,
+                    MissingTerms = match.MissingTerms
+                });
+            }
+
+            results = results
+                .OrderByDescending(x => x.MatchPercentage)
+                .ToList();
+
+            return View(results);
         }
+
         // Update Application Status
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateApplicationStatus(
             int applicationId,
             string status)
         {
-            var application = await _context.JobApplications
-     .Include(x => x.Job)
-     .FirstOrDefaultAsync(x => x.ApplicationId == applicationId);
-
-
-            if (application == null)
+            var allowedStatuses = new[]
             {
-                return NotFound();
+        "Reviewed", "Shortlisted", "Selected", "Rejected"
+    };
+
+            if (string.IsNullOrWhiteSpace(status) ||
+                !allowedStatuses.Contains(status))
+            {
+                return BadRequest();
             }
 
+            var user = await _userManager.GetUserAsync(User);
 
+            if (user == null)
+                return Challenge();
+
+            var company = await _context.EmployerProfiles
+                .FirstOrDefaultAsync(x => x.UserId == user.Id);
+
+            if (company == null)
+                return Forbid();
+
+            var application = await _context.JobApplications
+                .Include(x => x.Job)
+                .FirstOrDefaultAsync(x =>
+                    x.ApplicationId == applicationId &&
+                    x.Job.EmployerId == company.EmployerId);
+
+            if (application == null)
+                return NotFound();
 
             application.Status = status;
 
-
-
-            // If interview is scheduled
-            if (status == "Interview Scheduled")
-            {
-                application.InterviewDate = DateTime.Now.AddDays(2);
-
-                application.InterviewTime = "10:00 AM";
-
-                application.InterviewLocation = "Online Meeting";
-            }
-
-
-
-
-            // If selected
             if (status == "Selected")
-            {
                 application.EmployerNotes = "Candidate Selected";
-            }
-
-
-
-
-            // If rejected
-            if (status == "Rejected")
-            {
+            else if (status == "Rejected")
                 application.EmployerNotes = "Application Rejected";
-            }
-
-
-
-
-
-            // Student Notification
 
             var student = await _context.StudentProfiles
                 .FirstOrDefaultAsync(x => x.StudentId == application.StudentId);
 
-
-
             if (student != null)
             {
-
-                string message = $"Your application status for {application.Job.JobTitle} is now {status}";
-
-
-
-                var notification = new Notification
+                _context.Notifications.Add(new Notification
                 {
                     UserId = student.UserId,
-
-                    Message = message,
-
+                    Message = $"Your application status for {application.Job.JobTitle} is now {status}",
                     CreatedDate = DateTime.Now
-                };
-
-
-
-                _context.Notifications.Add(notification);
-
+                });
             }
-
-
-
 
             await _context.SaveChangesAsync();
 
-
-
-            return RedirectToAction(
-                "Applicants",
-                new { id = application.JobId }
-            );
+            return RedirectToAction("Applicants", new { id = application.JobId });
         }
+
         // Public Company Profile
         public async Task<IActionResult> CompanyProfile(int id)
         {
