@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FreshStart.Models.Application;
 using FreshStart.Models.Saved;
+using FreshStart.Services;
 using FreshStart.Models.Notification;
 
 namespace FreshStart.Controllers
@@ -16,16 +17,20 @@ namespace FreshStart.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _environment;
+        private readonly JobMatchingService _jobMatchingService;
+
 
 
         public StudentController(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
-            IWebHostEnvironment environment)
+            IWebHostEnvironment environment,
+            JobMatchingService jobMatchingService)
         {
             _context = context;
             _userManager = userManager;
             _environment = environment;
+            _jobMatchingService = jobMatchingService;
         }
 
 
@@ -94,7 +99,6 @@ namespace FreshStart.Controllers
 
 
 
-
         // Save Profile + Resume + Image Upload
         [HttpPost]
         public async Task<IActionResult> CreateProfile(
@@ -109,87 +113,132 @@ namespace FreshStart.Controllers
                 return Challenge();
             }
 
-
             model.UserId = user.Id;
             model.User = user;
 
-
             ModelState.Remove(nameof(StudentProfile.UserId));
             ModelState.Remove(nameof(StudentProfile.User));
-
-
-
-            // Resume Upload
-            if (ResumeFile != null)
+            // Resume Upload with Validation
+            if (ResumeFile != null && ResumeFile.Length > 0)
             {
+                // Allow PDF files only
+                var extension = Path.GetExtension(ResumeFile.FileName);
+
+                if (!extension.Equals(".pdf", StringComparison.OrdinalIgnoreCase))
+                {
+                    ModelState.AddModelError(
+                        nameof(ResumeFile),
+                        "Please upload your resume in PDF format."
+                    );
+
+                    return View(model);
+                }
+
+                // Maximum file size: 5 MB
+                if (ResumeFile.Length > 5 * 1024 * 1024)
+                {
+                    ModelState.AddModelError(
+                        nameof(ResumeFile),
+                        "Resume file size must not exceed 5 MB."
+                    );
+
+                    return View(model);
+                }
+
                 string folderPath = Path.Combine(
                     _environment.WebRootPath,
                     "uploads/resumes"
                 );
-
 
                 if (!Directory.Exists(folderPath))
                 {
                     Directory.CreateDirectory(folderPath);
                 }
 
-
-                string fileName = Guid.NewGuid().ToString()
-                    + Path.GetExtension(ResumeFile.FileName);
-
-
-                string filePath = Path.Combine(
-                    folderPath,
-                    fileName
-                );
-
+                string fileName = Guid.NewGuid().ToString() + ".pdf";
+                string filePath = Path.Combine(folderPath, fileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await ResumeFile.CopyToAsync(stream);
                 }
 
-
                 model.ResumePath = "/uploads/resumes/" + fileName;
+
+                try
+                {
+                    var extractor = new ResumeTextExtractor();
+                    model.ResumeText = extractor.ExtractText(filePath);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Resume extraction failed: " + ex.Message);
+                    model.ResumeText = null;
+                }
             }
-
-
-
-            // Profile Image Upload
-            if (ProfileImageFile != null)
             {
                 string folderPath = Path.Combine(
                     _environment.WebRootPath,
-                    "uploads/profile"
+                    "uploads/resumes"
                 );
-
 
                 if (!Directory.Exists(folderPath))
                 {
                     Directory.CreateDirectory(folderPath);
                 }
 
+                string fileName = Guid.NewGuid().ToString()
+                    + Path.GetExtension(ResumeFile.FileName);
+
+                string filePath = Path.Combine(folderPath, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await ResumeFile.CopyToAsync(stream);
+                }
+
+                model.ResumePath = "/uploads/resumes/" + fileName;
+
+                // Extract resume text and save it with the profile
+                try
+                {
+                    var extractor = new ResumeTextExtractor();
+                    model.ResumeText = extractor.ExtractText(filePath);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(
+                        "Resume extraction failed: " + ex.Message);
+
+                    model.ResumeText = null;
+                }
+            }
+
+            // Profile Image Upload
+            if (ProfileImageFile != null && ProfileImageFile.Length > 0)
+            {
+                string folderPath = Path.Combine(
+                    _environment.WebRootPath,
+                    "uploads/profile"
+                );
+
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
 
                 string fileName = Guid.NewGuid().ToString()
                     + Path.GetExtension(ProfileImageFile.FileName);
 
-
-                string filePath = Path.Combine(
-                    folderPath,
-                    fileName
-                );
-
+                string filePath = Path.Combine(folderPath, fileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await ProfileImageFile.CopyToAsync(stream);
                 }
 
-
                 model.ProfileImage = "/uploads/profile/" + fileName;
             }
-
-
 
             if (ModelState.IsValid)
             {
@@ -200,11 +249,8 @@ namespace FreshStart.Controllers
                 return RedirectToAction("Index");
             }
 
-
             return View(model);
         }
-
-
 
 
 
@@ -252,19 +298,15 @@ namespace FreshStart.Controllers
                 return Challenge();
             }
 
-
             var profile = await _context.StudentProfiles
                 .FirstOrDefaultAsync(x => x.UserId == user.Id);
-
-
 
             if (profile == null)
             {
                 return RedirectToAction("CreateProfile");
             }
 
-
-
+            // Update profile details
             profile.FullName = model.FullName;
             profile.Phone = model.Phone;
             profile.City = model.City;
@@ -277,90 +319,169 @@ namespace FreshStart.Controllers
             profile.LinkedIn = model.LinkedIn;
             profile.GitHub = model.GitHub;
 
-
-
-
-            // New Resume Upload
-            if (ResumeFile != null)
+            // Resume Upload with Validation
+            if (ResumeFile != null && ResumeFile.Length > 0)
             {
+                var extension = Path.GetExtension(ResumeFile.FileName);
+
+                if (!extension.Equals(".pdf", StringComparison.OrdinalIgnoreCase))
+                {
+                    ModelState.AddModelError(
+                        nameof(ResumeFile),
+                        "Please upload your resume in PDF format.");
+
+                    return View(profile);
+                }
+
+                if (ResumeFile.Length > 5 * 1024 * 1024)
+                {
+                    ModelState.AddModelError(
+                        nameof(ResumeFile),
+                        "Resume file size must not exceed 5 MB.");
+
+                    return View(profile);
+                }
+
                 string folderPath = Path.Combine(
                     _environment.WebRootPath,
-                    "uploads/resumes"
-                );
-
+                    "uploads/resumes");
 
                 if (!Directory.Exists(folderPath))
                 {
                     Directory.CreateDirectory(folderPath);
                 }
 
-
-                string fileName = Guid.NewGuid().ToString()
-                    + Path.GetExtension(ResumeFile.FileName);
-
-
-                string filePath = Path.Combine(
-                    folderPath,
-                    fileName
-                );
-
+                string fileName = Guid.NewGuid().ToString() + ".pdf";
+                string filePath = Path.Combine(folderPath, fileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await ResumeFile.CopyToAsync(stream);
                 }
 
-
                 profile.ResumePath = "/uploads/resumes/" + fileName;
+
+                // Extract and cache resume text
+                try
+                {
+                    var extractor = new ResumeTextExtractor();
+                    profile.ResumeText = extractor.ExtractText(filePath);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(
+                        "Resume text extraction failed: " + ex.Message);
+
+                    profile.ResumeText = null;
+                }
             }
 
-
-
-
-
-            // New Profile Image Upload
-            if (ProfileImageFile != null)
+            // Profile Image Upload
+            if (ProfileImageFile != null && ProfileImageFile.Length > 0)
             {
                 string folderPath = Path.Combine(
                     _environment.WebRootPath,
-                    "uploads/profile"
-                );
-
+                    "uploads/profile");
 
                 if (!Directory.Exists(folderPath))
                 {
                     Directory.CreateDirectory(folderPath);
                 }
 
-
                 string fileName = Guid.NewGuid().ToString()
                     + Path.GetExtension(ProfileImageFile.FileName);
 
-
-                string filePath = Path.Combine(
-                    folderPath,
-                    fileName
-                );
-
+                string filePath = Path.Combine(folderPath, fileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await ProfileImageFile.CopyToAsync(stream);
                 }
 
-
                 profile.ProfileImage = "/uploads/profile/" + fileName;
             }
 
-
-
             await _context.SaveChangesAsync();
 
-
             return RedirectToAction("Index");
-
-
         }
+        // Recommended Jobs
+        public async Task<IActionResult> RecommendedJobs()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+                return Challenge();
+
+            var student = await _context.StudentProfiles
+                .FirstOrDefaultAsync(x => x.UserId == user.Id);
+
+            if (student == null)
+                return RedirectToAction("CreateProfile");
+
+            // Use saved resume text first
+            string resumeText = student.ResumeText ?? "";
+
+            // Extract text only if it is not already saved
+            if (string.IsNullOrWhiteSpace(resumeText) &&
+                !string.IsNullOrWhiteSpace(student.ResumePath))
+            {
+                var relativePath = student.ResumePath.TrimStart('/')
+                    .Replace('/', Path.DirectorySeparatorChar);
+
+                var filePath = Path.Combine(
+                    _environment.WebRootPath,
+                    relativePath);
+
+                if (System.IO.File.Exists(filePath))
+                {
+                    try
+                    {
+                        var extractor = new ResumeTextExtractor();
+
+                        resumeText = extractor.ExtractText(filePath);
+
+                        // Save extracted text for future requests
+                        student.ResumeText = resumeText;
+
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(
+                            "Resume extraction failed: " + ex.Message);
+
+                        resumeText = "";
+                    }
+                }
+            }
+
+            var jobs = await _context.Jobs
+                .Include(x => x.Employer)
+                .ToListAsync();
+
+            var recommendations = jobs.Select(job =>
+            {
+                var match = _jobMatchingService.CalculateMatch(
+                    resumeText,
+                    student.Skills ?? "",
+                    job.Description ?? "",
+                    job.RequiredSkills ?? "");
+
+                return new RecommendedJobViewModel
+                {
+                    Job = job,
+                    MatchPercentage = match.MatchPercentage,
+                    MatchedTerms = match.MatchedTerms,
+                    MissingTerms = match.MissingTerms
+                };
+            })
+            .OrderByDescending(x => x.MatchPercentage)
+            .ToList();
+
+            return View(recommendations);
+        }
+
 
         // Available Jobs
         public async Task<IActionResult> Jobs(

@@ -1,0 +1,109 @@
+﻿@model List<FreshStart.Models.ViewModels.RecommendedJobViewModel>
+
+@{
+    ViewData["Title"] = "Recommended Jobs";
+}
+
+<div class="container mt-4 mb-5">
+    <div class="mb-4">
+        <h2>Recommended Jobs</h2>
+        <p class="text-muted">
+            Jobs recommended according to your CV and profile skills.
+        </p>
+    </div>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info">
+            No recommended jobs found. Please update your profile and upload your CV.
+        </div>
+    }
+    else
+    {
+        @foreach (var item in Model)
+        {
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                        <div>
+                            <h4>@item.Job.JobTitle</h4>
+                            <p class="text-muted mb-2">
+                                @item.Job.Location
+                            </p>
+                        </div>
+
+                        <div class="text-end">
+                            <h5 class="text-success">
+                                @item.MatchPercentage.ToString("0")% Match
+                            </h5>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <p>
+                        @(item.Job.Description?.Length > 250
+                            ? item.Job.Description.Substring(0, 250) + "..."
+                            : item.Job.Description)
+                    </p>
+
+                    <p>
+                        <strong>Required Skills:</strong>
+                        @(string.IsNullOrWhiteSpace(item.Job.RequiredSkills)
+                            ? "Not specified"
+                            : item.Job.RequiredSkills)
+                    </p>
+
+                    <p>
+                        <strong>Salary:</strong>
+                        @item.Job.MinimumSalary.ToString("N0")
+                        -
+                        @item.Job.MaximumSalary.ToString("N0")
+                        / @item.Job.SalaryType
+                    </p>
+
+                    <div class="mb-3">
+                        <strong>Matched Skills:</strong>
+                        @if (item.MatchedTerms.Any())
+                        {
+                            @foreach (var skill in item.MatchedTerms)
+                            {
+                                <span class="badge bg-success me-1 mb-1">
+                                    @skill
+                                </span>
+                            }
+                        }
+                        else
+                        {
+                            <span class="text-muted">No matching skills found.</span>
+                        }
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Skills to Improve:</strong>
+                        @if (item.MissingTerms.Any())
+                        {
+                            @foreach (var skill in item.MissingTerms)
+                            {
+                                <span class="badge bg-secondary me-1 mb-1">
+                                    @skill
+                                </span>
+                            }
+                        }
+                        else
+                        {
+                            <span class="text-muted">No missing skills detected.</span>
+                        }
+                    </div>
+
+                    <a asp-controller="Student"
+                       asp-action="JobDetails"
+                       asp-route-id="@item.Job.JobId"
+                       class="btn btn-primary">
+                        View Job Details
+                    </a>
+                </div>
+            </div>
+        }
+    }
+</div>

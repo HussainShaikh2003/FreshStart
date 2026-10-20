@@ -2,12 +2,13 @@
 
 @{
     ViewData["Title"] = "Applicants";
+    var applicants = Model ?? new List<FreshStart.Models.ViewModels.ApplicantMatchViewModel>();
 }
 
 <div class="container-fluid mt-4">
     <h1 class="fw-bold mb-4">Job Applicants 👥</h1>
 
-    @if (Model == null || Model.Count == 0)
+    @if (applicants.Count == 0)
     {
         <div class="alert alert-info shadow">
             No applicants found.
@@ -15,6 +16,55 @@
     }
     else
     {
+        <!-- Bulk CV Analysis Summary -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="card border-success shadow-sm h-100 match-category-card"
+                     role="button" tabindex="0" data-category="high">
+                    <div class="card-body">
+                        <h6 class="text-success">High Match</h6>
+                        <h2 class="fw-bold">
+                            @applicants.Count(x => x.MatchPercentage >= 70)
+                        </h2>
+                        <small class="text-muted">70% and above · Click to view</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-warning shadow-sm h-100 match-category-card"
+                     role="button" tabindex="0" data-category="medium">
+                    <div class="card-body">
+                        <h6 class="text-warning">Medium Match</h6>
+                        <h2 class="fw-bold">
+                            @applicants.Count(x => x.MatchPercentage >= 40 && x.MatchPercentage < 70)
+                        </h2>
+                        <small class="text-muted">40%–69% · Click to view</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-secondary shadow-sm h-100 match-category-card"
+                     role="button" tabindex="0" data-category="low">
+                    <div class="card-body">
+                        <h6 class="text-secondary">Low Match</h6>
+                        <h2 class="fw-bold">
+                            @applicants.Count(x => x.MatchPercentage < 40)
+                        </h2>
+                        <small class="text-muted">Below 40% · Click to view</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-light border">
+            <strong>Bulk CV Analysis:</strong>
+            Candidates are grouped by their calculated match scores.
+            These scores are indicators for review, not automatic hiring decisions.
+        </div>
+
+        <!-- Filters -->
         <div class="card shadow-sm p-3 mb-4">
             <h5 class="fw-bold mb-3">Filter Candidates</h5>
 
@@ -34,11 +84,22 @@
                 </div>
 
                 <div class="col-md-4">
+                    <label for="maxMatch" class="form-label">
+                        Maximum Match Percentage
+                    </label>
+                    <select id="maxMatch" class="form-select">
+                        <option value="100">No maximum</option>
+                        <option value="39">Up to 39%</option>
+                        <option value="69">Up to 69%</option>
+                        <option value="79">Up to 79%</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
                     <label for="skillSearch" class="form-label">
                         Search Skill
                     </label>
-                    <input type="text"
-                           id="skillSearch"
+                    <input type="text" id="skillSearch"
                            class="form-control"
                            placeholder="e.g. C#, HTML, SQL" />
                 </div>
@@ -60,39 +121,34 @@
 
             <div class="d-flex justify-content-between align-items-center mt-3">
                 <span class="text-muted" id="candidateCount">
-                    Showing @Model.Count candidates
+                    Showing @applicants.Count of @applicants.Count candidates
                 </span>
 
-                <button type="button"
-                        class="btn btn-outline-secondary"
+                <button type="button" class="btn btn-outline-secondary"
                         id="resetFilters">
                     Reset Filters
                 </button>
             </div>
         </div>
 
-        <div id="noFilteredResults"
-             class="alert alert-warning"
-             style="display:none;">
+        <div id="noFilteredResults" class="alert alert-warning" style="display:none;">
             No candidates match your filters.
         </div>
 
         <div id="applicantList">
-            @foreach (var item in Model.OrderByDescending(x => x.MatchPercentage))
+            @foreach (var item in applicants.OrderByDescending(x => x.MatchPercentage))
             {
                 var application = item.Application;
+                var student = application.Student;
 
                 <div class="card shadow p-4 mb-4 applicant-card"
                      data-match="@item.MatchPercentage"
                      data-status="@(application.Status ?? "")"
-                     data-skills="@(application.Student?.Skills ?? "")">
+                     data-skills="@(student?.Skills ?? "")">
 
                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                         <div>
-                            <h3 class="fw-bold">
-                                @application.Student.FullName
-                            </h3>
-
+                            <h3 class="fw-bold">@(student?.FullName ?? "Student")</h3>
                             <span class="badge bg-primary applicant-status">
                                 @application.Status
                             </span>
@@ -102,10 +158,9 @@
                             <small class="text-muted">
                                 Applied: @application.AppliedDate.ToShortDateString()
                             </small>
-
                             <div class="mt-2">
                                 <span class="badge @(item.MatchPercentage >= 70 ? "bg-success" : item.MatchPercentage >= 40 ? "bg-warning text-dark" : "bg-secondary") fs-6">
-                                    @item.MatchPercentage% Match
+                                    @item.MatchPercentage.ToString("0.##")% Match
                                 </span>
                             </div>
                         </div>
@@ -115,41 +170,23 @@
 
                     <div class="row">
                         <div class="col-md-6">
-                            <p>
-                                🎓 <strong>University:</strong>
-                                @application.Student.University
-                            </p>
-
-                            <p>
-                                📚 <strong>Degree:</strong>
-                                @application.Student.Degree
-                            </p>
+                            <p>🎓 <strong>University:</strong> @(student?.University ?? "Not specified")</p>
+                            <p>📚 <strong>Degree:</strong> @(student?.Degree ?? "Not specified")</p>
                         </div>
-
                         <div class="col-md-6">
-                            <p>
-                                🛠 <strong>Skills:</strong>
-                                @application.Student.Skills
-                            </p>
-
-                            <p>
-                                💼 <strong>Experience:</strong>
-                                @application.Student.Experience
-                            </p>
+                            <p>🛠 <strong>Skills:</strong> @(student?.Skills ?? "Not specified")</p>
+                            <p>💼 <strong>Experience:</strong> @(student?.Experience ?? "Not specified")</p>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <h6 class="fw-bold text-success">Matched Terms</h6>
-
-                            @if (item.MatchedTerms.Count > 0)
+                            @if (item.MatchedTerms.Any())
                             {
                                 @foreach (var term in item.MatchedTerms)
                                 {
-                                    <span class="badge bg-success me-1 mb-1">
-                                        @term
-                                    </span>
+                                    <span class="badge bg-success me-1 mb-1">@term</span>
                                 }
                             }
                             else
@@ -160,14 +197,11 @@
 
                         <div class="col-md-6">
                             <h6 class="fw-bold text-danger">Missing Terms</h6>
-
-                            @if (item.MissingTerms.Count > 0)
+                            @if (item.MissingTerms.Any())
                             {
                                 @foreach (var term in item.MissingTerms)
                                 {
-                                    <span class="badge bg-danger me-1 mb-1">
-                                        @term
-                                    </span>
+                                    <span class="badge bg-danger me-1 mb-1">@term</span>
                                 }
                             }
                             else
@@ -177,10 +211,9 @@
                         </div>
                     </div>
 
-                    @if (!string.IsNullOrEmpty(application.Student.ResumePath))
+                    @if (!string.IsNullOrEmpty(student?.ResumePath))
                     {
-                        <a href="@application.Student.ResumePath"
-                           target="_blank"
+                        <a href="@student.ResumePath" target="_blank"
                            rel="noopener noreferrer"
                            class="btn btn-outline-primary mb-3">
                             📄 View Resume
@@ -190,22 +223,18 @@
                     <form asp-controller="Employer"
                           asp-action="UpdateApplicationStatus"
                           method="post">
+                        @Html.AntiForgeryToken()
 
-                        <input type="hidden"
-                               name="applicationId"
+                        <input type="hidden" name="applicationId"
                                value="@application.ApplicationId" />
 
                         <div class="d-flex flex-wrap gap-2">
-                            <button type="submit"
-                                    name="status"
-                                    value="Reviewed"
+                            <button type="submit" name="status" value="Reviewed"
                                     class="btn btn-secondary">
                                 Review
                             </button>
 
-                            <button type="submit"
-                                    name="status"
-                                    value="Shortlisted"
+                            <button type="submit" name="status" value="Shortlisted"
                                     class="btn btn-primary">
                                 Shortlist
                             </button>
@@ -213,20 +242,14 @@
                             <a asp-controller="Employer"
                                asp-action="ScheduleInterview"
                                asp-route-id="@application.ApplicationId"
-                               class="btn btn-warning">
-                                📅 Schedule Interview
-                            </a>
+                               class="btn btn-warning">📅 Schedule Interview</a>
 
-                            <button type="submit"
-                                    name="status"
-                                    value="Selected"
+                            <button type="submit" name="status" value="Selected"
                                     class="btn btn-success">
                                 Select
                             </button>
 
-                            <button type="submit"
-                                    name="status"
-                                    value="Rejected"
+                            <button type="submit" name="status" value="Rejected"
                                     class="btn btn-danger">
                                 Reject
                             </button>
@@ -243,10 +266,12 @@
         $(function () {
             function filterApplicants() {
                 const minMatch = parseFloat($("#minMatch").val()) || 0;
+                const maxMatch = parseFloat($("#maxMatch").val()) || 100;
                 const skill = $.trim($("#skillSearch").val()).toLowerCase();
                 const status = $("#statusFilter").val().toLowerCase();
 
                 let visibleCount = 0;
+                const totalCount = $(".applicant-card").length;
 
                 $(".applicant-card").each(function () {
                     const card = $(this);
@@ -254,35 +279,60 @@
                     const skills = (card.attr("data-skills") || "").toLowerCase();
                     const cardStatus = (card.attr("data-status") || "").toLowerCase();
 
-                    const matchesPercentage = match >= minMatch;
+                    const matchesPercentage = match >= minMatch && match <= maxMatch;
                     const matchesSkill = skill === "" || skills.includes(skill);
                     const matchesStatus = status === "" || cardStatus === status;
-
                     const show = matchesPercentage && matchesSkill && matchesStatus;
 
                     card.toggle(show);
-
-                    if (show) {
-                        visibleCount++;
-                    }
+                    if (show) visibleCount++;
                 });
 
                 $("#candidateCount").text(
-                    "Showing " + visibleCount + " of " +
-                    $(".applicant-card").length + " candidates"
+                    "Showing " + visibleCount + " of " + totalCount + " candidates"
                 );
-
                 $("#noFilteredResults").toggle(visibleCount === 0);
             }
 
-            $("#minMatch, #statusFilter").on("change", filterApplicants);
+            $("#minMatch, #maxMatch, #statusFilter").on("change", filterApplicants);
             $("#skillSearch").on("input", filterApplicants);
 
             $("#resetFilters").on("click", function () {
                 $("#minMatch").val("0");
+                $("#maxMatch").val("100");
                 $("#skillSearch").val("");
                 $("#statusFilter").val("");
                 filterApplicants();
+            });
+
+            $(".match-category-card").on("click keydown", function (e) {
+                if (e.type === "keydown" && e.key !== "Enter" && e.key !== " ") {
+                    return;
+                }
+
+                if (e.type === "keydown") e.preventDefault();
+
+                const category = $(this).attr("data-category");
+
+                $("#minMatch").val("0");
+                $("#maxMatch").val("100");
+                $("#skillSearch").val("");
+                $("#statusFilter").val("");
+
+                if (category === "high") {
+                    $("#minMatch").val("70");
+                } else if (category === "medium") {
+                    $("#minMatch").val("40");
+                    $("#maxMatch").val("69");
+                } else if (category === "low") {
+                    $("#maxMatch").val("39");
+                }
+
+                filterApplicants();
+                document.getElementById("applicantList").scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
             });
         });
     </script>

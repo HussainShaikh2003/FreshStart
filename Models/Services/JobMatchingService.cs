@@ -18,8 +18,10 @@ namespace FreshStart.Services
                 "skills", "experience", "knowledge", "responsibilities",
                 "requirements", "required", "preferred", "using", "use",
                 "good", "strong", "must", "should", "into", "their",
-                "they", "who", "what", "when", "where", "how", "all",
-                "any", "but", "also"
+                "they", "what", "when", "where", "how", "all", "any",
+                "but", "also", "looking", "need", "needed", "years",
+                "year", "plus", "about", "such", "including", "related",
+                "developer", "development"
             };
 
         public JobMatchResult CalculateMatch(
@@ -28,14 +30,14 @@ namespace FreshStart.Services
             string jobDescription,
             string requiredSkills)
         {
-            var candidateText = Normalize(
+            string candidateText = Normalize(
                 (resumeText ?? "") + " " + (profileSkills ?? ""));
 
             var descriptionTerms = ExtractTerms(jobDescription);
             var requiredTerms = ExtractTerms(requiredSkills);
 
-            var allTerms = descriptionTerms
-                .Concat(requiredTerms)
+            var allTerms = requiredTerms
+                .Concat(descriptionTerms)
                 .Distinct()
                 .ToList();
 
@@ -56,11 +58,18 @@ namespace FreshStart.Services
             double percentage;
 
             if (descriptionTerms.Count > 0 && requiredTerms.Count > 0)
-                percentage = descriptionScore * 0.60 + requiredScore * 0.40;
-            else if (descriptionTerms.Count > 0)
-                percentage = descriptionScore;
-            else
+            {
+                percentage = (requiredScore * 0.60)
+                           + (descriptionScore * 0.40);
+            }
+            else if (requiredTerms.Count > 0)
+            {
                 percentage = requiredScore;
+            }
+            else
+            {
+                percentage = descriptionScore;
+            }
 
             return new JobMatchResult
             {
@@ -77,10 +86,10 @@ namespace FreshStart.Services
             if (terms.Count == 0)
                 return 0;
 
-            int count = terms.Count(
+            int matchedCount = terms.Count(
                 term => ContainsTerm(candidateText, term));
 
-            return count * 100.0 / terms.Count;
+            return matchedCount * 100.0 / terms.Count;
         }
 
         private string Normalize(string text)
@@ -94,7 +103,13 @@ namespace FreshStart.Services
                 text, @"(?<![a-z0-9])c\s*#(?![a-z0-9])", " csharp ");
 
             text = Regex.Replace(
+                text, @"(?<![a-z0-9])c\s+sharp(?![a-z0-9])", " csharp ");
+
+            text = Regex.Replace(
                 text, @"(?<![a-z0-9])\.net(?![a-z0-9])", " dotnet ");
+
+            text = Regex.Replace(
+                text, @"sql\s+server", " sqlserver ");
 
             text = Regex.Replace(text, @"[^\w]+", " ");
             return Regex.Replace(text, @"\s+", " ").Trim();

@@ -53,6 +53,7 @@ namespace FreshStart.Models.Student
 
         public string? ResumePath { get; set; }
 
+        public string? ResumeText { get; set; }
 
         public string? ProfileImage { get; set; }
 

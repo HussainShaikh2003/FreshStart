@@ -502,10 +502,11 @@ namespace FreshStart.Controllers
 
             foreach (var application in applications)
             {
-                string resumeText = "";
+                string resumeText = application.Student?.ResumeText ?? "";
 
-                if (!string.IsNullOrWhiteSpace(
-                    application.Student?.ResumePath))
+                // Extract text only if it is not already saved
+                if (string.IsNullOrWhiteSpace(resumeText) &&
+                    !string.IsNullOrWhiteSpace(application.Student?.ResumePath))
                 {
                     var relativePath = application.Student.ResumePath
                         .TrimStart('/')
@@ -520,10 +521,17 @@ namespace FreshStart.Controllers
                         try
                         {
                             var extractor = new ResumeTextExtractor();
+
                             resumeText = extractor.ExtractText(filePath);
+
+                            // Save extracted text for future use
+                            application.Student.ResumeText = resumeText;
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
+                            Console.WriteLine(
+                                "Resume extraction failed: " + ex.Message);
+
                             resumeText = "";
                         }
                     }
@@ -543,6 +551,9 @@ namespace FreshStart.Controllers
                     MissingTerms = match.MissingTerms
                 });
             }
+
+            // Save newly extracted resume text in database
+            await _context.SaveChangesAsync();
 
             results = results
                 .OrderByDescending(x => x.MatchPercentage)

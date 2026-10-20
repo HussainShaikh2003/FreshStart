@@ -339,6 +339,9 @@ namespace FreshStart.Migrations
                     b.Property<string>("ResumePath")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ResumeText")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Skills")
                         .HasColumnType("nvarchar(max)");
 
