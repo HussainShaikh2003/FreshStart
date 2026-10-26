@@ -4,280 +4,833 @@
     ViewData["Title"] = "My Applications";
 }
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 
-<div class="container-fluid mt-4">
+<style>
+    .applications-page {
+        background: #f4f7fc;
+        min-height: 100vh;
+        padding: 32px 0;
+    }
 
-    <div class="row">
+    .applications-sidebar,
+    .application-card {
+        background: #fff;
+        border: 1px solid #e8edf5;
+        border-radius: 18px;
+        box-shadow: 0 5px 22px rgba(31, 55, 90, 0.06);
+    }
 
+    .applications-sidebar {
+        padding: 24px 18px;
+        position: sticky;
+        top: 20px;
+    }
 
-        <div class="col-md-3 mb-4">
+    .brand-name {
+        color: #1769e0;
+        font-size: 27px;
+        font-weight: 800;
+        letter-spacing: -0.7px;
+    }
 
-            <div class="card shadow p-4">
+    .sidebar-label {
+        color: #98a2b3;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        margin: 25px 12px 12px;
+        text-transform: uppercase;
+    }
 
-                <h3 class="fw-bold text-primary">
-                    FreshStart
-                </h3>
+    .sidebar-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #58677e;
+        text-decoration: none;
+        padding: 13px 14px;
+        margin-bottom: 7px;
+        border-radius: 11px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
 
-                <hr />
+    .sidebar-link i {
+        font-size: 18px;
+    }
 
-                <a asp-controller="Student"
-                   asp-action="Index"
-                   class="btn btn-light text-start mb-2">
-                    🏠 Dashboard
-                </a>
+    .sidebar-link:hover {
+        background: #f0f5ff;
+        color: #1769e0;
+    }
 
+    .sidebar-link.active {
+        background: #1769e0;
+        color: #fff;
+        box-shadow: 0 5px 12px rgba(23, 105, 224, 0.2);
+    }
 
-                <a asp-controller="Student"
-                   asp-action="Jobs"
-                   class="btn btn-light text-start mb-2">
-                    🔍 Browse Jobs
-                </a>
+    .page-title {
+        color: #172b4d;
+        font-size: 32px;
+        font-weight: 800;
+        letter-spacing: -0.8px;
+    }
 
+    .page-subtitle {
+        color: #78869a;
+        font-size: 15px;
+    }
 
-                <a asp-controller="Student"
-                   asp-action="SavedJobs"
-                   class="btn btn-light text-start">
-                    ⭐ Saved Jobs
-                </a>
+    .summary-card {
+        background: #fff;
+        border: 1px solid #e8edf5;
+        border-radius: 16px;
+        padding: 20px;
+        height: 100%;
+        box-shadow: 0 5px 22px rgba(31, 55, 90, 0.04);
+    }
 
+    .summary-icon {
+        width: 46px;
+        height: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 13px;
+        background: #eaf2ff;
+        color: #1769e0;
+        font-size: 21px;
+        margin-bottom: 15px;
+    }
+
+    .summary-number {
+        color: #172b4d;
+        font-size: 27px;
+        font-weight: 800;
+        margin-bottom: 3px;
+    }
+
+    .summary-label {
+        color: #78869a;
+        font-size: 13px;
+    }
+
+    .application-card {
+        padding: 25px;
+        margin-bottom: 22px;
+        transition: box-shadow 0.2s ease;
+    }
+
+    .application-card:hover {
+        box-shadow: 0 12px 28px rgba(31, 55, 90, 0.09);
+    }
+
+    .job-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: #eaf2ff;
+        color: #1769e0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 23px;
+        flex-shrink: 0;
+    }
+
+    .job-title {
+        color: #172b4d;
+        font-size: 21px;
+        font-weight: 750;
+        margin-bottom: 5px;
+        overflow-wrap: anywhere;
+    }
+
+    .company-name {
+        color: #78869a;
+        font-size: 14px;
+        margin-bottom: 0;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: normal;
+    }
+
+    .status-pending {
+        background: #fff5dc;
+        color: #986800;
+    }
+
+    .status-rejected {
+        background: #ffebeb;
+        color: #c62828;
+    }
+
+    .status-selected {
+        background: #e4f8ec;
+        color: #168348;
+    }
+
+    .status-interview {
+        background: #e5f6fb;
+        color: #087c9c;
+    }
+
+    .status-shortlisted {
+        background: #eaf2ff;
+        color: #1769e0;
+    }
+
+    .status-default {
+        background: #edf0f5;
+        color: #58677e;
+    }
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        margin: 22px 0;
+    }
+
+    .detail-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+        color: #65738a;
+        font-size: 13px;
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .detail-item i {
+        color: #1769e0;
+        font-size: 17px;
+        margin-top: 1px;
+    }
+
+    .detail-label {
+        display: block;
+        color: #98a2b3;
+        font-size: 12px;
+        margin-bottom: 4px;
+    }
+
+    .detail-value {
+        display: block;
+        color: #43516a;
+        font-weight: 650;
+    }
+
+    .progress-section {
+        background: #f8faff;
+        border: 1px solid #e8edf8;
+        border-radius: 14px;
+        padding: 22px;
+        margin-top: 20px;
+    }
+
+    .section-heading {
+        color: #172b4d;
+        font-size: 16px;
+        font-weight: 750;
+        margin-bottom: 22px;
+    }
+
+    .progress-track {
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        gap: 8px;
+    }
+
+    .progress-track::before {
+        content: "";
+        position: absolute;
+        height: 3px;
+        background: #dce4f0;
+        left: 10%;
+        right: 10%;
+        top: 17px;
+        z-index: 0;
+    }
+
+    .progress-step {
+        position: relative;
+        z-index: 1;
+        flex: 1;
+        text-align: center;
+        color: #98a2b3;
+        font-size: 11px;
+        font-weight: 600;
+        min-width: 0;
+    }
+
+    .progress-dot {
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #e6ebf3;
+        color: #8a97aa;
+        border: 3px solid #f8faff;
+        margin: 0 auto 10px;
+        font-size: 14px;
+    }
+
+    .progress-step.completed {
+        color: #1769e0;
+    }
+
+    .progress-step.completed .progress-dot {
+        background: #1769e0;
+        color: #fff;
+    }
+
+    .progress-step.current .progress-dot {
+        background: #fff;
+        color: #1769e0;
+        border: 2px solid #1769e0;
+    }
+
+    .interview-panel,
+    .notes-panel {
+        border-radius: 13px;
+        padding: 19px;
+        margin-top: 20px;
+    }
+
+    .interview-panel {
+        background: #eef8ff;
+        border: 1px solid #d8edff;
+    }
+
+    .notes-panel {
+        background: #fff9e9;
+        border: 1px solid #f5e7bb;
+    }
+
+    .panel-heading {
+        color: #172b4d;
+        font-size: 15px;
+        font-weight: 750;
+        margin-bottom: 15px;
+    }
+
+    .panel-text {
+        color: #58677e;
+        font-size: 13px;
+        margin-bottom: 8px;
+        overflow-wrap: anywhere;
+    }
+
+    .empty-state {
+        background: #fff;
+        border: 1px dashed #cbd6e6;
+        border-radius: 18px;
+        padding: 55px 20px;
+        text-align: center;
+    }
+
+    .empty-icon {
+        width: 68px;
+        height: 68px;
+        background: #edf4ff;
+        color: #1769e0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 20px;
+        font-size: 29px;
+        margin: 0 auto 18px;
+    }
+
+    .empty-state h4 {
+        color: #172b4d;
+        font-weight: 750;
+    }
+
+    .empty-state p {
+        color: #78869a;
+    }
+
+    .btn-primary-custom {
+        display: inline-block;
+        background: #1769e0;
+        color: #fff;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 650;
+        padding: 12px 20px;
+        transition: 0.2s;
+    }
+
+    .btn-primary-custom:hover {
+        background: #1056bd;
+        color: #fff;
+    }
+
+    @@media (max-width: 767px) {
+        .applications-page {
+            padding: 20px 0;
+        }
+
+        .applications-sidebar {
+            position: static;
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 26px;
+        }
+
+        .application-card {
+            padding: 19px;
+        }
+
+        .details-grid {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .progress-section {
+            padding: 16px 10px;
+        }
+
+        .progress-step {
+            font-size: 10px;
+        }
+
+        .progress-dot {
+            width: 30px;
+            height: 30px;
+        }
+
+        .progress-track::before {
+            top: 15px;
+        }
+    }
+</style>
+
+<div class="applications-page">
+    <div class="container-fluid px-3 px-lg-4">
+        <div class="row g-4">
+
+            <!-- Sidebar -->
+            <div class="col-lg-3 col-xl-2">
+                <div class="applications-sidebar">
+
+                    <div class="brand-name">
+                        <i class="bi bi-briefcase-fill me-2"></i>FreshStart
+                    </div>
+
+                    <div class="sidebar-label">Student Menu</div>
+
+                    <a asp-controller="Student"
+                       asp-action="Index"
+                       class="sidebar-link">
+                        <i class="bi bi-grid-1x2"></i>
+                        Dashboard
+                    </a>
+
+                    <a asp-controller="Student"
+                       asp-action="Jobs"
+                       class="sidebar-link">
+                        <i class="bi bi-search"></i>
+                        Browse Jobs
+                    </a>
+
+                    <a asp-controller="Student"
+                       asp-action="MyApplications"
+                       class="sidebar-link active">
+                        <i class="bi bi-file-earmark-text"></i>
+                        My Applications
+                    </a>
+
+                    <a asp-controller="Student"
+                       asp-action="SavedJobs"
+                       class="sidebar-link">
+                        <i class="bi bi-bookmark"></i>
+                        Saved Jobs
+                    </a>
+
+                </div>
             </div>
 
-        </div>
+            <!-- Main Content -->
+            <div class="col-lg-9 col-xl-10">
 
-
-
-
-
-        <div class="col-md-9">
-
-
-            <h1 class="fw-bold mb-4">
-                📄 My Applications
-            </h1>
-
-
-
-            @if (Model.Count == 0)
-            {
-
-                <div class="alert alert-info shadow">
-                    You have not applied for any jobs yet.
+                <div class="mb-4">
+                    <h1 class="page-title mb-2">My Applications</h1>
+                    <p class="page-subtitle mb-0">
+                        Track your job applications and stay updated on your progress.
+                    </p>
                 </div>
 
-            }
+                @{
+                    var totalApplications = Model?.Count ?? 0;
+                    var pendingCount = Model?.Count(a => a.Status == "Pending") ?? 0;
+                    var interviewCount = Model?.Count(a => a.Status == "Interview Scheduled") ?? 0;
+                    var selectedCount = Model?.Count(a => a.Status == "Selected") ?? 0;
+                }
 
-            else
-            {
+                <!-- Summary Cards -->
+                <div class="row g-3 mb-4">
 
+                    <div class="col-6 col-xl-3">
+                        <div class="summary-card">
+                            <div class="summary-icon">
+                                <i class="bi bi-file-earmark-text"></i>
+                            </div>
+                            <div class="summary-number">@totalApplications</div>
+                            <div class="summary-label">Total Applications</div>
+                        </div>
+                    </div>
 
-                @foreach (var application in Model)
+                    <div class="col-6 col-xl-3">
+                        <div class="summary-card">
+                            <div class="summary-icon">
+                                <i class="bi bi-hourglass-split"></i>
+                            </div>
+                            <div class="summary-number">@pendingCount</div>
+                            <div class="summary-label">Pending Review</div>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-xl-3">
+                        <div class="summary-card">
+                            <div class="summary-icon">
+                                <i class="bi bi-calendar-check"></i>
+                            </div>
+                            <div class="summary-number">@interviewCount</div>
+                            <div class="summary-label">Interviews</div>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-xl-3">
+                        <div class="summary-card">
+                            <div class="summary-icon">
+                                <i class="bi bi-trophy"></i>
+                            </div>
+                            <div class="summary-number">@selectedCount</div>
+                            <div class="summary-label">Selected</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Applications List -->
+                <div class="mb-4">
+                    <h2 class="section-heading mb-1">Application History</h2>
+                    <p class="page-subtitle mb-0">
+                        Review the status and details of each application.
+                    </p>
+                </div>
+
+                @if (Model == null || Model.Count == 0)
                 {
-
-
-                    <div class="card shadow p-4 mb-4">
-
-
-                        <div class="d-flex justify-content-between">
-
-
-                            <h3 class="fw-bold">
-                                @application.Job.JobTitle
-                            </h3>
-
-
-
-                            @if (application.Status == "Rejected")
-                            {
-                                <span class="badge bg-danger p-2">
-                                    Rejected
-                                </span>
-                            }
-                            else if (application.Status == "Selected")
-                            {
-                                <span class="badge bg-success p-2">
-                                    Selected
-                                </span>
-                            }
-                            else if (application.Status == "Interview Scheduled")
-                            {
-                                <span class="badge bg-info p-2">
-                                    Interview Scheduled
-                                </span>
-                            }
-                            else if (application.Status == "Shortlisted")
-                            {
-                                <span class="badge bg-primary p-2">
-                                    Shortlisted
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-warning p-2">
-                                    Pending
-                                </span>
-                            }
-
-
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="bi bi-file-earmark-plus"></i>
                         </div>
 
+                        <h4>No Applications Yet</h4>
 
-                        <hr />
-
-
-                        <p>
-                            🏢 <strong>Company:</strong>
-                            @application.Job.Employer.CompanyName
+                        <p class="mt-2">
+                            You haven't applied for any jobs yet. Browse available jobs to find your next opportunity.
                         </p>
 
+                        <a asp-controller="Student"
+                           asp-action="Jobs"
+                           class="btn-primary-custom mt-3">
+                            <i class="bi bi-search me-2"></i>Browse Jobs
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var application in Model)
+                    {
+                        var status = application.Status ?? "Pending";
 
-                        <p>
-                            📍 <strong>Location:</strong>
-                            @application.Job.Location
-                        </p>
-
-
-                        <p>
-                            💰 <strong>Salary:</strong>
-                            @application.Job.MinimumSalary.ToString("N0")
-                            –
-                            @application.Job.MaximumSalary.ToString("N0")
-                            / @application.Job.SalaryType
-                        </p>
-
-
-                        <p>
-                            💼 <strong>Type:</strong>
-                            @application.Job.JobType
-                        </p>
-
-
-                        <p>
-                            📅 <strong>Applied:</strong>
-                            @application.AppliedDate.ToShortDateString()
-                        </p>
-
-
-
-                        <hr />
-
-                        <h5 class="fw-bold">
-                            Application Progress
-                        </h5>
-
-
-                        <div class="mt-3">
-
-                            <p>✅ Applied</p>
-
-
-                            @if (application.Status != "Pending")
-                            {
-                                <p>✅ Reviewed</p>
-                            }
-                            else
-                            {
-                                <p>⭕ Reviewed</p>
-                            }
-
-
-
-                            @if (application.Status == "Shortlisted" ||
-                           application.Status == "Interview Scheduled" ||
-                           application.Status == "Selected")
-                            {
-                                <p>✅ Shortlisted</p>
-                            }
-                            else
-                            {
-                                <p>⭕ Shortlisted</p>
-                            }
-
-
-
-                            @if (application.Status == "Interview Scheduled" ||
-                           application.Status == "Selected")
-                            {
-                                <p>✅ Interview Scheduled</p>
-                            }
-                            else
-                            {
-                                <p>⭕ Interview Scheduled</p>
-                            }
-
-
-
-                            @if (application.Status == "Selected")
-                            {
-                                <p>🎉 Selected</p>
-                            }
-                            else
-                            {
-                                <p>⭕ Selected</p>
-                            }
-
-
-                        </div>
-
-
-
-                        @if (application.Status == "Interview Scheduled")
+                        var statusClass = status switch
                         {
+                            "Rejected" => "status-rejected",
+                            "Selected" => "status-selected",
+                            "Interview Scheduled" => "status-interview",
+                            "Shortlisted" => "status-shortlisted",
+                            "Pending" => "status-pending",
+                            _ => "status-default"
+                        };
 
-                            <hr />
+                        var isReviewed = status != "Pending";
+                        var isShortlisted = status == "Shortlisted"
+                            || status == "Interview Scheduled"
+                            || status == "Selected";
+                        var hasInterview = status == "Interview Scheduled"
+                            || status == "Selected";
+                        var isSelected = status == "Selected";
 
-                            <div class="card bg-light p-3">
+                        <div class="application-card">
 
+                            <!-- Job Heading and Status -->
+                            <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
 
-                                <h5>
-                                    Interview Details
-                                </h5>
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="job-icon">
+                                        <i class="bi bi-building"></i>
+                                    </div>
 
+                                    <div>
+                                        <h3 class="job-title">
+                                            @(application.Job?.JobTitle ?? "Job Title Unavailable")
+                                        </h3>
 
-                                <p>
-                                    📅 @application.InterviewDate?.ToShortDateString()
-                                </p>
+                                        <p class="company-name">
+                                            @(application.Job?.Employer?.CompanyName ?? "Company")
+                                        </p>
+                                    </div>
+                                </div>
 
+                                <span class="status-badge @statusClass">
+                                    @if (status == "Rejected")
+                                    {
+                                        <i class="bi bi-x-circle"></i>
+                                    }
+                                    else if (status == "Selected")
+                                    {
+                                        <i class="bi bi-check-circle-fill"></i>
+                                    }
+                                    else if (status == "Interview Scheduled")
+                                    {
+                                        <i class="bi bi-calendar-check"></i>
+                                    }
+                                    else if (status == "Shortlisted")
+                                    {
+                                        <i class="bi bi-star-fill"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-hourglass-split"></i>
+                                    }
 
-                                <p>
-                                    ⏰ @application.InterviewTime
-                                </p>
-
-
-                                <p>
-                                    📍 @application.InterviewLocation
-                                </p>
-
+                                    @status
+                                </span>
 
                             </div>
 
-                        }
+                            <hr class="my-4" />
 
+                            <!-- Application Details -->
+                            <div class="details-grid">
 
+                                <div class="detail-item">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <div>
+                                        <span class="detail-label">Location</span>
+                                        <span class="detail-value">
+                                            @(application.Job?.Location ?? "Not specified")
+                                        </span>
+                                    </div>
+                                </div>
 
-                        @if (!string.IsNullOrEmpty(application.EmployerNotes))
-                        {
+                                <div class="detail-item">
+                                    <i class="bi bi-wallet2"></i>
+                                    <div>
+                                        <span class="detail-label">Salary Range</span>
+                                        <span class="detail-value">
+                                            @if (application.Job != null)
+                                            {
+                                                @:₨@application.Job.MinimumSalary.ToString("N0") – ₨@application.Job.MaximumSalary.ToString("N0")
+                                                <span>/ @(application.Job.SalaryType == "Monthly" ? "Month" : application.Job.SalaryType)</span>
+                                            }
+                                            else
+                                            {
+                                                @:Not available
+                                            }
+                                        </span>
+                                    </div>
+                                </div>
 
-                            <hr />
+                                <div class="detail-item">
+                                    <i class="bi bi-clock"></i>
+                                    <div>
+                                        <span class="detail-label">Job Type</span>
+                                        <span class="detail-value">
+                                            @(application.Job?.JobType ?? "Not specified")
+                                        </span>
+                                    </div>
+                                </div>
 
-                            <p>
-                                <strong>Employer Note:</strong>
-                                @application.EmployerNotes
-                            </p>
+                                <div class="detail-item">
+                                    <i class="bi bi-calendar-event"></i>
+                                    <div>
+                                        <span class="detail-label">Applied Date</span>
+                                        <span class="detail-value">
+                                            @application.AppliedDate.ToShortDateString()
+                                        </span>
+                                    </div>
+                                </div>
 
-                        }
+                            </div>
 
+                            <!-- Application Progress -->
+                            <div class="progress-section">
 
-                    </div>
+                                <h4 class="section-heading">
+                                    <i class="bi bi-graph-up-arrow me-2"></i>Application Progress
+                                </h4>
 
+                                <div class="progress-track">
 
+                                    <div class="progress-step completed">
+                                        <div class="progress-dot">
+                                            <i class="bi bi-check-lg"></i>
+                                        </div>
+                                        Applied
+                                    </div>
+
+                                    <div class="progress-step @(isReviewed ? "completed" : "current")">
+                                        <div class="progress-dot">
+                                            @if (isReviewed)
+                                            {
+                                                <i class="bi bi-check-lg"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="bi bi-eye"></i>
+                                            }
+                                        </div>
+                                        Reviewed
+                                    </div>
+
+                                    <div class="progress-step @(isShortlisted ? "completed" : (isReviewed ? "" : ""))">
+                                        <div class="progress-dot">
+                                            @if (isShortlisted)
+                                            {
+                                                <i class="bi bi-check-lg"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="bi bi-star"></i>
+                                            }
+                                        </div>
+                                        Shortlisted
+                                    </div>
+
+                                    <div class="progress-step @(hasInterview ? "completed" : "")">
+                                        <div class="progress-dot">
+                                            @if (hasInterview)
+                                            {
+                                                <i class="bi bi-check-lg"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="bi bi-calendar"></i>
+                                            }
+                                        </div>
+                                        Interview
+                                    </div>
+
+                                    <div class="progress-step @(isSelected ? "completed" : "")">
+                                        <div class="progress-dot">
+                                            @if (isSelected)
+                                            {
+                                                <i class="bi bi-check-lg"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="bi bi-trophy"></i>
+                                            }
+                                        </div>
+                                        Selected
+                                    </div>
+
+                                </div>
+
+                                @if (status == "Rejected")
+                                {
+                                    <div class="alert alert-danger mt-4 mb-0 py-2">
+                                        <i class="bi bi-info-circle me-2"></i>
+                                        This application has been rejected.
+                                    </div>
+                                }
+
+                            </div>
+
+                            <!-- Interview Details -->
+                            @if (status == "Interview Scheduled")
+                            {
+                                <div class="interview-panel">
+                                    <h4 class="panel-heading">
+                                        <i class="bi bi-calendar2-check me-2"></i>Interview Details
+                                    </h4>
+
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <p class="panel-text mb-1">
+                                                <i class="bi bi-calendar me-2"></i>Date
+                                            </p>
+                                            <strong>
+                                                @(application.InterviewDate?.ToShortDateString() ?? "Not specified")
+                                            </strong>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <p class="panel-text mb-1">
+                                                <i class="bi bi-clock me-2"></i>Time
+                                            </p>
+                                            <strong>
+                                                @(string.IsNullOrWhiteSpace(application.InterviewTime)
+                                                    ? "Not specified"
+                                                    : application.InterviewTime)
+                                            </strong>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <p class="panel-text mb-1">
+                                                <i class="bi bi-geo-alt me-2"></i>Location
+                                            </p>
+                                            <strong>
+                                                @(string.IsNullOrWhiteSpace(application.InterviewLocation)
+                                                    ? "Not specified"
+                                                    : application.InterviewLocation)
+                                            </strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            <!-- Employer Notes -->
+                            @if (!string.IsNullOrWhiteSpace(application.EmployerNotes))
+                            {
+                                <div class="notes-panel">
+                                    <h4 class="panel-heading">
+                                        <i class="bi bi-chat-left-text me-2"></i>Employer Notes
+                                    </h4>
+
+                                    <p class="panel-text mb-0">
+                                        @application.EmployerNotes
+                                    </p>
+                                </div>
+                            }
+
+                        </div>
+                    }
                 }
 
-
-            }
-
-
+            </div>
         </div>
-
     </div>
-
 </div>

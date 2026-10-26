@@ -5,398 +5,742 @@
 @inject UserManager<ApplicationUser> UserManager
 @inject ApplicationDbContext Context
 
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-
     <meta charset="utf-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>@ViewData["Title"] - FreshStart</title>
 
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/bootstrap.min.css" />
 
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
-
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-
     <link rel="stylesheet" href="~/FreshStart.styles.css" asp-append-version="true" />
 
-</head>
+    <style>
+        :root {
+            --fs-primary: #2563eb;
+            --fs-primary-dark: #1d4ed8;
+            --fs-heading: #14213d;
+            --fs-muted: #64748b;
+            --fs-border: #e5eaf2;
+            --fs-light: #f4f7fc;
+        }
 
+        html {
+            min-height: 100%;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            color: var(--fs-heading);
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        /* NAVBAR */
+
+        .fs-navbar {
+            position: relative;
+            z-index: 1000;
+            padding: 15px 0;
+            margin: 0;
+            background: #fff;
+            border-bottom: 1px solid var(--fs-border);
+            box-shadow: 0 3px 15px rgba(20, 33, 61, .035);
+        }
+
+        .fs-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 11px;
+            margin: 0;
+            color: var(--fs-heading) !important;
+            font-size: 27px;
+            font-weight: 800;
+            letter-spacing: -.8px;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .fs-brand-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: #dbeafe;
+            color: var(--fs-primary);
+            font-size: 23px;
+        }
+
+        .fs-brand-name {
+            color: var(--fs-primary);
+        }
+
+        .fs-navbar .navbar-collapse {
+            align-items: center;
+        }
+
+        .fs-navbar .navbar-nav {
+            align-items: center;
+            gap: 5px;
+        }
+
+        .fs-navbar .nav-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 11px 13px !important;
+            border-radius: 9px;
+            color: #475569 !important;
+            font-size: 14px;
+            font-weight: 650;
+            white-space: nowrap;
+            transition: background .2s ease, color .2s ease;
+        }
+
+            .fs-navbar .nav-link i {
+                font-size: 16px;
+            }
+
+            .fs-navbar .nav-link:hover {
+                background: #eff6ff;
+                color: var(--fs-primary) !important;
+            }
+
+            .fs-navbar .nav-link.text-danger {
+                color: #dc2626 !important;
+            }
+
+                .fs-navbar .nav-link.text-danger:hover {
+                    background: #fef2f2;
+                }
+
+            .fs-navbar .nav-link:focus-visible,
+            .fs-navbar .btn:focus-visible {
+                outline: 3px solid #93c5fd;
+                outline-offset: 2px;
+            }
+
+        .fs-navbar .navbar-toggler {
+            padding: 8px 10px;
+            border: 1px solid var(--fs-border);
+            border-radius: 9px;
+            box-shadow: none;
+        }
+
+            .fs-navbar .navbar-toggler:focus {
+                box-shadow: 0 0 0 3px rgba(37, 99, 235, .15);
+            }
+
+        .fs-nav-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 5px;
+            border-radius: 20px;
+            background: #dc2626;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 750;
+        }
+
+        .fs-nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-left: 8px;
+        }
+
+        .fs-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 42px;
+            padding: 10px 19px;
+            border: 1px solid transparent;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: all .2s ease;
+        }
+
+        .fs-btn-primary {
+            background: var(--fs-primary);
+            border-color: var(--fs-primary);
+            color: #fff !important;
+        }
+
+            .fs-btn-primary:hover {
+                transform: translateY(-1px);
+                background: var(--fs-primary-dark);
+                border-color: var(--fs-primary-dark);
+                color: #fff !important;
+            }
+
+        .fs-btn-outline {
+            background: #fff;
+            border-color: #cbd5e1;
+            color: var(--fs-heading) !important;
+        }
+
+            .fs-btn-outline:hover {
+                background: #eff6ff;
+                border-color: #93c5fd;
+                color: var(--fs-primary) !important;
+            }
+
+        /* MAIN CONTENT */
+
+        .fs-main {
+            flex: 1 0 auto;
+            width: 100%;
+            padding-bottom: 35px;
+        }
+
+        .fs-main-home {
+            padding-bottom: 0;
+        }
+
+        /* FOOTER */
+
+        .fs-footer {
+            flex-shrink: 0;
+            margin-top: auto;
+            background: #f8fafc;
+            border-top: 1px solid var(--fs-border);
+        }
+
+        .fs-footer-main {
+            padding: 30px 0;
+        }
+
+        .fs-footer-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            color: var(--fs-heading);
+            font-size: 20px;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+            .fs-footer-brand i {
+                color: var(--fs-primary);
+                font-size: 23px;
+            }
+
+            .fs-footer-brand span {
+                color: var(--fs-primary);
+            }
+
+        .fs-footer-text {
+            margin-bottom: 0;
+            color: var(--fs-muted);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .fs-footer-link {
+            display: inline-block;
+            color: var(--fs-muted);
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color .2s ease;
+        }
+
+            .fs-footer-link:hover {
+                color: var(--fs-primary);
+            }
+
+        .fs-footer-bottom {
+            padding: 15px 0;
+            border-top: 1px solid var(--fs-border);
+        }
+
+        @@media (max-width: 1199px) {
+            .fs-brand {
+                font-size: 24px;
+            }
+
+            .fs-navbar .nav-link {
+                padding: 10px 9px !important;
+                font-size: 13px;
+            }
+
+            .fs-navbar .container {
+                gap: 12px;
+            }
+        }
+
+        @@media (max-width: 991px) {
+            .fs-navbar {
+                padding: 12px 0;
+            }
+
+                .fs-navbar .navbar-collapse {
+                    padding-top: 15px;
+                }
+
+                .fs-navbar .navbar-nav {
+                    align-items: stretch;
+                    gap: 3px;
+                }
+
+                    .fs-navbar .navbar-nav .nav-item {
+                        width: 100%;
+                    }
+
+                .fs-navbar .nav-link {
+                    justify-content: flex-start;
+                    width: 100%;
+                    padding: 12px 14px !important;
+                    font-size: 14px;
+                }
+
+            .fs-nav-actions {
+                padding: 12px 0 5px;
+                margin: 0;
+            }
+
+                .fs-nav-actions .fs-btn {
+                    flex: 1;
+                }
+        }
+
+        @@media (max-width: 575px) {
+            .fs-brand {
+                gap: 8px;
+                font-size: 23px;
+            }
+
+            .fs-brand-icon {
+                width: 39px;
+                height: 39px;
+                font-size: 21px;
+            }
+
+            .fs-footer-main {
+                padding: 23px 0;
+            }
+
+            .fs-footer-bottom .container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
 
 <body>
 
+    @{
+        var isAuthenticated = User.Identity?.IsAuthenticated == true;
+
+        ApplicationUser? currentUser = null;
+        IList<string> roles = new List<string>();
+        var unreadCount = 0;
+
+        if (isAuthenticated)
+        {
+            currentUser = await UserManager.GetUserAsync(User);
+
+            if (currentUser != null)
+            {
+                roles = await UserManager.GetRolesAsync(currentUser);
+
+                unreadCount = Context.Notifications.Count(
+                x => x.UserId == currentUser.Id && !x.IsRead);
+            }
+        }
+
+        var controllerName =
+        ViewContext.RouteData.Values["controller"]?.ToString();
+
+        var actionName =
+        ViewContext.RouteData.Values["action"]?.ToString();
+
+        var isHomePage =
+        controllerName == "Home" && actionName == "Index";
+    }
+
+    <!-- NAVIGATION -->
 
     <header>
-
-        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
-
+        <nav class="navbar navbar-expand-lg fs-navbar">
 
             <div class="container">
 
-
-                <a class="navbar-brand fw-bold fs-4"
+                <a class="navbar-brand fs-brand"
                    asp-controller="Home"
-                   asp-action="Index">
+                   asp-action="Index"
+                   aria-label="FreshStart Home">
 
-                    🚀 FreshStart
+                    <span class="fs-brand-icon">
+                        <i class="bi bi-briefcase-fill"></i>
+                    </span>
+
+                    <span>Fresh<span class="fs-brand-name">Start</span></span>
 
                 </a>
-
 
                 <button class="navbar-toggler"
                         type="button"
                         data-bs-toggle="collapse"
-                        data-bs-target="#navbarNav">
+                        data-bs-target="#navbarNav"
+                        aria-controls="navbarNav"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
 
                     <span class="navbar-toggler-icon"></span>
 
                 </button>
 
+                <div class="collapse navbar-collapse" id="navbarNav">
 
-
-
-                <div class="collapse navbar-collapse"
-                     id="navbarNav">
-
-
-                    <ul class="navbar-nav flex-grow-1">
-
-
+                    <ul class="navbar-nav ms-auto">
 
                         <li class="nav-item">
-
-                            <a class="nav-link text-dark"
+                            <a class="nav-link"
                                asp-controller="Home"
                                asp-action="Index">
 
+                                <i class="bi bi-house-door"></i>
                                 Home
 
                             </a>
-
                         </li>
 
-
-
-                        @if (User.Identity.IsAuthenticated)
+                        @if (isAuthenticated && currentUser != null)
                         {
-
-
-                            var currentUser = await UserManager.GetUserAsync(User);
-
-                            var roles = await UserManager.GetRolesAsync(currentUser);
-
-
-
-                            if (roles.Contains("Admin"))
+                            @if (roles.Contains("Admin"))
                             {
-
                                 <li class="nav-item">
-
-                                    <a class="nav-link text-dark"
+                                    <a class="nav-link"
                                        asp-controller="Admin"
                                        asp-action="Index">
 
-                                        Admin Dashboard
+                                        <i class="bi bi-grid"></i>
+                                        Dashboard
 
                                     </a>
-
                                 </li>
 
-
-
                                 <li class="nav-item">
-
-                                    <a class="nav-link text-dark"
+                                    <a class="nav-link"
                                        asp-controller="Admin"
                                        asp-action="Students">
 
+                                        <i class="bi bi-people"></i>
                                         Students
 
                                     </a>
-
                                 </li>
 
-
-
                                 <li class="nav-item">
-
-                                    <a class="nav-link text-dark"
+                                    <a class="nav-link"
                                        asp-controller="Admin"
                                        asp-action="Employers">
 
+                                        <i class="bi bi-building"></i>
                                         Employers
 
                                     </a>
-
                                 </li>
 
-
-
                                 <li class="nav-item">
-
-                                    <a class="nav-link text-dark"
+                                    <a class="nav-link"
                                        asp-controller="Admin"
                                        asp-action="Jobs">
 
+                                        <i class="bi bi-briefcase"></i>
                                         Jobs
 
                                     </a>
-
                                 </li>
-
                             }
 
-
-
-
-
-                            if (roles.Contains("Student"))
+                            @if (roles.Contains("Student"))
                             {
-
                                 <li class="nav-item">
-
-                                    <a class="nav-link text-dark"
+                                    <a class="nav-link"
                                        asp-controller="Student"
                                        asp-action="Index">
 
+                                        <i class="bi bi-grid"></i>
                                         Dashboard
 
                                     </a>
-
                                 </li>
 
-
-
                                 <li class="nav-item">
-
-                                    <a class="nav-link text-dark"
+                                    <a class="nav-link"
                                        asp-controller="Student"
                                        asp-action="Jobs">
 
-                                        Jobs
+                                        <i class="bi bi-search"></i>
+                                        Find Jobs
 
                                     </a>
-
                                 </li>
 
-
-
                                 <li class="nav-item">
-
-                                    <a class="nav-link text-dark"
+                                    <a class="nav-link"
                                        asp-controller="Student"
                                        asp-action="MyApplications">
 
-                                        My Applications
+                                        <i class="bi bi-file-earmark-text"></i>
+                                        Applications
 
                                     </a>
-
                                 </li>
-
                             }
 
-
-
-
-
-                            if (roles.Contains("Employer"))
+                            @if (roles.Contains("Employer"))
                             {
-
                                 <li class="nav-item">
-
-                                    <a class="nav-link text-dark"
+                                    <a class="nav-link"
                                        asp-controller="Employer"
                                        asp-action="Index">
 
+                                        <i class="bi bi-grid"></i>
                                         Dashboard
 
                                     </a>
-
                                 </li>
 
-
-
                                 <li class="nav-item">
-
-                                    <a class="nav-link text-dark"
+                                    <a class="nav-link"
                                        asp-controller="Employer"
                                        asp-action="CreateJob">
 
+                                        <i class="bi bi-plus-circle"></i>
                                         Post Job
 
                                     </a>
-
                                 </li>
 
-
-
                                 <li class="nav-item">
-
-                                    <a class="nav-link text-dark"
+                                    <a class="nav-link"
                                        asp-controller="Employer"
                                        asp-action="Jobs">
 
+                                        <i class="bi bi-briefcase"></i>
                                         My Jobs
 
                                     </a>
-
                                 </li>
-
                             }
 
-
-
-
-
                             <li class="nav-item">
-
-                                <a class="nav-link text-dark"
+                                <a class="nav-link"
                                    asp-controller="Notification"
                                    asp-action="Index">
 
+                                    <i class="bi bi-bell"></i>
+                                    Notifications
 
-                                    🔔 Notifications
-
-
-                                    @{
-                                        var unreadCount = Context.Notifications
-                                        .Count(x => x.UserId == currentUser.Id && !x.IsRead);
-
-
-
-                                        if (unreadCount > 0)
-                                        {
-                                            <span class="badge bg-danger">
-
-                                                @unreadCount
-
-                                            </span>
-                                        }
-
+                                    @if (unreadCount > 0)
+                                    {
+                                        <span class="fs-nav-badge">
+                                            @(unreadCount > 99
+                                                ? "99+"
+                                                : unreadCount.ToString())
+                                        </span>
                                     }
 
-
                                 </a>
-
                             </li>
 
-
-
-
-
                             <li class="nav-item">
-
                                 <a class="nav-link text-danger"
                                    asp-controller="Account"
                                    asp-action="Logout">
 
+                                    <i class="bi bi-box-arrow-right"></i>
                                     Logout
 
                                 </a>
-
                             </li>
-
-
                         }
                         else
                         {
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   asp-controller="Student"
+                                   asp-action="Jobs">
 
+                                    <i class="bi bi-search"></i>
+                                    Browse Jobs
 
-                            <a class="btn btn-outline-primary rounded-pill px-4 ms-2"
-                               asp-controller="Account"
-                               asp-action="Login">
+                                </a>
+                            </li>
 
-                                Login
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   asp-controller="Home"
+                                   asp-action="Privacy">
 
-                            </a>
+                                    <i class="bi bi-shield-check"></i>
+                                    Privacy
 
+                                </a>
+                            </li>
 
+                            <li class="nav-item">
+                                <div class="fs-nav-actions">
 
+                                    <a class="fs-btn fs-btn-outline"
+                                       asp-controller="Account"
+                                       asp-action="Login">
 
-                            <a class="btn btn-primary rounded-pill px-4 ms-2"
-                               asp-controller="Account"
-                               asp-action="Register">
+                                        <i class="bi bi-box-arrow-in-right"></i>
+                                        Login
 
-                                Register
+                                    </a>
 
-                            </a>
+                                    <a class="fs-btn fs-btn-primary"
+                                       asp-controller="Account"
+                                       asp-action="Register">
 
+                                        Get Started
+                                        <i class="bi bi-arrow-right"></i>
 
+                                    </a>
+
+                                </div>
+                            </li>
                         }
-
-
 
                     </ul>
 
-
                 </div>
-
 
             </div>
 
-
         </nav>
-
     </header>
 
+    <!-- MAIN CONTENT -->
 
+    <main role="main"
+          class="fs-main @(isHomePage ? "fs-main-home" : "")">
 
-
-
-    <div class="container">
-
-        <main role="main" class="pb-3">
-
+        @if (isHomePage)
+        {
             @RenderBody()
+        }
+        else
+        {
+            <div class="container pt-4">
+                @RenderBody()
+            </div>
+        }
 
-        </main>
+    </main>
 
-    </div>
+    <!-- FOOTER -->
 
+    <footer class="fs-footer">
 
+        <div class="container fs-footer-main">
 
+            <div class="row align-items-center gy-4">
 
+                <div class="col-lg-6">
 
-    <footer class="border-top footer text-muted">
+                    <a asp-controller="Home"
+                       asp-action="Index"
+                       class="fs-footer-brand">
 
-        <div class="container">
+                        <i class="bi bi-briefcase-fill"></i>
+                        Fresh<span>Start</span>
 
-            &copy; 2026 - FreshStart -
+                    </a>
 
-            <a asp-controller="Home"
-               asp-action="Privacy">
+                    <p class="fs-footer-text mt-2">
+                        Connecting students with opportunities.
+                        Helping you take the next step in your career.
+                    </p>
 
-                Privacy
+                </div>
 
-            </a>
+                <div class="col-lg-6 text-lg-end">
 
+                    <a asp-controller="Home"
+                       asp-action="Index"
+                       class="fs-footer-link me-3">
+
+                        Home
+
+                    </a>
+
+                    <a asp-controller="Student"
+                       asp-action="Jobs"
+                       class="fs-footer-link me-3">
+
+                        Browse Jobs
+
+                    </a>
+
+                    <a asp-controller="Home"
+                       asp-action="Privacy"
+                       class="fs-footer-link">
+
+                        Privacy
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="fs-footer-bottom">
+
+            <div class="container d-flex flex-wrap justify-content-between gap-2">
+
+                <small class="fs-footer-text">
+                    &copy; @DateTime.Now.Year FreshStart. All rights reserved.
+                </small>
+
+                <small class="fs-footer-text">
+                    Built for your next career opportunity.
+                </small>
+
+            </div>
 
         </div>
 
     </footer>
 
-
-
-
-
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/main.js"></script>
 
-
     @await RenderSectionAsync("Scripts", required: false)
 
-
 </body>
-
 </html>
+```

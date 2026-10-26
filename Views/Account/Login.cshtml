@@ -4,150 +4,161 @@
     ViewData["Title"] = "Login";
 }
 
+<div class="auth-page">
+    <div class="auth-wrapper">
 
-<<div class="container auth-page d-flex justify-content-center align-items-center"
-      style="min-height:80vh;">
+        <!-- LEFT SIDE: BRANDING -->
+        <div class="auth-intro">
 
+            <div class="auth-brand">
+                <div class="auth-brand-icon">
+                    <i class="bi bi-briefcase-fill"></i>
+                </div>
+                <span>FreshStart</span>
+            </div>
 
-    <div class="card auth-card shadow-lg border-0 p-5"
-         style="max-width:450px; width:100%; border-radius:20px;">
+            <h2>Your Career Journey<br />Starts Here</h2>
 
-
-        <div class="text-center mb-4">
-
-
-            <h1 class="fw-bold">
-                🚀 FreshStart
-            </h1>
-
-
-            <p class="text-muted">
-                Login to continue your journey
+            <p>
+                Discover opportunities, connect with top employers,
+                and build the career you've always dreamed of.
             </p>
 
+            <div class="auth-feature">
+                <div class="auth-feature-icon">
+                    <i class="bi bi-briefcase"></i>
+                </div>
+                <div>
+                    <h6>Find the Right Opportunities</h6>
+                    <p>Explore jobs that match your skills and interests.</p>
+                </div>
+            </div>
+
+            <div class="auth-feature">
+                <div class="auth-feature-icon">
+                    <i class="bi bi-people"></i>
+                </div>
+                <div>
+                    <h6>Connect with Employers</h6>
+                    <p>Get noticed by companies and grow your network.</p>
+                </div>
+            </div>
+
+            <div class="auth-feature">
+                <div class="auth-feature-icon">
+                    <i class="bi bi-bar-chart-line"></i>
+                </div>
+                <div>
+                    <h6>Build a Better Future</h6>
+                    <p>Take the next step towards your dream career.</p>
+                </div>
+            </div>
+
+            <div class="auth-illustration">
+                <div class="illustration-icon">
+                    <i class="bi bi-person-workspace"></i>
+                </div>
+                <div>
+                    <h5>Your Future Starts Today</h5>
+                    <p>Sign in and discover new opportunities.</p>
+                </div>
+            </div>
 
         </div>
 
+        <!-- RIGHT SIDE: LOGIN FORM -->
+        <div class="auth-card">
 
-
-
-        <form method="post"
-              asp-action="Login"
-              asp-controller="Account">
-
-
-
-            <div asp-validation-summary="All"
-                 class="text-danger mb-3">
+            <div class="auth-card-header">
+                <h2>Welcome Back</h2>
+                <p>Login to your FreshStart account</p>
             </div>
 
+            <form method="post"
+                  asp-action="Login"
+                  asp-controller="Account">
 
+                <div asp-validation-summary="All"
+                     class="text-danger auth-validation mb-3">
+                </div>
 
+                <div class="auth-field">
+                    <label asp-for="Email" class="auth-label">
+                        Email Address
+                    </label>
 
-            <div class="mb-3">
+                    <div class="auth-input-wrap">
+                        <i class="bi bi-envelope auth-input-icon"></i>
 
-                <label class="form-label fw-bold">
-                    📧 Email
-                </label>
+                        <input asp-for="Email"
+                               class="auth-input"
+                               placeholder="Enter your email"
+                               autocomplete="username" />
+                    </div>
 
+                    <span asp-validation-for="Email"
+                          class="text-danger auth-validation">
+                    </span>
+                </div>
 
-                <input asp-for="Email"
-                       class="form-control form-control-lg"
-                       placeholder="Enter your email" />
+                <div class="auth-field">
+                    <label asp-for="Password" class="auth-label">
+                        Password
+                    </label>
 
+                    <div class="auth-input-wrap">
+                        <i class="bi bi-lock auth-input-icon"></i>
 
-                <span asp-validation-for="Email"
-                      class="text-danger">
-                </span>
+                        <input asp-for="Password"
+                               type="password"
+                               class="auth-input"
+                               placeholder="Enter your password"
+                               autocomplete="current-password" />
+                    </div>
 
+                    <span asp-validation-for="Password"
+                          class="text-danger auth-validation">
+                    </span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+
+                    <label class="small">
+                        <input asp-for="RememberMe" class="auth-check" />
+                        Remember me
+                    </label>
+
+                    @* Forgot Password link tab add karna jab
+                    AccountController mein uski action available ho. *@
+
+                </div>
+
+                <button type="submit" class="auth-primary-btn">
+                    Login to Your Account
+                </button>
+
+            </form>
+
+            <div class="auth-divider">OR</div>
+
+            <div class="text-center small text-muted">
+                Ready to take the next step in your career?
             </div>
 
-
-
-
-
-            <div class="mb-3">
-
-                <label class="form-label fw-bold">
-                    🔒 Password
-                </label>
-
-
-                <input asp-for="Password"
-                       class="form-control form-control-lg"
-                       placeholder="Enter your password" />
-
-
-                <span asp-validation-for="Password"
-                      class="text-danger">
-                </span>
-
-            </div>
-
-
-
-
-
-            <div class="mb-4">
-
-                <input asp-for="RememberMe" />
-
-                <label>
-                    Remember Me
-                </label>
-
-            </div>
-
-
-
-
-
-
-            <button type="submit"
-                    class="btn btn-primary btn-lg w-100 rounded-pill">
-
-                Login 🚀
-
-            </button>
-
-
-
-
-        </form>
-
-
-
-
-
-        <div class="text-center mt-4">
-
-            <p class="mb-0">
+            <div class="auth-footer">
                 Don't have an account?
-            </p>
-
-
-            <a asp-controller="Account"
-               asp-action="Register"
-               class="fw-bold text-decoration-none">
-
-                Create Account
-
-            </a>
-
+                <a asp-controller="Account"
+                   asp-action="Register"
+                   class="auth-link">
+                    Create Account
+                </a>
+            </div>
 
         </div>
-
-
 
     </div>
-
-
 </div>
 
-
-
 @section Scripts {
-
     <partial name="_ValidationScriptsPartial" />
-
 }

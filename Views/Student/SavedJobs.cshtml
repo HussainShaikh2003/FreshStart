@@ -4,190 +4,560 @@
     ViewData["Title"] = "Saved Jobs";
 }
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 
+<style>
+    .saved-page {
+        background: #f4f7fc;
+        min-height: 100vh;
+        padding: 32px 0;
+    }
 
-<div class="container-fluid mt-4">
+    .saved-sidebar,
+    .saved-job-card,
+    .summary-card {
+        background: #fff;
+        border: 1px solid #e8edf5;
+        border-radius: 18px;
+        box-shadow: 0 5px 22px rgba(31, 55, 90, 0.06);
+    }
 
+    .saved-sidebar {
+        padding: 24px 18px;
+        position: sticky;
+        top: 20px;
+    }
 
-    <div class="row">
+    .brand-name {
+        color: #1769e0;
+        font-size: 27px;
+        font-weight: 800;
+        letter-spacing: -0.7px;
+    }
 
+    .sidebar-label {
+        color: #98a2b3;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        margin: 25px 12px 12px;
+        text-transform: uppercase;
+    }
 
+    .sidebar-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #58677e;
+        text-decoration: none;
+        padding: 13px 14px;
+        margin-bottom: 7px;
+        border-radius: 11px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
 
-        <div class="col-md-3 mb-4">
+        .sidebar-link i {
+            font-size: 18px;
+        }
 
+        .sidebar-link:hover {
+            background: #f0f5ff;
+            color: #1769e0;
+        }
 
-            <div class="card shadow p-4">
+        .sidebar-link.active {
+            background: #1769e0;
+            color: #fff;
+            box-shadow: 0 5px 12px rgba(23, 105, 224, 0.2);
+        }
 
+    .page-title {
+        color: #172b4d;
+        font-size: 32px;
+        font-weight: 800;
+        letter-spacing: -0.8px;
+    }
 
-                <h3 class="fw-bold text-primary">
-                    FreshStart
-                </h3>
+    .page-subtitle {
+        color: #78869a;
+        font-size: 15px;
+    }
 
+    .summary-card {
+        padding: 20px;
+        height: 100%;
+    }
 
-                <hr />
+    .summary-icon {
+        width: 46px;
+        height: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 13px;
+        background: #eaf2ff;
+        color: #1769e0;
+        font-size: 21px;
+        margin-bottom: 15px;
+    }
 
+    .summary-number {
+        color: #172b4d;
+        font-size: 27px;
+        font-weight: 800;
+        margin-bottom: 3px;
+    }
 
-                <a asp-controller="Student"
-                   asp-action="Index"
-                   class="btn btn-light text-start mb-2">
-                    🏠 Dashboard
-                </a>
+    .summary-label {
+        color: #78869a;
+        font-size: 13px;
+    }
 
+    .saved-job-card {
+        padding: 24px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
 
-                <a asp-controller="Student"
-                   asp-action="Jobs"
-                   class="btn btn-light text-start mb-2">
-                    🔍 Browse Jobs
-                </a>
+        .saved-job-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(31, 55, 90, 0.1);
+        }
 
+    .company-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+        background: #eaf2ff;
+        color: #1769e0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 23px;
+        flex-shrink: 0;
+    }
 
-                <a asp-controller="Student"
-                   asp-action="MyApplications"
-                   class="btn btn-light text-start">
-                    📄 Applications
-                </a>
+    .job-title {
+        color: #172b4d;
+        font-size: 20px;
+        font-weight: 750;
+        margin-bottom: 5px;
+        overflow-wrap: anywhere;
+    }
 
+    .company-name {
+        color: #78869a;
+        font-size: 13px;
+        margin-bottom: 0;
+    }
 
+    .job-type-badge {
+        display: inline-block;
+        background: #edf4ff;
+        color: #1769e0;
+        font-size: 12px;
+        font-weight: 650;
+        padding: 6px 10px;
+        border-radius: 7px;
+    }
+
+    .job-info {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        color: #65738a;
+        font-size: 13px;
+        margin-bottom: 15px;
+        overflow-wrap: anywhere;
+    }
+
+        .job-info > i {
+            color: #1769e0;
+            font-size: 16px;
+            margin-top: 1px;
+        }
+
+    .detail-label {
+        display: block;
+        color: #98a2b3;
+        font-size: 12px;
+        margin-bottom: 4px;
+    }
+
+    .detail-value {
+        display: block;
+        color: #43516a;
+        font-weight: 650;
+    }
+
+    .salary-box {
+        background: #f5f8ff;
+        border-radius: 12px;
+        padding: 15px;
+        margin: 5px 0 18px;
+    }
+
+    .salary-label {
+        color: #78869a;
+        font-size: 12px;
+        margin-bottom: 5px;
+    }
+
+    .salary-value {
+        color: #1769e0;
+        font-size: 17px;
+        font-weight: 800;
+        overflow-wrap: anywhere;
+    }
+
+    .saved-date {
+        color: #78869a;
+        font-size: 12px;
+        margin-top: auto;
+        padding-top: 14px;
+        margin-bottom: 18px;
+        border-top: 1px solid #edf0f5;
+    }
+
+    .btn-view-job {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        flex: 1;
+        background: #1769e0;
+        border: 1px solid #1769e0;
+        color: #fff;
+        text-decoration: none;
+        text-align: center;
+        font-weight: 650;
+        font-size: 13px;
+        border-radius: 10px;
+        padding: 11px 14px;
+        transition: 0.2s;
+    }
+
+        .btn-view-job:hover {
+            background: #1056bd;
+            border-color: #1056bd;
+            color: #fff;
+        }
+
+    .btn-remove-job {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        background: #fff;
+        border: 1px solid #f0caca;
+        color: #c62828;
+        font-weight: 650;
+        font-size: 13px;
+        border-radius: 10px;
+        padding: 11px 14px;
+        transition: 0.2s;
+    }
+
+        .btn-remove-job:hover {
+            background: #fff0f0;
+            border-color: #e6a7a7;
+            color: #a61b1b;
+        }
+
+    .empty-state {
+        background: #fff;
+        border: 1px dashed #cbd6e6;
+        border-radius: 18px;
+        padding: 55px 20px;
+        text-align: center;
+    }
+
+    .empty-icon {
+        width: 68px;
+        height: 68px;
+        background: #edf4ff;
+        color: #1769e0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 20px;
+        font-size: 29px;
+        margin: 0 auto 18px;
+    }
+
+    .empty-state h4 {
+        color: #172b4d;
+        font-weight: 750;
+    }
+
+    .empty-state p {
+        color: #78869a;
+    }
+
+    .btn-browse {
+        display: inline-block;
+        background: #1769e0;
+        color: #fff;
+        text-decoration: none;
+        font-weight: 650;
+        padding: 12px 20px;
+        border-radius: 10px;
+        transition: 0.2s;
+    }
+
+        .btn-browse:hover {
+            background: #1056bd;
+            color: #fff;
+        }
+
+    @@media (max-width: 767px) {
+        .saved-page {
+            padding: 20px 0;
+        }
+
+        .saved-sidebar {
+            position: static;
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 26px;
+        }
+
+        .saved-job-card {
+            padding: 20px;
+        }
+    }
+</style>
+
+<div class="saved-page">
+    <div class="container-fluid px-3 px-lg-4">
+        <div class="row g-4">
+
+            <!-- Sidebar -->
+            <div class="col-lg-3 col-xl-2">
+                <div class="saved-sidebar">
+
+                    <div class="brand-name">
+                        <i class="bi bi-briefcase-fill me-2"></i>FreshStart
+                    </div>
+
+                    <div class="sidebar-label">Student Menu</div>
+
+                    <a asp-controller="Student"
+                       asp-action="Index"
+                       class="sidebar-link">
+                        <i class="bi bi-grid-1x2"></i>
+                        Dashboard
+                    </a>
+
+                    <a asp-controller="Student"
+                       asp-action="Jobs"
+                       class="sidebar-link">
+                        <i class="bi bi-search"></i>
+                        Browse Jobs
+                    </a>
+
+                    <a asp-controller="Student"
+                       asp-action="MyApplications"
+                       class="sidebar-link">
+                        <i class="bi bi-file-earmark-text"></i>
+                        My Applications
+                    </a>
+
+                    <a asp-controller="Student"
+                       asp-action="SavedJobs"
+                       class="sidebar-link active">
+                        <i class="bi bi-bookmark"></i>
+                        Saved Jobs
+                    </a>
+
+                </div>
             </div>
 
+            <!-- Main Content -->
+            <div class="col-lg-9 col-xl-10">
 
-        </div>
-
-
-
-
-
-
-        <div class="col-md-9">
-
-
-            <h1 class="fw-bold mb-4">
-                ⭐ Saved Jobs
-            </h1>
-
-
-
-
-            @if (Model.Count == 0)
-            {
-
-                <div class="alert alert-info shadow">
-                    No saved jobs found.
+                <div class="mb-4">
+                    <h1 class="page-title mb-2">Saved Jobs</h1>
+                    <p class="page-subtitle mb-0">
+                        Keep track of opportunities you want to explore later.
+                    </p>
                 </div>
 
-            }
+                @{
+                    var savedCount = Model?.Count ?? 0;
+                }
 
-            else
-            {
-
-
-                <div class="row">
-
-
-                    @foreach (var saved in Model)
-                    {
-
-
-                        <div class="col-md-6 mb-4">
-
-
-                            <div class="card shadow p-4 h-100">
-
-
-                                <h3 class="fw-bold">
-                                    @saved.Job.JobTitle
-                                </h3>
-
-
-                                <hr />
-
-
-                                <p>
-                                    🏢 <strong>Company:</strong>
-                                    @saved.Job.Employer.CompanyName
-                                </p>
-
-
-                                <p>
-                                    📍 <strong>Location:</strong>
-                                    @saved.Job.Location
-                                </p>
-
-
-                                <p>
-                                    💰 <strong>Salary:</strong>
-                                    @saved.Job.MinimumSalary.ToString("N0")
-                                    –
-                                    @saved.Job.MaximumSalary.ToString("N0")
-                                    / @saved.Job.SalaryType
-                                </p>
-
-                                <p>
-                                    💼 <strong>Type:</strong>
-                                    @saved.Job.JobType
-                                </p>
-
-
-                                <p>
-                                    📅 <strong>Saved:</strong>
-                                    @saved.SavedDate.ToShortDateString()
-                                </p>
-
-
-
-                                <div>
-
-
-                                    <a asp-controller="Student"
-                                       asp-action="JobDetails"
-                                       asp-route-id="@saved.JobId"
-                                       class="btn btn-primary">
-
-                                        View Job
-
-                                    </a>
-
-
-
-                                    <form asp-controller="Student"
-                                          asp-action="RemoveSavedJob"
-                                          asp-route-id="@saved.SavedJobId"
-                                          method="post"
-                                          class="d-inline">
-
-
-                                        <button class="btn btn-danger ms-2">
-
-                                            Remove
-
-                                        </button>
-
-
-                                    </form>
-
-
-                                </div>
-
-
+                <!-- Summary -->
+                <div class="row g-3 mb-4">
+                    <div class="col-12 col-sm-6 col-xl-4">
+                        <div class="summary-card">
+                            <div class="summary-icon">
+                                <i class="bi bi-bookmark-star"></i>
                             </div>
 
-
+                            <div class="summary-number">@savedCount</div>
+                            <div class="summary-label">Total Saved Jobs</div>
                         </div>
-
-
-                    }
-
-
+                    </div>
                 </div>
 
+                <!-- Saved Jobs Heading -->
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+                    <div>
+                        <h2 class="h4 fw-bold mb-1" style="color:#172b4d;">
+                            Your Saved Opportunities
+                        </h2>
+                        <p class="page-subtitle mb-0">
+                            Revisit job details or remove jobs you no longer need.
+                        </p>
+                    </div>
 
-            }
+                    <a asp-controller="Student"
+                       asp-action="Jobs"
+                       class="btn-browse">
+                        <i class="bi bi-search me-2"></i>Browse Jobs
+                    </a>
+                </div>
 
+                @if (Model == null || Model.Count == 0)
+                {
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="bi bi-bookmark-plus"></i>
+                        </div>
 
+                        <h4>No Saved Jobs Yet</h4>
+
+                        <p class="mt-2">
+                            Save interesting jobs while browsing and they will appear here.
+                        </p>
+
+                        <a asp-controller="Student"
+                           asp-action="Jobs"
+                           class="btn-browse mt-3">
+                            <i class="bi bi-search me-2"></i>Explore Jobs
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="row g-4">
+
+                        @foreach (var saved in Model)
+                        {
+                            <div class="col-md-6 col-xl-4">
+                                <div class="saved-job-card">
+
+                                    <!-- Job and Company -->
+                                    <div class="d-flex align-items-start gap-3 mb-3">
+                                        <div class="company-icon">
+                                            <i class="bi bi-building"></i>
+                                        </div>
+
+                                        <div class="flex-grow-1">
+                                            <h3 class="job-title">
+                                                @(saved.Job?.JobTitle ?? "Job Title Unavailable")
+                                            </h3>
+
+                                            <p class="company-name">
+                                                @(saved.Job?.Employer?.CompanyName ?? "Company")
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Job Type -->
+                                    <div class="mb-3">
+                                        <span class="job-type-badge">
+                                            <i class="bi bi-clock me-1"></i>
+                                            @(saved.Job?.JobType ?? "Not specified")
+                                        </span>
+                                    </div>
+
+                                    <!-- Location -->
+                                    <div class="job-info">
+                                        <i class="bi bi-geo-alt"></i>
+                                        <div>
+                                            <span class="detail-label">Location</span>
+                                            <span class="detail-value">
+                                                @(saved.Job?.Location ?? "Not specified")
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Salary -->
+                                    <div class="salary-box">
+                                        <div class="salary-label">
+                                            <i class="bi bi-wallet2 me-1"></i>Salary Range
+                                        </div>
+
+                                        @if (saved.Job != null)
+                                        {
+                                            <div class="salary-value">
+                                                ₨@saved.Job.MinimumSalary.ToString("N0")
+                                                – ₨@saved.Job.MaximumSalary.ToString("N0")
+                                            </div>
+
+                                            <div class="salary-label mt-1">
+                                                Per @(saved.Job.SalaryType == "Monthly"
+                                                ? "Month"
+                                                : saved.Job.SalaryType)
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="salary-value">Not available</div>
+                                        }
+                                    </div>
+
+                                    <!-- Saved Date -->
+                                    <div class="saved-date">
+                                        <i class="bi bi-calendar-check me-2"></i>
+                                        Saved on @saved.SavedDate.ToShortDateString()
+                                    </div>
+
+                                    <!-- Actions -->
+                                    <div class="d-flex flex-wrap gap-2">
+
+                                        <a asp-controller="Student"
+                                           asp-action="JobDetails"
+                                           asp-route-id="@saved.JobId"
+                                           class="btn-view-job">
+                                            View Job
+                                            <i class="bi bi-arrow-right"></i>
+                                        </a>
+
+                                        <form asp-controller="Student"
+                                              asp-action="RemoveSavedJob"
+                                              asp-route-id="@saved.SavedJobId"
+                                              method="post"
+                                              class="d-inline-flex">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <button type="submit"
+                                                    class="btn-remove-job"
+                                                    onclick="return confirm('Are you sure you want to remove this saved job?');">
+                                                <i class="bi bi-trash3"></i>
+                                                Remove
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                }
+
+            </div>
         </div>
-
-
     </div>
-
-
 </div>

@@ -4,466 +4,875 @@
     ViewData["Title"] = "Home";
 }
 
+<style>
+    :root {
+        --fs-primary: #2563eb;
+        --fs-primary-dark: #1d4ed8;
+        --fs-heading: #14213d;
+        --fs-muted: #64748b;
+        --fs-light: #f4f7fc;
+        --fs-border: #e5eaf2;
+    }
 
-<!-- Hero Section -->
+    .fs-home {
+        color: var(--fs-heading);
+        overflow: hidden;
+    }
 
-<div class="container-fluid p-0">
+        .fs-home h2 {
+            color: var(--fs-heading);
+            letter-spacing: -0.7px;
+        }
 
-    <div class="position-relative">
+    .fs-section {
+        padding-top: 75px;
+        padding-bottom: 75px;
+    }
 
-        <img src="~/img/carousel-1.jpg"
-             class="img-fluid w-100"
-             style="height:550px; object-fit:cover;" />
+    .fs-section-light {
+        background: var(--fs-light);
+    }
 
+    .fs-section-subtitle {
+        color: var(--fs-muted);
+        max-width: 620px;
+        margin: 12px auto 0;
+        line-height: 1.8;
+    }
 
-        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center"
-             style="background:rgba(0,0,0,0.5);">
+    /* HERO SECTION */
 
+    .fs-hero {
+        position: relative;
+        min-height: 570px;
+        display: flex;
+        align-items: center;
+        background-image: linear-gradient(90deg, rgba(11, 24, 52, .94), rgba(11, 24, 52, .66)), url('/img/carousel-1.jpg');
+        background-size: cover;
+        background-position: center;
+    }
 
-            <div class="container">
+    .fs-hero-content {
+        padding-top: 80px;
+        padding-bottom: 80px;
+        color: white;
+    }
 
+    .fs-hero-label {
+        display: inline-block;
+        background: rgba(255, 255, 255, .12);
+        border: 1px solid rgba(255, 255, 255, .25);
+        color: #dbeafe;
+        padding: 9px 16px;
+        border-radius: 30px;
+        font-size: 14px;
+        margin-bottom: 22px;
+    }
 
-                <div class="col-lg-8 text-white">
+    .fs-hero h1 {
+        font-size: clamp(2.5rem, 5vw, 4.25rem);
+        font-weight: 800;
+        line-height: 1.13;
+        letter-spacing: -1.8px;
+        max-width: 760px;
+    }
 
+        .fs-hero h1 span {
+            color: #93c5fd;
+        }
 
-                    <h1 class="display-3 fw-bold">
-                        Find The Perfect Job For Your Future 🚀
-                    </h1>
+    .fs-hero p {
+        color: #e2e8f0;
+        max-width: 600px;
+        font-size: 18px;
+        line-height: 1.8;
+        margin-top: 22px;
+        margin-bottom: 30px;
+    }
 
+    .fs-btn-primary {
+        background: var(--fs-primary);
+        border: 1px solid var(--fs-primary);
+        color: white;
+        border-radius: 9px;
+        padding: 13px 23px;
+        font-weight: 600;
+        transition: .25s ease;
+    }
 
-                    <p class="fs-5 mt-3">
-                        Connect with companies and start your professional career with FreshStart.
-                    </p>
+        .fs-btn-primary:hover {
+            background: var(--fs-primary-dark);
+            border-color: var(--fs-primary-dark);
+            color: white;
+            transform: translateY(-2px);
+        }
 
+    .fs-btn-light {
+        background: white;
+        color: var(--fs-heading);
+        border: 1px solid white;
+        border-radius: 9px;
+        padding: 13px 23px;
+        font-weight: 600;
+        transition: .25s ease;
+    }
 
+        .fs-btn-light:hover {
+            background: #eff6ff;
+            color: var(--fs-primary-dark);
+            transform: translateY(-2px);
+        }
+
+    /* SEARCH SECTION */
+
+    .fs-search-wrapper {
+        position: relative;
+        margin-top: -42px;
+        z-index: 2;
+    }
+
+    .fs-search-card {
+        background: white;
+        border: 1px solid var(--fs-border);
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 15px 45px rgba(15, 23, 42, .10);
+    }
+
+        .fs-search-card h2 {
+            font-size: 23px;
+            font-weight: 750;
+            margin-bottom: 7px;
+        }
+
+        .fs-search-card p {
+            color: var(--fs-muted);
+            margin-bottom: 24px;
+        }
+
+    .fs-form-control {
+        min-height: 52px;
+        border: 1px solid #dce3ee;
+        border-radius: 9px;
+        padding: 12px 15px;
+        box-shadow: none !important;
+    }
+
+        .fs-form-control:focus {
+            border-color: var(--fs-primary);
+        }
+
+    /* SECTION HEADINGS */
+
+    .fs-eyebrow {
+        display: inline-block;
+        color: var(--fs-primary);
+        background: #dbeafe;
+        padding: 7px 13px;
+        border-radius: 30px;
+        font-size: 12px;
+        font-weight: 750;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 14px;
+    }
+
+    /* JOB CARDS */
+
+    .fs-job-card {
+        background: white;
+        border: 1px solid var(--fs-border);
+        border-radius: 15px;
+        padding: 25px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+        .fs-job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 16px 35px rgba(15, 23, 42, .09);
+        }
+
+    .fs-job-icon {
+        width: 54px;
+        height: 54px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: #dbeafe;
+        color: var(--fs-primary);
+        font-size: 25px;
+        flex-shrink: 0;
+    }
+
+    .fs-job-title {
+        font-size: 19px;
+        font-weight: 750;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+    }
+
+    .fs-company-name {
+        color: var(--fs-muted);
+        font-size: 14px;
+    }
+
+    .fs-job-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 14px 0;
+    }
+
+    .fs-badge {
+        display: inline-block;
+        background: #f1f5f9;
+        color: #475569;
+        padding: 7px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .fs-salary {
+        color: #15803d;
+        font-size: 17px;
+        font-weight: 750;
+        margin: 8px 0;
+    }
+
+    .fs-skills {
+        color: var(--fs-muted);
+        font-size: 14px;
+        line-height: 1.8;
+        margin-bottom: 20px;
+        overflow-wrap: anywhere;
+    }
+
+    .fs-job-card .btn {
+        margin-top: auto;
+    }
+
+    .fs-empty-state {
+        background: white;
+        border: 1px dashed #cbd5e1;
+        border-radius: 14px;
+        padding: 45px 20px;
+        text-align: center;
+    }
+
+        .fs-empty-state .icon {
+            font-size: 38px;
+            margin-bottom: 12px;
+        }
+
+    /* COMPANY CARDS */
+
+    .fs-company-card {
+        background: white;
+        border: 1px solid var(--fs-border);
+        border-radius: 15px;
+        padding: 30px 24px;
+        height: 100%;
+        text-align: center;
+        transition: .25s ease;
+    }
+
+        .fs-company-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 14px 32px rgba(15, 23, 42, .08);
+        }
+
+    .fs-company-logo {
+        width: 100px;
+        height: 85px;
+        object-fit: contain;
+        padding: 8px;
+        margin: 0 auto 18px;
+    }
+
+    .fs-company-card h3 {
+        font-size: 20px;
+        font-weight: 750;
+    }
+
+    .fs-company-card p {
+        color: var(--fs-muted);
+        line-height: 1.7;
+        min-height: 48px;
+    }
+
+    /* TESTIMONIALS */
+
+    .fs-testimonial-card {
+        background: white;
+        border: 1px solid var(--fs-border);
+        border-radius: 15px;
+        padding: 30px 25px;
+        height: 100%;
+        transition: .25s ease;
+    }
+
+        .fs-testimonial-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 32px rgba(15, 23, 42, .07);
+        }
+
+    .fs-testimonial-image {
+        width: 76px;
+        height: 76px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid #dbeafe;
+        margin-bottom: 17px;
+    }
+
+    .fs-testimonial-quote {
+        color: var(--fs-muted);
+        line-height: 1.9;
+        margin: 17px 0;
+    }
+
+    .fs-testimonial-role {
+        color: var(--fs-primary);
+        font-size: 14px;
+        font-weight: 650;
+    }
+
+    /* CTA */
+
+    .fs-cta {
+        background: linear-gradient(120deg, #14213d, #1d4ed8);
+        border-radius: 18px;
+        padding: 48px 35px;
+        color: white;
+    }
+
+        .fs-cta h2 {
+            color: white;
+            font-weight: 800;
+        }
+
+        .fs-cta p {
+            color: #dbeafe;
+            line-height: 1.8;
+        }
+
+    @@media (max-width: 767px) {
+        .fs-hero {
+            min-height: 510px;
+            background-position: 58% center;
+        }
+
+        .fs-hero-content {
+            padding-top: 65px;
+            padding-bottom: 75px;
+        }
+
+        .fs-hero h1 {
+            letter-spacing: -1px;
+        }
+
+        .fs-hero p {
+            font-size: 16px;
+        }
+
+        .fs-search-wrapper {
+            margin-top: -25px;
+        }
+
+        .fs-search-card {
+            padding: 22px;
+        }
+
+        .fs-section {
+            padding-top: 55px;
+            padding-bottom: 55px;
+        }
+
+        .fs-cta {
+            padding: 35px 22px;
+        }
+    }
+</style>
+
+<div class="fs-home">
+
+    <!-- HERO SECTION -->
+
+    <section class="fs-hero">
+        <div class="container">
+            <div class="fs-hero-content">
+
+                <span class="fs-hero-label">
+                    Your Career Journey Starts Here
+                </span>
+
+                <h1>
+                    Find the Right Job.
+                    <span>Build Your Future.</span>
+                </h1>
+
+                <p>
+                    Discover opportunities that match your skills,
+                    connect with employers and take the next step
+                    in your professional journey with FreshStart.
+                </p>
+
+                <div class="d-flex flex-wrap gap-3">
 
                     <a asp-controller="Account"
                        asp-action="Register"
-                       class="btn btn-primary btn-lg me-2">
-
-                        Get Started
-
+                       class="btn fs-btn-primary">
+                        Get Started &rarr;
                     </a>
-
-
 
                     <a asp-controller="Student"
                        asp-action="Jobs"
-                       class="btn btn-light btn-lg">
-
-                        Browse Jobs
-
+                       class="btn fs-btn-light">
+                        Explore Jobs
                     </a>
-
 
                 </div>
 
-
             </div>
+        </div>
+    </section>
 
+    <!-- SEARCH JOBS -->
+
+    <section class="container fs-search-wrapper">
+
+        <div class="fs-search-card">
+
+            <h2>Find Your Next Opportunity</h2>
+
+            <p>
+                Search for jobs that match your interests and skills.
+            </p>
+
+            <form asp-controller="Student"
+                  asp-action="Jobs"
+                  method="get">
+
+                <div class="row align-items-end">
+
+                    <div class="col-lg-4 col-md-6 mb-3">
+
+                        <label for="homeSearch" class="form-label fw-semibold">
+                            Job Title or Skills
+                        </label>
+
+                        <input id="homeSearch"
+                               name="search"
+                               class="form-control fs-form-control"
+                               placeholder="e.g. Web Developer" />
+
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 mb-3">
+
+                        <label for="homeLocation" class="form-label fw-semibold">
+                            Location
+                        </label>
+
+                        <input id="homeLocation"
+                               name="location"
+                               class="form-control fs-form-control"
+                               placeholder="e.g. Hyderabad" />
+
+                    </div>
+
+                    <div class="col-lg-4 mb-3">
+
+                        <button type="submit"
+                                class="btn fs-btn-primary w-100"
+                                style="min-height:52px;">
+                            Search Jobs &rarr;
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
 
         </div>
 
+    </section>
 
-    </div>
+    <!-- FEATURED JOBS -->
 
-</div>
-<!-- Search Jobs Section -->
+    <section class="fs-section">
 
-<div class="container mt-5">
+        <div class="container">
 
+            <div class="text-center mb-5">
 
-    <div class="card shadow p-4">
+                <span class="fs-eyebrow">Explore Opportunities</span>
 
+                <h2 class="fw-bold display-6">
+                    Featured Jobs
+                </h2>
 
-        <h2 class="text-center mb-4 fw-bold">
-            Search Jobs
-        </h2>
+                <p class="fs-section-subtitle">
+                    Explore opportunities and find a role that fits
+                    your skills and career goals.
+                </p>
 
-
-        <form asp-controller="Student"
-              asp-action="Jobs"
-              method="get">
-
+            </div>
 
             <div class="row">
 
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var job in Model)
+                    {
+                        <div class="col-lg-4 col-md-6 mb-4">
 
-                <div class="col-md-4 mb-3">
+                            <div class="fs-job-card">
 
-                    <input name="search"
-                           class="form-control form-control-lg"
-                           placeholder="Job title or skills" />
+                                <div class="d-flex align-items-start gap-3 mb-3">
 
-                </div>
+                                    <div class="fs-job-icon">
+                                        &#128188;
+                                    </div>
 
+                                    <div class="flex-grow-1">
 
+                                        <h3 class="fs-job-title mb-1">
+                                            @job.JobTitle
+                                        </h3>
 
-                <div class="col-md-4 mb-3">
+                                        <div class="fs-company-name">
+                                            @(job.Employer?.CompanyName ?? "Company")
+                                        </div>
 
-                    <input name="location"
-                           class="form-control form-control-lg"
-                           placeholder="Location" />
+                                    </div>
 
-                </div>
+                                </div>
 
+                                <div class="fs-job-meta">
 
+                                    <span class="fs-badge">
+                                        &#128205; @(job.Location ?? "Location not specified")
+                                    </span>
 
-                <div class="col-md-4 mb-3">
+                                    <span class="fs-badge">
+                                        @(job.JobType ?? "Job type not specified")
+                                    </span>
 
-                    <button type="submit"
-                            class="btn btn-primary btn-lg w-100">
+                                </div>
 
-                        🔍 Search Jobs
+                                <div class="fs-salary">
+                                    @job.MinimumSalary.ToString("N0")
+                                    &ndash;
+                                    @job.MaximumSalary.ToString("N0")
+                                    <span class="fs-company-name">
+                                        / @(job.SalaryType ?? "Monthly")
+                                    </span>
+                                </div>
 
-                    </button>
+                                <hr />
 
-                </div>
+                                <div class="fw-semibold small mb-2">
+                                    Required Skills
+                                </div>
 
+                                <p class="fs-skills">
+                                    @(string.IsNullOrWhiteSpace(job.RequiredSkills)
+                                        ? "See job details for more information."
+                                        : job.RequiredSkills)
+                                </p>
+
+                                <a asp-controller="Student"
+                                   asp-action="JobDetails"
+                                   asp-route-id="@job.JobId"
+                                   class="btn fs-btn-primary w-100">
+                                    View Job Details &rarr;
+                                </a>
+
+                            </div>
+
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12">
+
+                        <div class="fs-empty-state">
+
+                            <div class="icon">&#128188;</div>
+
+                            <h3 class="h5 fw-bold">
+                                No Featured Jobs Yet
+                            </h3>
+
+                            <p class="text-muted mb-4">
+                                New opportunities will appear here when jobs are available.
+                            </p>
+
+                            <a asp-controller="Student"
+                               asp-action="Jobs"
+                               class="btn fs-btn-primary">
+                                Browse All Jobs
+                            </a>
+
+                        </div>
+
+                    </div>
+                }
 
             </div>
 
-
-        </form>
-
-
-    </div>
-
-
-</div>
-<!-- Featured Jobs Section -->
-
-<div class="container mt-5">
-
-
-    <h2 class="text-center fw-bold mb-5">
-        Featured Jobs
-    </h2>
-
-
-
-    <div class="row">
-
-
-        @foreach (var job in Model)
-        {
-
-
-            <div class="col-lg-4 col-md-6 mb-4">
-
-                <div class="card job-card shadow h-100 p-4">
-
-
-                    <h3 class="fw-bold">
-                        @job.JobTitle
-                    </h3>
-
-
-                    <hr />
-
-
-
-                    <p>
-                        <strong>
-                            Company:
-                        </strong>
-
-                        @job.Employer.CompanyName
-                    </p>
-
-
-
-                    <p>
-                        📍 @job.Location
-                    </p>
-
-
-
-                    <p>
-                        💰 <strong>Salary:</strong>
-                        @job.MinimumSalary.ToString("N0")
-                        – @job.MaximumSalary.ToString("N0")
-                        / @job.SalaryType
-                    </p>
-
-
-                    <p>
-                        💼 @job.JobType
-                    </p>
-
-
-
-                    <p>
-                        🛠 @job.RequiredSkills
-                    </p>
-
-
-
-
-                    <a asp-controller="Student"
-                       asp-action="JobDetails"
-                       asp-route-id="@job.JobId"
-                       class="btn btn-primary mt-auto">
-
-
-                        View Job
-
-
-                    </a>
-
-
-
-                </div>
-
-
-            </div>
-
-
-        }
-
-
-    </div>
-
-
-</div>
-
-<!-- Companies Section -->
-
-<div class="container mt-5">
-
-
-    <h2 class="text-center fw-bold mb-5">
-        Top Companies
-    </h2>
-
-
-
-    <div class="row">
-
-
-        <div class="col-md-4 mb-4">
-
-            <div class="card company-card shadow text-center p-4 h-100">
-
-
-                <img src="~/img/com-logo-1.jpg"
-                     class="mx-auto mb-3"
-                     style="width:120px;height:80px;object-fit:contain;" />
-
-
-                <h4>
-                    TechNova Solutions
-                </h4>
-
-
-                <p>
-                    Leading technology company hiring fresh talent.
-                </p>
-
+            <div class="text-center mt-3">
 
                 <a asp-controller="Student"
                    asp-action="Jobs"
-                   class="btn btn-primary">
-
-                    View Jobs
-
+                   class="btn btn-outline-primary px-4 py-3">
+                    Explore All Jobs &rarr;
                 </a>
 
-
             </div>
 
         </div>
 
+    </section>
 
+    <!-- TOP COMPANIES -->
 
+    <section class="fs-section fs-section-light">
 
+        <div class="container">
 
-        <div class="col-md-4 mb-4">
+            <div class="text-center mb-5">
 
-            <div class="card shadow text-center p-4 h-100">
+                <span class="fs-eyebrow">Discover Employers</span>
 
+                <h2 class="fw-bold display-6">
+                    Explore Top Companies
+                </h2>
 
-                <img src="~/img/com-logo-2.jpg"
-                     class="mx-auto mb-3"
-                     style="width:120px;height:80px;object-fit:contain;" />
-
-
-                <h4>
-                    Logic Era
-                </h4>
-
-
-                <p>
-                    Build your career with innovative teams.
+                <p class="fs-section-subtitle">
+                    Discover career opportunities and explore different workplaces.
                 </p>
 
+            </div>
 
-                <a asp-controller="Student"
-                   asp-action="Jobs"
-                   class="btn btn-primary">
+            <div class="row">
 
-                    View Jobs
+                <div class="col-lg-4 col-md-6 mb-4">
 
-                </a>
+                    <div class="fs-company-card">
 
+                        <img src="~/img/com-logo-1.jpg"
+                             alt="TechNova Solutions logo"
+                             class="fs-company-logo" />
+
+                        <h3>TechNova Solutions</h3>
+
+                        <p>
+                            Explore technology careers and opportunities
+                            for growing your professional skills.
+                        </p>
+
+                        <a asp-controller="Student"
+                           asp-action="Jobs"
+                           class="btn fs-btn-primary">
+                            Explore Jobs &rarr;
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <div class="col-lg-4 col-md-6 mb-4">
+
+                    <div class="fs-company-card">
+
+                        <img src="~/img/com-logo-2.jpg"
+                             alt="Logic Era logo"
+                             class="fs-company-logo" />
+
+                        <h3>Logic Era</h3>
+
+                        <p>
+                            Discover opportunities to work with
+                            innovative teams and professionals.
+                        </p>
+
+                        <a asp-controller="Student"
+                           asp-action="Jobs"
+                           class="btn fs-btn-primary">
+                            Explore Jobs &rarr;
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <div class="col-lg-4 col-md-6 mb-4">
+
+                    <div class="fs-company-card">
+
+                        <img src="~/img/com-logo-3.jpg"
+                             alt="Future Tech logo"
+                             class="fs-company-logo" />
+
+                        <h3>Future Tech</h3>
+
+                        <p>
+                            Find opportunities to develop your
+                            technical skills and career.
+                        </p>
+
+                        <a asp-controller="Student"
+                           asp-action="Jobs"
+                           class="btn fs-btn-primary">
+                            Explore Jobs &rarr;
+                        </a>
+
+                    </div>
+
+                </div>
 
             </div>
 
         </div>
 
+    </section>
 
+    <!-- TESTIMONIALS -->
 
+    <section class="fs-section">
 
+        <div class="container">
 
-        <div class="col-md-4 mb-4">
+            <div class="text-center mb-5">
 
-            <div class="card shadow text-center p-4 h-100">
+                <span class="fs-eyebrow">Community Feedback</span>
 
+                <h2 class="fw-bold display-6">
+                    What Our Users Say
+                </h2>
 
-                <img src="~/img/com-logo-3.jpg"
-                     class="mx-auto mb-3"
-                     style="width:120px;height:80px;object-fit:contain;" />
-
-
-                <h4>
-                    Future Tech
-                </h4>
-
-
-                <p>
-                    Opportunities for developers and graduates.
+                <p class="fs-section-subtitle">
+                    A simple, professional platform for exploring
+                    career opportunities.
                 </p>
 
+            </div>
 
-                <a asp-controller="Student"
-                   asp-action="Jobs"
-                   class="btn btn-primary">
+            <div class="row">
 
-                    View Jobs
+                <div class="col-lg-4 col-md-6 mb-4">
 
-                </a>
+                    <div class="fs-testimonial-card">
 
+                        <img src="~/img/testimonial-1.jpg"
+                             alt="Ali Khan"
+                             class="fs-testimonial-image" />
+
+                        <h3 class="h5 fw-bold mb-1">
+                            Ali Khan
+                        </h3>
+
+                        <div class="fs-testimonial-role">
+                            Software Developer
+                        </div>
+
+                        <p class="fs-testimonial-quote">
+                            "FreshStart helped me find the right
+                            career opportunity."
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="col-lg-4 col-md-6 mb-4">
+
+                    <div class="fs-testimonial-card">
+
+                        <img src="~/img/testimonial-2.jpg"
+                             alt="Sara Ahmed"
+                             class="fs-testimonial-image" />
+
+                        <h3 class="h5 fw-bold mb-1">
+                            Sara Ahmed
+                        </h3>
+
+                        <div class="fs-testimonial-role">
+                            UI Designer
+                        </div>
+
+                        <p class="fs-testimonial-quote">
+                            "The application process was simple
+                            and professional."
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="col-lg-4 col-md-6 mb-4">
+
+                    <div class="fs-testimonial-card">
+
+                        <img src="~/img/testimonial-3.jpg"
+                             alt="Hamza Ali"
+                             class="fs-testimonial-image" />
+
+                        <h3 class="h5 fw-bold mb-1">
+                            Hamza Ali
+                        </h3>
+
+                        <div class="fs-testimonial-role">
+                            Web Developer
+                        </div>
+
+                        <p class="fs-testimonial-quote">
+                            "FreshStart connects students with
+                            great companies."
+                        </p>
+
+                    </div>
+
+                </div>
 
             </div>
 
         </div>
 
+    </section>
 
-    </div>
+    <!-- CALL TO ACTION -->
 
+    <section class="container mb-5">
 
-</div>
-<!-- Testimonials Section -->
+        <div class="fs-cta text-center">
 
-<div class="container mt-5 mb-5">
+            <h2 class="display-6">
+                Your Next Opportunity Starts Here
+            </h2>
 
+            <p class="mx-auto mt-3 mb-4" style="max-width:650px;">
+                Create your account, explore job opportunities
+                and take the next step towards your career.
+            </p>
 
-    <h2 class="text-center fw-bold mb-5">
-        What Our Users Say
-    </h2>
-
-
-
-    <div class="row">
-
-
-        <div class="col-md-4 mb-4">
-
-            <div class="card testimonial-card shadow p-4 text-center h-100">
-
-
-                <img src="~/img/testimonial-1.jpg"
-                     class="rounded-circle mx-auto mb-3"
-                     style="width:80px;height:80px;" />
-
-
-                <h5>
-                    Ali Khan
-                </h5>
-
-
-                <p>
-                    "FreshStart helped me find the right career opportunity."
-                </p>
-
-
-                <span class="text-primary">
-                    Software Developer
-                </span>
-
-
-            </div>
+            <a asp-controller="Account"
+               asp-action="Register"
+               class="btn fs-btn-light">
+                Join FreshStart &rarr;
+            </a>
 
         </div>
 
-
-
-
-
-        <div class="col-md-4 mb-4">
-
-            <div class="card shadow p-4 text-center h-100">
-
-
-                <img src="~/img/testimonial-2.jpg"
-                     class="rounded-circle mx-auto mb-3"
-                     style="width:80px;height:80px;" />
-
-
-                <h5>
-                    Sara Ahmed
-                </h5>
-
-
-                <p>
-                    "The application process was simple and professional."
-                </p>
-
-
-                <span class="text-primary">
-                    UI Designer
-                </span>
-
-
-            </div>
-
-        </div>
-
-
-
-
-
-        <div class="col-md-4 mb-4">
-
-            <div class="card shadow p-4 text-center h-100">
-
-
-                <img src="~/img/testimonial-3.jpg"
-                     class="rounded-circle mx-auto mb-3"
-                     style="width:80px;height:80px;" />
-
-
-                <h5>
-                    Hamza Ali
-                </h5>
-
-
-                <p>
-                    "FreshStart connects students with great companies."
-                </p>
-
-
-                <span class="text-primary">
-                    Web Developer
-                </span>
-
-
-            </div>
-
-        </div>
-
-
-    </div>
-
+    </section>
 
 </div>

@@ -4,106 +4,791 @@
     ViewData["Title"] = "Recommended Jobs";
 }
 
-<div class="container mt-4 mb-5">
-    <div class="mb-4">
-        <h2>Recommended Jobs</h2>
-        <p class="text-muted">
-            Jobs recommended according to your CV and profile skills.
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+<style>
+    :root {
+        --rec-primary: #2563eb;
+        --rec-navy: #142b4a;
+        --rec-bg: #f4f7fc;
+        --rec-muted: #718096;
+        --rec-border: #e5ebf4;
+    }
+
+    body {
+        background: var(--rec-bg);
+    }
+
+    .recommended-page {
+        padding: 32px 0 55px;
+        color: #334155;
+    }
+
+    .recommended-heading {
+        margin-bottom: 25px;
+    }
+
+        .recommended-heading h1 {
+            color: var(--rec-navy);
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: -.7px;
+            margin-bottom: 9px;
+        }
+
+        .recommended-heading p {
+            color: var(--rec-muted);
+            font-size: 14px;
+            margin: 0;
+            line-height: 1.7;
+        }
+
+    .rec-hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 18px;
+        padding: 30px;
+        margin-bottom: 27px;
+        background: linear-gradient(120deg, #173b78, #2563eb);
+        color: white;
+        box-shadow: 0 10px 28px rgba(37, 99, 235, .13);
+    }
+
+        .rec-hero::after {
+            content: "";
+            position: absolute;
+            width: 190px;
+            height: 190px;
+            border: 30px solid rgba(255,255,255,.08);
+            border-radius: 50%;
+            right: -45px;
+            top: -95px;
+            pointer-events: none;
+        }
+
+    .rec-hero-content {
+        position: relative;
+        z-index: 1;
+        max-width: 680px;
+    }
+
+    .rec-hero-icon {
+        width: 47px;
+        height: 47px;
+        border-radius: 13px;
+        background: rgba(255,255,255,.17);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 23px;
+        margin-bottom: 17px;
+    }
+
+    .rec-hero h2 {
+        font-size: 24px;
+        font-weight: 800;
+        margin-bottom: 10px;
+    }
+
+    .rec-hero p {
+        color: rgba(255,255,255,.84);
+        font-size: 14px;
+        line-height: 1.8;
+        margin: 0;
+    }
+
+    .rec-summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 18px;
+    }
+
+        .rec-summary h3 {
+            font-size: 19px;
+            font-weight: 800;
+            color: var(--rec-navy);
+            margin: 0;
+        }
+
+    .rec-count {
+        background: #e9f1ff;
+        color: var(--rec-primary);
+        border-radius: 9px;
+        padding: 9px 13px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .job-card {
+        background: white;
+        border: 1px solid var(--rec-border);
+        border-radius: 16px;
+        margin-bottom: 20px;
+        overflow: hidden;
+        box-shadow: 0 4px 18px rgba(25, 50, 90, .025);
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+        .job-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 28px rgba(25, 50, 90, .075);
+        }
+
+    .job-card-top {
+        padding: 24px 25px 20px;
+    }
+
+    .job-heading-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .job-title-area {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        min-width: 0;
+    }
+
+    .job-company-icon {
+        width: 54px;
+        height: 54px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #edf4ff;
+        color: var(--rec-primary);
+        border-radius: 14px;
+        font-size: 24px;
+    }
+
+    .job-title {
+        color: var(--rec-navy);
+        font-size: 20px;
+        font-weight: 800;
+        margin: 2px 0 9px;
+        overflow-wrap: anywhere;
+    }
+
+    .job-location {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 7px;
+        color: var(--rec-muted);
+        font-size: 13px;
+    }
+
+        .job-location i {
+            color: var(--rec-primary);
+        }
+
+    .match-box {
+        min-width: 135px;
+        max-width: 165px;
+        padding: 13px 15px;
+        background: #effaf4;
+        border: 1px solid #d9f2e4;
+        border-radius: 12px;
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+    .match-label {
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        color: #38815c;
+        margin-bottom: 5px;
+    }
+
+    .match-number {
+        color: #138453;
+        font-size: 25px;
+        font-weight: 800;
+        line-height: 1.2;
+    }
+
+    .match-track {
+        height: 6px;
+        background: #dce8df;
+        border-radius: 20px;
+        overflow: hidden;
+        margin-top: 9px;
+    }
+
+    .match-fill {
+        height: 100%;
+        background: #20a464;
+        border-radius: 20px;
+    }
+
+    .job-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 22px;
+    }
+
+    .job-meta-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #f6f8fc;
+        border: 1px solid #edf0f6;
+        border-radius: 9px;
+        padding: 10px 12px;
+        color: #56657a;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+        .job-meta-item i {
+            color: var(--rec-primary);
+            font-size: 15px;
+        }
+
+    .job-description {
+        color: #65748a;
+        font-size: 13px;
+        line-height: 1.85;
+        margin: 20px 0 0;
+        overflow-wrap: anywhere;
+    }
+
+    .job-card-details {
+        padding: 22px 25px;
+        background: #fbfcfe;
+        border-top: 1px solid var(--rec-border);
+    }
+
+    .skill-section {
+        margin-bottom: 19px;
+    }
+
+        .skill-section:last-child {
+            margin-bottom: 0;
+        }
+
+    .skill-heading {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--rec-navy);
+        font-size: 13px;
+        font-weight: 800;
+        margin-bottom: 11px;
+    }
+
+        .skill-heading i {
+            font-size: 16px;
+        }
+
+    .matched-heading i {
+        color: #169b61;
+    }
+
+    .missing-heading i {
+        color: #d97706;
+    }
+
+    .skill-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .skill-badge {
+        display: inline-block;
+        border-radius: 7px;
+        padding: 7px 10px;
+        font-size: 11px;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+
+    .matched-skill {
+        background: #e7f8ee;
+        color: #167747;
+        border: 1px solid #d2f0de;
+    }
+
+    .missing-skill {
+        background: #fff3df;
+        color: #a65b08;
+        border: 1px solid #ffe6bd;
+    }
+
+    .skill-empty {
+        color: #8a97a9;
+        font-size: 12px;
+    }
+
+    .job-card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 15px;
+        padding: 17px 25px;
+        background: white;
+        border-top: 1px solid var(--rec-border);
+    }
+
+    .salary-caption {
+        color: #8a97a9;
+        font-size: 11px;
+        margin-bottom: 4px;
+    }
+
+    .salary-value {
+        color: var(--rec-navy);
+        font-size: 16px;
+        font-weight: 800;
+    }
+
+    .salary-type {
+        color: var(--rec-muted);
+        font-size: 11px;
+        font-weight: 500;
+    }
+
+    .btn-job-details {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        background: var(--rec-primary);
+        color: white;
+        border: 1px solid var(--rec-primary);
+        border-radius: 9px;
+        padding: 11px 16px;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all .2s ease;
+    }
+
+        .btn-job-details:hover {
+            color: white;
+            background: #173b78;
+            border-color: #173b78;
+        }
+
+    .empty-state {
+        background: white;
+        border: 1px solid var(--rec-border);
+        border-radius: 17px;
+        padding: 50px 22px;
+        text-align: center;
+    }
+
+    .empty-icon {
+        width: 78px;
+        height: 78px;
+        border-radius: 23px;
+        background: #edf4ff;
+        color: var(--rec-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 34px;
+        margin: 0 auto 20px;
+    }
+
+    .empty-state h3 {
+        color: var(--rec-navy);
+        font-size: 21px;
+        font-weight: 800;
+        margin-bottom: 11px;
+    }
+
+    .empty-state p {
+        max-width: 480px;
+        margin: 0 auto 22px;
+        color: var(--rec-muted);
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .btn-rec-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 16px;
+        background: var(--rec-primary);
+        color: white;
+        border-radius: 9px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+        .btn-rec-primary:hover {
+            background: #173b78;
+            color: white;
+        }
+
+    .back-dashboard {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--rec-primary);
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        margin-bottom: 20px;
+    }
+
+        .back-dashboard:hover {
+            color: #173b78;
+        }
+
+    @@media (max-width: 767px) {
+        .recommended-page {
+            padding-top: 20px;
+        }
+
+        .recommended-heading h1 {
+            font-size: 25px;
+        }
+
+        .rec-hero {
+            padding: 24px 20px;
+        }
+
+            .rec-hero h2 {
+                font-size: 21px;
+            }
+
+        .job-card-top {
+            padding: 20px;
+        }
+
+        .job-heading-row {
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .match-box {
+            width: 100%;
+            max-width: none;
+            text-align: left;
+        }
+
+        .match-track {
+            max-width: 250px;
+        }
+
+        .job-card-details {
+            padding: 20px;
+        }
+
+        .job-card-footer {
+            padding: 17px 20px;
+        }
+    }
+
+    @@media (max-width: 420px) {
+        .job-title-area {
+            gap: 10px;
+        }
+
+        .job-company-icon {
+            width: 43px;
+            height: 43px;
+            font-size: 20px;
+        }
+
+        .job-title {
+            font-size: 17px;
+        }
+
+        .job-meta {
+            gap: 7px;
+        }
+
+        .job-meta-item {
+            padding: 8px 9px;
+        }
+
+        .job-card-footer {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .btn-job-details {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="container recommended-page">
+
+    <a asp-controller="Student"
+       asp-action="Index"
+       class="back-dashboard">
+        <i class="bi bi-arrow-left"></i>
+        Back to Dashboard
+    </a>
+
+    <!-- Page Heading -->
+    <div class="recommended-heading">
+        <h1>Recommended Jobs</h1>
+        <p>
+            Discover job opportunities based on your CV and profile skills.
         </p>
+    </div>
+
+    <!-- Hero Banner -->
+    <div class="rec-hero">
+        <div class="rec-hero-content">
+            <div class="rec-hero-icon">
+                <i class="bi bi-stars"></i>
+            </div>
+
+            <h2>Find Opportunities That Match Your Skills</h2>
+
+            <p>
+                Explore recommended jobs, review your matching skills, and identify
+                the skills you may need to improve for your desired roles.
+            </p>
+        </div>
     </div>
 
     @if (Model == null || !Model.Any())
     {
-        <div class="alert alert-info">
-            No recommended jobs found. Please update your profile and upload your CV.
+        <!-- Empty State -->
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="bi bi-search"></i>
+            </div>
+
+            <h3>No Recommended Jobs Yet</h3>
+
+            <p>
+                We couldn't find any recommended jobs for your profile right now.
+                Make sure your profile skills and CV are updated, then check again.
+            </p>
+
+            <a asp-controller="Student"
+               asp-action="EditProfile"
+               class="btn-rec-primary">
+                <i class="bi bi-person-gear"></i>
+                Update My Profile
+            </a>
+
+            <a asp-controller="Student"
+               asp-action="Jobs"
+               class="btn-rec-primary ms-2">
+                <i class="bi bi-briefcase"></i>
+                Browse All Jobs
+            </a>
         </div>
     }
     else
     {
+        <!-- Results Heading -->
+        <div class="rec-summary">
+            <h3>
+                <i class="bi bi-briefcase me-2" style="color:#2563eb;"></i>
+                Jobs For You
+            </h3>
+
+            <span class="rec-count">
+                @Model.Count job@(Model.Count == 1 ? "" : "s") recommended
+            </span>
+        </div>
+
         @foreach (var item in Model)
         {
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-                        <div>
-                            <h4>@item.Job.JobTitle</h4>
-                            <p class="text-muted mb-2">
-                                @item.Job.Location
-                            </p>
+            var matchPercentage = Math.Min(100, Math.Max(0, item.MatchPercentage));
+            var description = item.Job.Description ?? "";
+            var shortDescription = description.Length > 250
+            ? description.Substring(0, 250) + "..."
+            : description;
+
+            <div class="job-card">
+
+                <!-- Job Header and Match Percentage -->
+                <div class="job-card-top">
+
+                    <div class="job-heading-row">
+
+                        <div class="job-title-area">
+                            <div class="job-company-icon">
+                                <i class="bi bi-building"></i>
+                            </div>
+
+                            <div>
+                                <h2 class="job-title">
+                                    @item.Job.JobTitle
+                                </h2>
+
+                                <div class="job-location">
+                                    <i class="bi bi-geo-alt-fill"></i>
+
+                                    <span>
+                                        @(string.IsNullOrWhiteSpace(item.Job.Location)
+                                            ? "Location not specified"
+                                            : item.Job.Location)
+                                    </span>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="text-end">
-                            <h5 class="text-success">
-                                @item.MatchPercentage.ToString("0")% Match
-                            </h5>
+                        <div class="match-box">
+                            <span class="match-label">
+                                PROFILE MATCH
+                            </span>
+
+                            <div class="match-number">
+                                @item.MatchPercentage.ToString("0")%
+                            </div>
+
+                            <div class="match-track">
+                                <div class="match-fill"
+                                     style="width: @matchPercentage%;"></div>
+                            </div>
                         </div>
+
                     </div>
 
-                    <hr />
+                    <!-- Job Metadata -->
+                    <div class="job-meta">
 
-                    <p>
-                        @(item.Job.Description?.Length > 250
-                            ? item.Job.Description.Substring(0, 250) + "..."
-                            : item.Job.Description)
-                    </p>
+                        <div class="job-meta-item">
+                            <i class="bi bi-clock"></i>
+                            <span>
+                                @(string.IsNullOrWhiteSpace(item.Job.JobType)
+                                    ? "Job type not specified"
+                                    : item.Job.JobType)
+                            </span>
+                        </div>
 
-                    <p>
-                        <strong>Required Skills:</strong>
-                        @(string.IsNullOrWhiteSpace(item.Job.RequiredSkills)
-                            ? "Not specified"
-                            : item.Job.RequiredSkills)
-                    </p>
+                        <div class="job-meta-item">
+                            <i class="bi bi-cash-stack"></i>
+                            <span>
+                                @item.Job.MinimumSalary.ToString("N0")
+                                -
+                                @item.Job.MaximumSalary.ToString("N0")
+                            </span>
+                        </div>
 
-                    <p>
-                        <strong>Salary:</strong>
-                        @item.Job.MinimumSalary.ToString("N0")
-                        -
-                        @item.Job.MaximumSalary.ToString("N0")
-                        / @item.Job.SalaryType
-                    </p>
+                        <div class="job-meta-item">
+                            <i class="bi bi-graph-up-arrow"></i>
+                            <span>Skills-based matching</span>
+                        </div>
 
-                    <div class="mb-3">
-                        <strong>Matched Skills:</strong>
-                        @if (item.MatchedTerms.Any())
+                    </div>
+
+                    <!-- Job Description -->
+                    @if (!string.IsNullOrWhiteSpace(description))
+                    {
+                        <p class="job-description">
+                            @shortDescription
+                        </p>
+                    }
+
+                </div>
+
+                <!-- Matched and Missing Skills -->
+                <div class="job-card-details">
+
+                    <div class="skill-section">
+
+                        <div class="skill-heading matched-heading">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <span>Matched Skills</span>
+                        </div>
+
+                        @if (item.MatchedTerms != null && item.MatchedTerms.Any())
                         {
-                            @foreach (var skill in item.MatchedTerms)
-                            {
-                                <span class="badge bg-success me-1 mb-1">
-                                    @skill
-                                </span>
-                            }
+                            <div class="skill-list">
+                                @foreach (var skill in item.MatchedTerms)
+                                {
+                                    <span class="skill-badge matched-skill">
+                                        <i class="bi bi-check2 me-1"></i>@skill
+                                    </span>
+                                }
+                            </div>
                         }
                         else
                         {
-                            <span class="text-muted">No matching skills found.</span>
+                            <span class="skill-empty">
+                                No matching skills detected for this job.
+                            </span>
                         }
+
                     </div>
 
-                    <div class="mb-3">
-                        <strong>Skills to Improve:</strong>
-                        @if (item.MissingTerms.Any())
+                    <div class="skill-section">
+
+                        <div class="skill-heading missing-heading">
+                            <i class="bi bi-lightbulb-fill"></i>
+                            <span>Skills to Improve</span>
+                        </div>
+
+                        @if (item.MissingTerms != null && item.MissingTerms.Any())
                         {
-                            @foreach (var skill in item.MissingTerms)
-                            {
-                                <span class="badge bg-secondary me-1 mb-1">
-                                    @skill
-                                </span>
-                            }
+                            <div class="skill-list">
+                                @foreach (var skill in item.MissingTerms)
+                                {
+                                    <span class="skill-badge missing-skill">
+                                        <i class="bi bi-plus-circle me-1"></i>@skill
+                                    </span>
+                                }
+                            </div>
                         }
                         else
                         {
-                            <span class="text-muted">No missing skills detected.</span>
+                            <span class="skill-empty">
+                                No missing skills detected by the matching system.
+                            </span>
                         }
+
+                    </div>
+
+                </div>
+
+                <!-- Job Footer -->
+                <div class="job-card-footer">
+
+                    <div>
+                        <div class="salary-caption">SALARY RANGE</div>
+
+                        <div class="salary-value">
+                            @item.Job.MinimumSalary.ToString("N0")
+                            -
+                            @item.Job.MaximumSalary.ToString("N0")
+
+                            <span class="salary-type">
+                                / @(string.IsNullOrWhiteSpace(item.Job.SalaryType)
+                                  ? "Period not specified"
+                                  : item.Job.SalaryType)
+                            </span>
+                        </div>
                     </div>
 
                     <a asp-controller="Student"
                        asp-action="JobDetails"
                        asp-route-id="@item.Job.JobId"
-                       class="btn btn-primary">
+                       class="btn-job-details">
                         View Job Details
+                        <i class="bi bi-arrow-right"></i>
                     </a>
+
                 </div>
+
             </div>
         }
     }
+
 </div>

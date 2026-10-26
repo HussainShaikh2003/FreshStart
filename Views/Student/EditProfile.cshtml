@@ -4,392 +4,755 @@
     ViewData["Title"] = "Edit Profile";
 }
 
-
-<div class="container-fluid mt-4">
-
-    <div class="row">
-
-
-        <!-- Sidebar -->
-
-        <div class="col-md-3 mb-4">
-
-
-            <div class="card shadow p-4">
-
-
-                <h3 class="fw-bold text-primary">
-                    FreshStart
-                </h3>
-
-
-                <hr />
-
-
-                <a asp-controller="Student"
-                   asp-action="Index"
-                   class="btn btn-light text-start mb-2">
-
-                    🏠 Dashboard
-
-                </a>
-
-
-                <a asp-controller="Student"
-                   asp-action="Jobs"
-                   class="btn btn-light text-start mb-2">
-
-                    🔍 Browse Jobs
-
-                </a>
-
-
-                <a asp-controller="Student"
-                   asp-action="MyApplications"
-                   class="btn btn-light text-start mb-2">
-
-                    📄 Applications
-
-                </a>
-
-
-                <a asp-controller="Student"
-                   asp-action="SavedJobs"
-                   class="btn btn-light text-start">
-
-                    ⭐ Saved Jobs
-
-                </a>
-
-
-            </div>
-
-
-        </div>
-
-
-
-
-
-
-        <!-- Edit Form -->
-
-
-        <div class="col-md-9">
-
-
-            <div class="card shadow p-5">
-
-
-                <h2 class="fw-bold text-center mb-4">
-                    Edit Student Profile ✏️
-                </h2>
-
-
-
-                <form asp-action="EditProfile"
-                      method="post"
-                      enctype="multipart/form-data">
-
-
-
-                    <div class="row">
-
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label">
-                                Full Name
-                            </label>
-
-                            <input asp-for="FullName"
-                                   class="form-control" />
-
-                        </div>
-
-
-
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label">
-                                Phone
-                            </label>
-
-                            <input asp-for="Phone"
-                                   class="form-control" />
-
-                        </div>
-
-
-
-
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label">
-                                City
-                            </label>
-
-                            <input asp-for="City"
-                                   class="form-control" />
-
-                        </div>
-
-
-
-
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label">
-                                University
-                            </label>
-
-                            <input asp-for="University"
-                                   class="form-control" />
-
-                        </div>
-
-
-
-
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label">
-                                Degree
-                            </label>
-
-                            <input asp-for="Degree"
-                                   class="form-control" />
-
-                        </div>
-
-
-
-
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label">
-                                Graduation Year
-                            </label>
-
-                            <input asp-for="GraduationYear"
-                                   class="form-control" />
-
-                        </div>
-
-
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+<style>
+    .profile-page {
+        background: #f4f7fc;
+        min-height: 100vh;
+        padding: 32px 0;
+    }
+
+    .profile-sidebar,
+    .profile-form-card {
+        background: #fff;
+        border: 1px solid #e8edf5;
+        border-radius: 18px;
+        box-shadow: 0 5px 22px rgba(31, 55, 90, 0.06);
+    }
+
+    .profile-sidebar {
+        padding: 24px 18px;
+        position: sticky;
+        top: 20px;
+    }
+
+    .brand-name {
+        color: #1769e0;
+        font-size: 27px;
+        font-weight: 800;
+        letter-spacing: -0.7px;
+    }
+
+    .sidebar-label {
+        color: #98a2b3;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        margin: 25px 12px 12px;
+        text-transform: uppercase;
+    }
+
+    .sidebar-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #58677e;
+        text-decoration: none;
+        padding: 13px 14px;
+        margin-bottom: 7px;
+        border-radius: 11px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+        .sidebar-link i {
+            font-size: 18px;
+        }
+
+        .sidebar-link:hover {
+            background: #f0f5ff;
+            color: #1769e0;
+        }
+
+    .profile-page-title {
+        color: #172b4d;
+        font-size: 32px;
+        font-weight: 800;
+        letter-spacing: -0.8px;
+    }
+
+    .profile-subtitle {
+        color: #78869a;
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    .profile-form-card {
+        padding: 32px;
+    }
+
+    .form-section {
+        margin-bottom: 30px;
+    }
+
+    .section-heading {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #172b4d;
+        font-size: 19px;
+        font-weight: 750;
+        margin-bottom: 8px;
+    }
+
+    .section-icon {
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #eaf2ff;
+        color: #1769e0;
+        border-radius: 12px;
+        font-size: 19px;
+        flex-shrink: 0;
+    }
+
+    .section-description {
+        color: #8793a7;
+        font-size: 13px;
+        margin-bottom: 20px;
+    }
+
+    .profile-form-card .form-label {
+        color: #35445c;
+        font-size: 13px;
+        font-weight: 650;
+        margin-bottom: 8px;
+    }
+
+    .profile-form-card .form-control {
+        min-height: 46px;
+        border: 1px solid #dfe6f0;
+        border-radius: 10px;
+        padding: 11px 13px;
+        color: #344054;
+        font-size: 14px;
+        background-color: #fff;
+    }
+
+    .profile-form-card textarea.form-control {
+        min-height: 115px;
+        resize: vertical;
+    }
+
+    .profile-form-card .form-control:focus {
+        border-color: #1769e0;
+        box-shadow: 0 0 0 3px rgba(23, 105, 224, 0.1);
+    }
+
+    .profile-form-card .form-control::placeholder {
+        color: #a0aabc;
+    }
+
+    .field-help {
+        color: #8793a7;
+        font-size: 12px;
+        margin-top: 6px;
+    }
+
+    .upload-box {
+        border: 1px dashed #cbd8eb;
+        border-radius: 13px;
+        padding: 20px;
+        background: #f9fbff;
+        height: 100%;
+    }
+
+    .upload-icon {
+        width: 43px;
+        height: 43px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #eaf2ff;
+        color: #1769e0;
+        border-radius: 12px;
+        font-size: 20px;
+        margin-bottom: 12px;
+    }
+
+    .upload-title {
+        color: #172b4d;
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .upload-description {
+        color: #8793a7;
+        font-size: 12px;
+        margin-bottom: 13px;
+    }
+
+    .profile-form-card input[type="file"] {
+        font-size: 12px;
+        padding: 9px;
+    }
+
+    .current-file-card {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        background: #f3f7ff;
+        border: 1px solid #e0eaff;
+        border-radius: 12px;
+        padding: 15px;
+        margin-top: 15px;
+    }
+
+    .current-file-icon {
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        color: #1769e0;
+        border-radius: 10px;
+        font-size: 22px;
+        flex-shrink: 0;
+    }
+
+    .current-file-title {
+        color: #172b4d;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .current-file-link {
+        color: #1769e0;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 650;
+    }
+
+        .current-file-link:hover {
+            text-decoration: underline;
+        }
+
+    .current-profile-image {
+        width: 110px;
+        height: 110px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid #eaf2ff;
+        box-shadow: 0 5px 15px rgba(31, 55, 90, 0.1);
+    }
+
+    .form-actions {
+        border-top: 1px solid #e8edf5;
+        padding-top: 24px;
+        margin-top: 10px;
+    }
+
+    .btn-update-profile,
+    .btn-cancel-profile {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        gap: 9px;
+        padding: 13px 22px;
+        border-radius: 10px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .btn-update-profile {
+        background: #1769e0;
+        border: 1px solid #1769e0;
+        color: #fff;
+    }
+
+        .btn-update-profile:hover {
+            background: #1056bd;
+            border-color: #1056bd;
+            color: #fff;
+        }
+
+    .btn-cancel-profile {
+        background: #fff;
+        border: 1px solid #dfe6f0;
+        color: #58677e;
+    }
+
+        .btn-cancel-profile:hover {
+            background: #f8faff;
+            color: #1769e0;
+        }
+
+    @@media (max-width: 767px) {
+        .profile-page {
+            padding: 20px 0;
+        }
+
+        .profile-sidebar {
+            position: static;
+            margin-bottom: 24px;
+        }
+
+        .profile-form-card {
+            padding: 20px;
+        }
+
+        .profile-page-title {
+            font-size: 26px;
+        }
+
+        .form-actions .btn-update-profile,
+        .form-actions .btn-cancel-profile {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="profile-page">
+    <div class="container-fluid px-3 px-lg-4">
+        <div class="row g-4">
+
+            <!-- Sidebar -->
+            <div class="col-lg-3 col-xl-2">
+                <div class="profile-sidebar">
+
+                    <div class="brand-name">
+                        <i class="bi bi-briefcase-fill me-2"></i>FreshStart
                     </div>
 
-
-
-
-
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Skills
-                        </label>
-
-                        <input asp-for="Skills"
-                               class="form-control" />
-
-                    </div>
-
-
-
-
-
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Experience
-                        </label>
-
-<textarea asp-for="Experience"
-          class="form-control"
-          rows="4"></textarea>
-
-                    </div>
-
-
-
-
-
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Professional Bio
-                        </label>
-
-<textarea asp-for="Bio"
-          class="form-control"
-          rows="4"></textarea>
-
-                    </div>
-
-
-
-
-
-
-                    <div class="row">
-
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label">
-                                LinkedIn
-                            </label>
-
-                            <input asp-for="LinkedIn"
-                                   class="form-control" />
-
-                        </div>
-
-
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label">
-                                GitHub
-                            </label>
-
-                            <input asp-for="GitHub"
-                                   class="form-control" />
-
-                        </div>
-
-
-                    </div>
-
-
-
-
-
-
-
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Upload New Resume
-                        </label>
-
-
-                        <input type="file"
-                               name="ResumeFile"
-                               class="form-control"
-                               accept=".pdf" />
-
-
-                    </div>
-
-
-
-
-
-                    @if (!string.IsNullOrEmpty(Model.ResumePath))
-                    {
-
-                        <div class="card bg-light p-3 mb-3">
-
-
-                            <h6>
-                                Current Resume
-                            </h6>
-
-
-                            <a href="@Model.ResumePath"
-                               target="_blank"
-                               class="btn btn-outline-primary">
-
-                                View Resume
-
-                            </a>
-
-
-                        </div>
-
-                    }
-
-
-
-
-
-
-
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Change Profile Picture
-                        </label>
-
-
-                        <input type="file"
-                               name="ProfileImageFile"
-                               class="form-control"
-                               accept="image/*" />
-
-                    </div>
-
-
-
-
-
-                    @if (!string.IsNullOrEmpty(Model.ProfileImage))
-                    {
-
-                        <div class="text-center mb-4">
-
-
-                            <img src="@Model.ProfileImage"
-                                 width="130"
-                                 height="130"
-                                 class="rounded-circle shadow" />
-
-
-                        </div>
-
-                    }
-
-
-
-
-
-
-                    <button type="submit"
-                            class="btn btn-success">
-
-                        Update Profile
-
-                    </button>
-
-
-
-                    <a asp-action="Index"
-                       class="btn btn-secondary ms-2">
-
-                        Cancel
-
+                    <div class="sidebar-label">Student Menu</div>
+
+                    <a asp-controller="Student"
+                       asp-action="Index"
+                       class="sidebar-link">
+                        <i class="bi bi-grid-1x2"></i>
+                        Dashboard
                     </a>
 
+                    <a asp-controller="Student"
+                       asp-action="Jobs"
+                       class="sidebar-link">
+                        <i class="bi bi-search"></i>
+                        Browse Jobs
+                    </a>
 
+                    <a asp-controller="Student"
+                       asp-action="MyApplications"
+                       class="sidebar-link">
+                        <i class="bi bi-file-earmark-text"></i>
+                        My Applications
+                    </a>
 
+                    <a asp-controller="Student"
+                       asp-action="SavedJobs"
+                       class="sidebar-link">
+                        <i class="bi bi-bookmark"></i>
+                        Saved Jobs
+                    </a>
 
-                </form>
-
-
+                </div>
             </div>
 
+            <!-- Main Content -->
+            <div class="col-lg-9 col-xl-10">
 
+                <div class="mb-4">
+                    <h1 class="profile-page-title mb-2">Edit Your Profile</h1>
+
+                    <p class="profile-subtitle mb-0">
+                        Keep your personal details, education, skills, and professional
+                        information up to date.
+                    </p>
+                </div>
+
+                <div class="profile-form-card">
+
+                    <form asp-action="EditProfile"
+                          asp-controller="Student"
+                          method="post"
+                          enctype="multipart/form-data">
+
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="All"
+                             class="alert alert-danger mb-4"
+                             role="alert">
+                        </div>
+
+                        <!-- Personal Information -->
+                        <div class="form-section">
+
+                            <div class="section-heading">
+                                <div class="section-icon">
+                                    <i class="bi bi-person"></i>
+                                </div>
+                                Personal Information
+                            </div>
+
+                            <p class="section-description">
+                                Update your contact details and location.
+                            </p>
+
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+                                    <label asp-for="FullName" class="form-label">
+                                        Full Name
+                                    </label>
+
+                                    <input asp-for="FullName"
+                                           class="form-control"
+                                           placeholder="Enter your full name" />
+
+                                    <span asp-validation-for="FullName"
+                                          class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="Phone" class="form-label">
+                                        Phone Number
+                                    </label>
+
+                                    <input asp-for="Phone"
+                                           class="form-control"
+                                           placeholder="03xx-xxxxxxx" />
+
+                                    <span asp-validation-for="Phone"
+                                          class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="City" class="form-label">
+                                        City
+                                    </label>
+
+                                    <input asp-for="City"
+                                           class="form-control"
+                                           placeholder="Enter your city" />
+
+                                    <span asp-validation-for="City"
+                                          class="text-danger small"></span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <hr class="mb-4" />
+
+                        <!-- Education -->
+                        <div class="form-section">
+
+                            <div class="section-heading">
+                                <div class="section-icon">
+                                    <i class="bi bi-mortarboard"></i>
+                                </div>
+                                Education
+                            </div>
+
+                            <p class="section-description">
+                                Keep your academic background current.
+                            </p>
+
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+                                    <label asp-for="University" class="form-label">
+                                        University
+                                    </label>
+
+                                    <input asp-for="University"
+                                           class="form-control"
+                                           placeholder="Enter university name" />
+
+                                    <span asp-validation-for="University"
+                                          class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="Degree" class="form-label">
+                                        Degree
+                                    </label>
+
+                                    <input asp-for="Degree"
+                                           class="form-control"
+                                           placeholder="e.g. BS Software Engineering" />
+
+                                    <span asp-validation-for="Degree"
+                                          class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="GraduationYear" class="form-label">
+                                        Graduation Year
+                                    </label>
+
+                                    <input asp-for="GraduationYear"
+                                           class="form-control"
+                                           placeholder="e.g. 2027" />
+
+                                    <span asp-validation-for="GraduationYear"
+                                          class="text-danger small"></span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <hr class="mb-4" />
+
+                        <!-- Skills and Experience -->
+                        <div class="form-section">
+
+                            <div class="section-heading">
+                                <div class="section-icon">
+                                    <i class="bi bi-tools"></i>
+                                </div>
+                                Skills & Experience
+                            </div>
+
+                            <p class="section-description">
+                                Update the skills and experience you want employers to see.
+                            </p>
+
+                            <div class="mb-3">
+                                <label asp-for="Skills" class="form-label">
+                                    Skills
+                                </label>
+
+                                <input asp-for="Skills"
+                                       class="form-control"
+                                       placeholder="e.g. C#, ASP.NET Core, SQL Server" />
+
+                                <div class="field-help">
+                                    Separate multiple skills with commas.
+                                </div>
+
+                                <span asp-validation-for="Skills"
+                                      class="text-danger small"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Experience" class="form-label">
+                                    Experience
+                                </label>
+
+                                <textarea asp-for="Experience"
+                                          class="form-control"
+                                          rows="4"
+                                          placeholder="Describe your experience, internships, or projects."></textarea>
+
+                                <span asp-validation-for="Experience"
+                                      class="text-danger small"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Bio" class="form-label">
+                                    Professional Bio
+                                </label>
+
+                                <textarea asp-for="Bio"
+                                          class="form-control"
+                                          rows="4"
+                                          placeholder="Write a short professional introduction."></textarea>
+
+                                <span asp-validation-for="Bio"
+                                      class="text-danger small"></span>
+                            </div>
+
+                        </div>
+
+                        <hr class="mb-4" />
+
+                        <!-- Professional Links -->
+                        <div class="form-section">
+
+                            <div class="section-heading">
+                                <div class="section-icon">
+                                    <i class="bi bi-link-45deg"></i>
+                                </div>
+                                Professional Links
+                            </div>
+
+                            <p class="section-description">
+                                Update your professional and project portfolio links.
+                            </p>
+
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+                                    <label asp-for="LinkedIn" class="form-label">
+                                        <i class="bi bi-linkedin me-1"></i>LinkedIn
+                                    </label>
+
+                                    <input asp-for="LinkedIn"
+                                           class="form-control"
+                                           placeholder="https://linkedin.com/in/your-profile" />
+
+                                    <span asp-validation-for="LinkedIn"
+                                          class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="GitHub" class="form-label">
+                                        <i class="bi bi-github me-1"></i>GitHub
+                                    </label>
+
+                                    <input asp-for="GitHub"
+                                           class="form-control"
+                                           placeholder="https://github.com/your-username" />
+
+                                    <span asp-validation-for="GitHub"
+                                          class="text-danger small"></span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <hr class="mb-4" />
+
+                        <!-- Resume and Picture -->
+                        <div class="form-section mb-2">
+
+                            <div class="section-heading">
+                                <div class="section-icon">
+                                    <i class="bi bi-cloud-arrow-up"></i>
+                                </div>
+                                Resume & Profile Picture
+                            </div>
+
+                            <p class="section-description">
+                                Upload replacements if you want to update your current files.
+                            </p>
+
+                            <div class="row g-3">
+
+                                <!-- Resume -->
+                                <div class="col-md-6">
+                                    <div class="upload-box">
+
+                                        <div class="upload-icon">
+                                            <i class="bi bi-file-earmark-pdf"></i>
+                                        </div>
+
+                                        <div class="upload-title">Update Resume</div>
+
+                                        <p class="upload-description">
+                                            Select a new PDF resume. Leave empty to keep the current one.
+                                        </p>
+
+                                        <input type="file"
+                                               name="ResumeFile"
+                                               class="form-control"
+                                               accept=".pdf,application/pdf" />
+
+                                        @if (!string.IsNullOrEmpty(Model.ResumePath))
+                                        {
+                                            <div class="current-file-card">
+
+                                                <div class="current-file-icon">
+                                                    <i class="bi bi-file-earmark-pdf"></i>
+                                                </div>
+
+                                                <div>
+                                                    <div class="current-file-title">
+                                                        Current Resume
+                                                    </div>
+
+                                                    <a href="@Model.ResumePath"
+                                                       target="_blank"
+                                                       rel="noopener noreferrer"
+                                                       class="current-file-link">
+                                                        <i class="bi bi-box-arrow-up-right me-1"></i>
+                                                        View Current Resume
+                                                    </a>
+                                                </div>
+
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="field-help mt-3">
+                                                No resume uploaded yet.
+                                            </div>
+                                        }
+
+                                    </div>
+                                </div>
+
+                                <!-- Profile Picture -->
+                                <div class="col-md-6">
+                                    <div class="upload-box">
+
+                                        <div class="upload-icon">
+                                            <i class="bi bi-person-bounding-box"></i>
+                                        </div>
+
+                                        <div class="upload-title">Update Profile Picture</div>
+
+                                        <p class="upload-description">
+                                            Select a new image. Leave empty to keep the current picture.
+                                        </p>
+
+                                        <input type="file"
+                                               name="ProfileImageFile"
+                                               class="form-control"
+                                               accept="image/*" />
+
+                                        @if (!string.IsNullOrEmpty(Model.ProfileImage))
+                                        {
+                                            <div class="text-center mt-4">
+
+                                                <img src="@Model.ProfileImage"
+                                                     alt="Current profile picture"
+                                                     class="current-profile-image" />
+
+                                                <div class="current-file-title mt-2">
+                                                    Current Profile Picture
+                                                </div>
+
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="field-help mt-3">
+                                                No profile picture uploaded yet.
+                                            </div>
+                                        }
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="form-actions">
+                            <div class="d-flex flex-wrap gap-3">
+
+                                <button type="submit" class="btn btn-update-profile">
+                                    <i class="bi bi-check-circle"></i>
+                                    Update Profile
+                                </button>
+
+                                <a asp-controller="Student"
+                                   asp-action="Index"
+                                   class="btn btn-cancel-profile">
+                                    <i class="bi bi-arrow-left"></i>
+                                    Cancel
+                                </a>
+
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
         </div>
-
-
     </div>
-
-
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
