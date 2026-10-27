@@ -2,209 +2,1068 @@
 
 @{
     ViewData["Title"] = "Manage Jobs";
+
+    var jobs = Model?.ToList()
+        ?? new List<FreshStart.Models.Job.Job>();
+
+    var totalJobs = jobs.Count;
+    var fullTimeJobs = jobs.Count(j =>
+        string.Equals(j.JobType, "Full Time", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(j.JobType, "Full-Time", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(j.JobType, "FullTime", StringComparison.OrdinalIgnoreCase));
+
+    var partTimeJobs = jobs.Count(j =>
+        string.Equals(j.JobType, "Part Time", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(j.JobType, "Part-Time", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(j.JobType, "PartTime", StringComparison.OrdinalIgnoreCase));
+
+    var otherJobs = totalJobs - fullTimeJobs - partTimeJobs;
 }
 
-
-<div class="container-fluid mt-4">
-
-
-    <div class="p-4 mb-4 rounded shadow bg-dark text-white">
-
-        <h1 class="fw-bold">
-            💼 Job Management
-        </h1>
-
-        <p class="mb-0">
-            Monitor all jobs posted by registered employers.
-        </p>
-
-    </div>
-
-
-
-
-
-
-    <div class="card shadow border-0 p-4">
-
-
-        <h3 class="mb-4">
-            All Posted Jobs
-        </h3>
-
-
-
-
-        <div class="table-responsive">
-
-
-            <table class="table table-hover align-middle">
-
-
-                <thead class="table-dark">
-
-                    <tr>
-
-                        <th>
-                            Job Title
-                        </th>
-
-
-                        <th>
-                            Company
-                        </th>
-
-
-                        <th>
-                            Location
-                        </th>
-
-
-                        <th>
-                            Salary
-                        </th>
-
-
-                        <th>
-                            Type
-                        </th>
-
-
-                        <th>
-                            Deadline
-                        </th>
-
-
-                        <th>
-                            Posted
-                        </th>
-
-
-                        <th>
-                            Action
-                        </th>
-
-                    </tr>
-
-
-                </thead>
-
-
-
-
-                <tbody>
-
-
-                    @foreach (var job in Model)
-                    {
-
-                        <tr>
-
-
-                            <td>
-
-                                <strong>
-                                    @job.JobTitle
-                                </strong>
-
-                            </td>
-
-
-
-
-
-                            <td>
-
-                                🏢 @job.Employer.CompanyName
-
-                            </td>
-
-
-
-
-
-                            <td>
-
-                                📍 @job.Location
-
-                            </td>
-
-
-
-
-
-                            <td>
-
-                                💰 @job.Salary
-
-                            </td>
-
-
-
-
-
-                            <td>
-
-                                <span class="badge bg-primary">
-                                    @job.JobType
-                                </span>
-
-                            </td>
-
-
-
-
-
-                            <td>
-
-                                ⏳ @job.Deadline.ToShortDateString()
-
-                            </td>
-
-
-
-
-
-                            <td>
-
-                                @job.CreatedDate.ToShortDateString()
-
-                            </td>
-
-
-
-
-                            <td>
-
-                                <a asp-controller="Admin"
-                                   asp-action="DeleteJob"
-                                   asp-route-id="@job.JobId"
-                                   class="btn btn-danger btn-sm"
-                                   onclick="return confirm('Are you sure you want to delete this job?');">
-
-                                    Delete
-
-                                </a>
-
-                            </td>
-
-
-                        </tr>
-
-                    }
-
-
-                </tbody>
-
-
-            </table>
-
+<div class="admin-dashboard admin-jobs-page">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+
+        <a asp-controller="Admin"
+           asp-action="Index"
+           class="admin-sidebar-brand">
+            <span class="admin-logo-icon">
+                <i class="bi bi-briefcase-fill"></i>
+            </span>
+            <span>Fresh<span class="admin-brand-highlight">Start</span></span>
+        </a>
+
+        <div class="admin-sidebar-label">MAIN MENU</div>
+
+        <nav class="admin-sidebar-nav">
+
+            <a asp-controller="Admin"
+               asp-action="Index"
+               class="admin-nav-link">
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a asp-controller="Admin"
+               asp-action="Students"
+               class="admin-nav-link">
+                <i class="bi bi-people-fill"></i>
+                <span>Students</span>
+            </a>
+
+            <a asp-controller="Admin"
+               asp-action="Employers"
+               class="admin-nav-link">
+                <i class="bi bi-buildings-fill"></i>
+                <span>Employers</span>
+            </a>
+
+            <a asp-controller="Admin"
+               asp-action="Jobs"
+               class="admin-nav-link active">
+                <i class="bi bi-briefcase-fill"></i>
+                <span>Manage Jobs</span>
+            </a>
+
+        </nav>
+
+        <div class="admin-sidebar-bottom">
+
+            <div class="admin-sidebar-help">
+                <div class="admin-help-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <h6>Admin Portal</h6>
+                <p>Manage your FreshStart platform from one place.</p>
+            </div>
+
+            <div class="admin-sidebar-footer">
+                <span class="admin-online-dot"></span>
+                System Administration
+            </div>
 
         </div>
 
+    </aside>
 
-    </div>
+
+    <!-- Main Content -->
+    <main class="admin-main-content">
+
+        <!-- Topbar -->
+        <header class="admin-topbar">
+
+            <div class="admin-topbar-heading">
+
+                <div class="admin-breadcrumb">
+                    Dashboard
+                    <i class="bi bi-chevron-right"></i>
+                    Manage Jobs
+                </div>
+
+                <h1>Job Management</h1>
+
+                <p>Monitor job listings posted across FreshStart.</p>
+
+            </div>
+
+            <div class="admin-topbar-profile">
+                <div class="admin-profile-avatar">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+
+                <div class="admin-profile-info">
+                    <strong>Administrator</strong>
+                    <span>Platform Management</span>
+                </div>
+
+                <i class="bi bi-shield-check admin-profile-shield"></i>
+            </div>
+
+        </header>
 
 
+        <!-- Welcome Banner -->
+        <section class="admin-jobs-banner">
+
+            <div class="admin-jobs-banner-content">
+
+                <span class="admin-jobs-eyebrow">
+                    <i class="bi bi-briefcase-fill"></i>
+                    JOB LISTING OVERVIEW
+                </span>
+
+                <h2>Manage opportunities on FreshStart</h2>
+
+                <p>
+                    Review job listings, check salary ranges and monitor
+                    opportunities posted by registered employers.
+                </p>
+
+                <a asp-controller="Admin"
+                   asp-action="Index"
+                   class="admin-jobs-back-button">
+                    <i class="bi bi-arrow-left"></i>
+                    Back to Dashboard
+                </a>
+
+            </div>
+
+            <div class="admin-jobs-banner-art">
+                <div class="admin-jobs-art-card">
+                    <i class="bi bi-briefcase-fill"></i>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                <div class="admin-jobs-art-check">
+                    <i class="bi bi-check-lg"></i>
+                </div>
+
+                <div class="admin-jobs-art-building">
+                    <i class="bi bi-buildings-fill"></i>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- Statistics -->
+        <section class="admin-jobs-stats">
+
+            <div class="admin-jobs-stat-card">
+
+                <div class="admin-jobs-stat-icon jobs-stat-blue">
+                    <i class="bi bi-briefcase-fill"></i>
+                </div>
+
+                <div class="admin-jobs-stat-info">
+                    <span>TOTAL JOBS</span>
+                    <strong>@totalJobs</strong>
+                    <small>All posted listings</small>
+                </div>
+
+            </div>
+
+
+            <div class="admin-jobs-stat-card">
+
+                <div class="admin-jobs-stat-icon jobs-stat-purple">
+                    <i class="bi bi-clock-fill"></i>
+                </div>
+
+                <div class="admin-jobs-stat-info">
+                    <span>FULL-TIME</span>
+                    <strong>@fullTimeJobs</strong>
+                    <small>Full-time opportunities</small>
+                </div>
+
+            </div>
+
+
+            <div class="admin-jobs-stat-card">
+
+                <div class="admin-jobs-stat-icon jobs-stat-orange">
+                    <i class="bi bi-hourglass-split"></i>
+                </div>
+
+                <div class="admin-jobs-stat-info">
+                    <span>PART-TIME</span>
+                    <strong>@partTimeJobs</strong>
+                    <small>Part-time opportunities</small>
+                </div>
+
+            </div>
+
+
+            <div class="admin-jobs-stat-card">
+
+                <div class="admin-jobs-stat-icon jobs-stat-green">
+                    <i class="bi bi-grid-fill"></i>
+                </div>
+
+                <div class="admin-jobs-stat-info">
+                    <span>OTHER TYPES</span>
+                    <strong>@otherJobs</strong>
+                    <small>Other job categories</small>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Jobs Table -->
+        <section class="admin-jobs-list-section">
+
+            <div class="admin-section-heading admin-jobs-list-heading">
+
+                <div>
+                    <h3>All Posted Jobs</h3>
+                    <p>Review job details and manage platform listings.</p>
+                </div>
+
+                <span class="admin-jobs-count-badge">
+                    <i class="bi bi-briefcase"></i>
+                    @totalJobs Job@(totalJobs == 1 ? "" : "s")
+                </span>
+
+            </div>
+
+
+            <div class="admin-jobs-table-card">
+
+                @if (jobs.Any())
+                {
+                    <div class="admin-jobs-table-responsive">
+
+                        <table class="admin-jobs-table">
+
+                            <thead>
+                                <tr>
+                                    <th>Job Details</th>
+                                    <th>Company</th>
+                                    <th>Location</th>
+                                    <th>Salary Range</th>
+                                    <th>Job Type</th>
+                                    <th>Deadline</th>
+                                    <th>Date Posted</th>
+                                    <th class="admin-jobs-action-heading">Action</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                @foreach (var job in jobs)
+                                {
+                                    var jobType = string.IsNullOrWhiteSpace(job.JobType)
+                                    ? "Not specified"
+                                    : job.JobType;
+
+                                    var salaryType = string.IsNullOrWhiteSpace(job.SalaryType)
+                                    ? "Monthly"
+                                    : job.SalaryType;
+
+                                    <tr>
+
+                                        <!-- Job Details -->
+                                        <td>
+                                            <div class="admin-job-identity">
+
+                                                <div class="admin-job-icon">
+                                                    <i class="bi bi-briefcase-fill"></i>
+                                                </div>
+
+                                                <div class="admin-job-title-info">
+                                                    <strong>
+                                                        @(string.IsNullOrWhiteSpace(job.JobTitle)
+                                                            ? "Untitled Job"
+                                                            : job.JobTitle)
+                                                    </strong>
+
+                                                    <span>Job ID: @job.JobId</span>
+                                                </div>
+
+                                            </div>
+                                        </td>
+
+
+                                        <!-- Company -->
+                                        <td>
+                                            <div class="admin-job-company">
+                                                <i class="bi bi-buildings"></i>
+
+                                                <span>
+                                                    @(job.Employer == null ||
+                                                        string.IsNullOrWhiteSpace(job.Employer.CompanyName)
+                                                        ? "Unknown Company"
+                                                        : job.Employer.CompanyName)
+                                                </span>
+                                            </div>
+                                        </td>
+
+
+                                        <!-- Location -->
+                                        <td>
+                                            <div class="admin-job-location">
+                                                <i class="bi bi-geo-alt"></i>
+
+                                                <span>
+                                                    @(string.IsNullOrWhiteSpace(job.Location)
+                                                        ? "Not specified"
+                                                        : job.Location)
+                                                </span>
+                                            </div>
+                                        </td>
+
+
+                                        <!-- Salary Range -->
+                                        <td>
+                                            <div class="admin-job-salary">
+
+                                                <strong>
+                                                    @job.MinimumSalary.ToString("#,##0")
+                                                    -
+                                                    @job.MaximumSalary.ToString("#,##0")
+                                                </strong>
+
+                                                <span>/ @salaryType</span>
+
+                                            </div>
+                                        </td>
+
+
+                                        <!-- Job Type -->
+                                        <td>
+                                            <span class="admin-job-type-badge">
+                                                <i class="bi bi-clock"></i>
+                                                @jobType
+                                            </span>
+                                        </td>
+
+
+                                        <!-- Deadline -->
+                                        <td>
+                                            <div class="admin-job-date">
+                                                <i class="bi bi-calendar-event"></i>
+
+                                                <span>
+                                                    @job.Deadline.ToString("dd MMM yyyy")
+                                                </span>
+                                            </div>
+                                        </td>
+
+
+                                        <!-- Date Posted -->
+                                        <td>
+                                            <div class="admin-job-date">
+                                                <i class="bi bi-calendar3"></i>
+
+                                                <span>
+                                                    @job.CreatedDate.ToString("dd MMM yyyy")
+                                                </span>
+                                            </div>
+                                        </td>
+
+
+                                        <!-- Action -->
+                                        <td>
+                                            <div class="admin-jobs-action-cell">
+
+                                                <a asp-controller="Admin"
+                                                   asp-action="DeleteJob"
+                                                   asp-route-id="@job.JobId"
+                                                   class="admin-job-delete-button"
+                                                   title="Delete job listing"
+                                                   onclick="return confirm('Are you sure you want to delete this job? Its associated applications may also be deleted.');">
+
+                                                    <i class="bi bi-trash3"></i>
+                                                    Delete
+
+                                                </a>
+
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                }
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                }
+                else
+                {
+                    <div class="admin-jobs-empty-state">
+
+                        <div class="admin-jobs-empty-icon">
+                            <i class="bi bi-briefcase"></i>
+                        </div>
+
+                        <h4>No job listings yet</h4>
+
+                        <p>
+                            When employers post jobs on FreshStart,
+                            their listings will appear here.
+                        </p>
+
+                        <a asp-controller="Admin"
+                           asp-action="Index"
+                           class="admin-jobs-empty-button">
+                            <i class="bi bi-arrow-left"></i>
+                            Return to Dashboard
+                        </a>
+
+                    </div>
+                }
+
+            </div>
+
+        </section>
+
+
+        <!-- Information Notice -->
+        <section class="admin-jobs-info">
+
+            <div class="admin-jobs-info-icon">
+                <i class="bi bi-info-circle"></i>
+            </div>
+
+            <div>
+                <h4>Job listing administration</h4>
+                <p>
+                    Check job details and salary information before taking
+                    administrative action. Deleting a listing may also
+                    remove its associated applications.
+                </p>
+            </div>
+
+        </section>
+
+
+        <!-- Footer -->
+        <footer class="admin-dashboard-footer">
+            <span>FreshStart Administration</span>
+            <span>Manage your platform with confidence.</span>
+        </footer>
+
+    </main>
 
 </div>
+
+
+<style>
+    .admin-jobs-page {
+        color: #243754;
+    }
+
+    .admin-jobs-banner {
+        position: relative;
+        display: flex;
+        min-height: 220px;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 27px;
+        padding: 32px 38px;
+        overflow: hidden;
+        color: #fff;
+        background: linear-gradient(115deg, #2454dc 0%, #3478f6 100%);
+        border-radius: 19px;
+    }
+
+        .admin-jobs-banner::before {
+            position: absolute;
+            top: -140px;
+            right: 100px;
+            width: 330px;
+            height: 330px;
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            border-radius: 50%;
+            content: "";
+        }
+
+        .admin-jobs-banner::after {
+            position: absolute;
+            right: -100px;
+            bottom: -190px;
+            width: 350px;
+            height: 350px;
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            border-radius: 50%;
+            content: "";
+        }
+
+    .admin-jobs-banner-content {
+        position: relative;
+        z-index: 2;
+        max-width: 600px;
+    }
+
+    .admin-jobs-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 16px;
+        color: #e2ecff;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 1.4px;
+    }
+
+    .admin-jobs-banner h2 {
+        margin: 0 0 12px;
+        color: #fff;
+        font-size: clamp(23px, 2.3vw, 31px);
+        font-weight: 800;
+        line-height: 1.3;
+    }
+
+    .admin-jobs-banner p {
+        max-width: 520px;
+        margin: 0 0 21px;
+        color: #e8efff;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .admin-jobs-back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 11px 16px;
+        color: #2454dc;
+        background: #fff;
+        border-radius: 9px;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .admin-jobs-back-button:hover {
+            color: #173fb9;
+            box-shadow: 0 5px 15px rgba(10, 33, 95, 0.18);
+            transform: translateY(-2px);
+        }
+
+    .admin-jobs-banner-art {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        width: 185px;
+        height: 155px;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        margin: 0 30px 0 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 35px;
+        background: rgba(255, 255, 255, 0.1);
+        transform: rotate(-6deg);
+    }
+
+    .admin-jobs-art-card {
+        display: flex;
+        width: 105px;
+        height: 120px;
+        flex-direction: column;
+        align-items: center;
+        padding: 18px 15px;
+        color: #3478f6;
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 12px 25px rgba(14, 40, 112, 0.16);
+    }
+
+        .admin-jobs-art-card > i {
+            margin-bottom: 12px;
+            font-size: 28px;
+        }
+
+        .admin-jobs-art-card > span {
+            width: 100%;
+            height: 5px;
+            margin-top: 7px;
+            background: #e5edff;
+            border-radius: 5px;
+        }
+
+            .admin-jobs-art-card > span:last-child {
+                width: 65%;
+                align-self: flex-start;
+            }
+
+    .admin-jobs-art-check,
+    .admin-jobs-art-building {
+        position: absolute;
+        display: flex;
+        width: 38px;
+        height: 38px;
+        align-items: center;
+        justify-content: center;
+        color: #18a878;
+        background: #fff;
+        border-radius: 12px;
+        font-size: 17px;
+        box-shadow: 0 6px 18px rgba(14, 40, 112, 0.14);
+    }
+
+    .admin-jobs-art-check {
+        top: -10px;
+        left: -12px;
+    }
+
+    .admin-jobs-art-building {
+        right: -15px;
+        bottom: -8px;
+        color: #3478f6;
+    }
+
+    .admin-jobs-stats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 17px;
+        margin-bottom: 32px;
+    }
+
+    .admin-jobs-stat-card {
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        gap: 13px;
+        padding: 20px 17px;
+        background: #fff;
+        border: 1px solid #e9eef7;
+        border-radius: 15px;
+        box-shadow: 0 7px 22px rgba(34, 64, 110, 0.04);
+    }
+
+    .admin-jobs-stat-icon {
+        display: flex;
+        width: 45px;
+        height: 45px;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        border-radius: 13px;
+        font-size: 19px;
+    }
+
+    .jobs-stat-blue {
+        color: #3478f6;
+        background: #eaf1ff;
+    }
+
+    .jobs-stat-purple {
+        color: #8657df;
+        background: #f0e9ff;
+    }
+
+    .jobs-stat-orange {
+        color: #e99a25;
+        background: #fff2df;
+    }
+
+    .jobs-stat-green {
+        color: #18a878;
+        background: #e1f8ef;
+    }
+
+    .admin-jobs-stat-info {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+    }
+
+        .admin-jobs-stat-info > span {
+            margin-bottom: 5px;
+            color: #8190a7;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.45px;
+        }
+
+        .admin-jobs-stat-info > strong {
+            color: #203451;
+            font-size: 27px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .admin-jobs-stat-info > small {
+            margin-top: 5px;
+            color: #8491a6;
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+    .admin-jobs-list-heading {
+        margin-bottom: 18px;
+    }
+
+    .admin-jobs-count-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 12px;
+        color: #326bd0;
+        background: #eaf2ff;
+        border-radius: 9px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .admin-jobs-table-card {
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #e8edf5;
+        border-radius: 17px;
+        box-shadow: 0 8px 24px rgba(34, 64, 110, 0.045);
+    }
+
+    .admin-jobs-table-responsive {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .admin-jobs-table {
+        width: 100%;
+        border-collapse: collapse;
+        white-space: nowrap;
+    }
+
+        .admin-jobs-table thead {
+            background: #f7f9fd;
+        }
+
+        .admin-jobs-table th {
+            padding: 16px 15px;
+            color: #7d8ba2;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-align: left;
+            text-transform: uppercase;
+            border-bottom: 1px solid #eaf0f7;
+        }
+
+        .admin-jobs-table td {
+            padding: 16px 15px;
+            color: #5f6e84;
+            font-size: 11px;
+            vertical-align: middle;
+            border-bottom: 1px solid #eff2f7;
+        }
+
+        .admin-jobs-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .admin-jobs-table tbody tr {
+            transition: background 0.2s ease;
+        }
+
+            .admin-jobs-table tbody tr:hover {
+                background: #fbfcff;
+            }
+
+    .admin-job-identity {
+        display: flex;
+        min-width: 175px;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .admin-job-icon {
+        display: flex;
+        width: 41px;
+        height: 41px;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        color: #3478f6;
+        background: #edf4ff;
+        border-radius: 12px;
+        font-size: 17px;
+    }
+
+    .admin-job-title-info {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+        .admin-job-title-info strong {
+            max-width: 175px;
+            overflow: hidden;
+            color: #243754;
+            font-size: 12px;
+            font-weight: 750;
+            text-overflow: ellipsis;
+        }
+
+        .admin-job-title-info span {
+            color: #91a0b5;
+            font-size: 10px;
+        }
+
+    .admin-job-company,
+    .admin-job-location,
+    .admin-job-date {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    .admin-job-company {
+        min-width: 135px;
+    }
+
+    .admin-job-location {
+        min-width: 100px;
+    }
+
+    .admin-job-date {
+        min-width: 105px;
+    }
+
+        .admin-job-company i,
+        .admin-job-location i,
+        .admin-job-date i {
+            color: #8c9bb1;
+            font-size: 13px;
+        }
+
+    .admin-job-salary {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+        .admin-job-salary strong {
+            color: #263a57;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .admin-job-salary span {
+            color: #8997ad;
+            font-size: 10px;
+        }
+
+    .admin-job-type-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 9px;
+        color: #326bd0;
+        background: #edf4ff;
+        border-radius: 8px;
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+    .admin-jobs-action-heading {
+        text-align: center !important;
+    }
+
+    .admin-jobs-action-cell {
+        display: flex;
+        min-width: 95px;
+        justify-content: center;
+    }
+
+    .admin-job-delete-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px 10px;
+        color: #d84957;
+        background: #ffebed;
+        border: 1px solid #ffdcdf;
+        border-radius: 8px;
+        font-size: 10px;
+        font-weight: 750;
+        text-decoration: none;
+        transition: background 0.2s ease, color 0.2s ease;
+    }
+
+        .admin-job-delete-button:hover {
+            color: #fff;
+            background: #e45361;
+            border-color: #e45361;
+        }
+
+    .admin-jobs-empty-state {
+        display: flex;
+        min-height: 330px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 35px 20px;
+        text-align: center;
+    }
+
+    .admin-jobs-empty-icon {
+        display: flex;
+        width: 70px;
+        height: 70px;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 18px;
+        color: #3478f6;
+        background: #edf4ff;
+        border-radius: 21px;
+        font-size: 31px;
+    }
+
+    .admin-jobs-empty-state h4 {
+        margin: 0 0 9px;
+        color: #243754;
+        font-size: 17px;
+        font-weight: 750;
+    }
+
+    .admin-jobs-empty-state p {
+        max-width: 370px;
+        margin: 0 0 19px;
+        color: #8390a5;
+        font-size: 12px;
+        line-height: 1.8;
+    }
+
+    .admin-jobs-empty-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 15px;
+        color: #fff;
+        background: #3478f6;
+        border-radius: 9px;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+        .admin-jobs-empty-button:hover {
+            color: #fff;
+            background: #245ed0;
+        }
+
+    .admin-jobs-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-top: 25px;
+        padding: 20px 22px;
+        background: #fff;
+        border: 1px solid #e8edf5;
+        border-radius: 15px;
+    }
+
+    .admin-jobs-info-icon {
+        display: flex;
+        width: 44px;
+        height: 44px;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        color: #3478f6;
+        background: #edf4ff;
+        border-radius: 13px;
+        font-size: 20px;
+    }
+
+    .admin-jobs-info h4 {
+        margin: 0 0 5px;
+        color: #263a57;
+        font-size: 13px;
+        font-weight: 750;
+    }
+
+    .admin-jobs-info p {
+        margin: 0;
+        color: #8390a5;
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    @@media (max-width: 1250px) {
+        .admin-jobs-stats {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @@media (max-width: 1000px) {
+        .admin-jobs-banner-art {
+            margin-right: 15px;
+        }
+    }
+
+    @@media (max-width: 650px) {
+        .admin-jobs-banner {
+            min-height: auto;
+            padding: 25px 22px;
+        }
+
+        .admin-jobs-banner-art {
+            display: none;
+        }
+
+        .admin-jobs-banner h2 {
+            font-size: 24px;
+        }
+
+        .admin-jobs-banner p {
+            font-size: 12px;
+        }
+
+        .admin-jobs-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .admin-jobs-stat-card {
+            padding: 17px;
+        }
+
+        .admin-jobs-list-heading {
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .admin-jobs-count-badge {
+            font-size: 10px;
+        }
+
+        .admin-jobs-info {
+            align-items: flex-start;
+            padding: 17px;
+        }
+    }
+</style>

@@ -34,40 +34,81 @@ namespace FreshStart.Controllers
         // Admin Dashboard
         public async Task<IActionResult> Index()
         {
+            // Statistics
+            var totalStudents = await _context.StudentProfiles.CountAsync();
 
-            var totalStudents = await _context.StudentProfiles
-     .CountAsync();
+            var totalEmployers = await _context.EmployerProfiles.CountAsync();
 
-
-            var totalEmployers = await _context.EmployerProfiles
-                .CountAsync();
-
-
+            var totalJobs = await _context.Jobs.CountAsync();
 
             var pendingEmployers = await _context.EmployerProfiles
                 .CountAsync(x => x.ApprovalStatus == "Pending");
 
-
-
             var approvedEmployers = await _context.EmployerProfiles
                 .CountAsync(x => x.ApprovalStatus == "Approved");
 
+            var rejectedEmployers = await _context.EmployerProfiles
+                .CountAsync(x => x.ApprovalStatus == "Rejected");
 
 
-
-
+            // Send statistics to the Dashboard View
             ViewBag.TotalStudents = totalStudents;
-
             ViewBag.TotalEmployers = totalEmployers;
-
+            ViewBag.TotalJobs = totalJobs;
             ViewBag.PendingEmployers = pendingEmployers;
-
             ViewBag.ApprovedEmployers = approvedEmployers;
+            ViewBag.RejectedEmployers = rejectedEmployers;
 
+
+            // Jobs by Type - actual database data
+            var jobTypes = await _context.Jobs
+                .GroupBy(j => j.JobType)
+                .Select(g => new
+                {
+                    JobType = g.Key,
+                    Count = g.Count()
+                })
+                .OrderByDescending(x => x.Count)
+                .ToListAsync();
+
+            ViewBag.JobTypeLabels = jobTypes
+                .Select(x => string.IsNullOrWhiteSpace(x.JobType)
+                    ? "Not specified"
+                    : x.JobType)
+                .ToList();
+
+            ViewBag.JobTypeCounts = jobTypes
+                .Select(x => x.Count)
+                .ToList();
+
+
+            // Employer Approval Status - actual database data
+            ViewBag.ApprovalLabels = new List<string>
+    {
+        "Pending",
+        "Approved",
+        "Rejected"
+    };
+
+            ViewBag.ApprovalCounts = new List<int>
+    {
+        pendingEmployers,
+        approvedEmployers,
+        rejectedEmployers
+    };
+
+
+            // Recently Posted Jobs
+            var recentJobs = await _context.Jobs
+                .Include(j => j.Employer)
+                .OrderByDescending(j => j.CreatedDate)
+                .Take(5)
+                .ToListAsync();
+
+            ViewBag.RecentJobs = recentJobs;
 
 
             return View();
-
         }
 
 

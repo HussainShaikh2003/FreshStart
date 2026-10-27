@@ -4,94 +4,182 @@
     ViewData["Title"] = "Admin Login";
 }
 
+<div class="admin-login-page">
+    <div class="admin-login-wrapper">
 
-<div class="container d-flex justify-content-center align-items-center"
-     style="min-height:85vh;">
+        <!-- Left Branding Section -->
+        <div class="admin-login-branding">
 
+            <div class="admin-brand-logo">
+                <i class="bi bi-briefcase-fill"></i>
+                <span>FreshStart</span>
+            </div>
 
-    <div class="card shadow-lg border-0 p-5"
-         style="max-width:450px; width:100%; border-radius:20px;">
+            <div class="admin-brand-content">
+                <span class="admin-brand-badge">
+                    <i class="bi bi-shield-check"></i>
+                    ADMINISTRATION PORTAL
+                </span>
 
+                <h1>Manage your platform with confidence.</h1>
 
-        <div class="text-center mb-4">
+                <p>
+                    Welcome to the FreshStart administration portal.
+                    Manage students, employers and job listings
+                    from one secure place.
+                </p>
 
-            <h1 class="fw-bold">
-                🔐 FreshStart Admin
-            </h1>
+                <div class="admin-brand-features">
+                    <div class="admin-feature">
+                        <span class="admin-feature-icon">
+                            <i class="bi bi-people-fill"></i>
+                        </span>
+                        <div>
+                            <strong>User Management</strong>
+                            <small>Manage students and employers</small>
+                        </div>
+                    </div>
 
-            <p class="text-muted">
-                Login to Admin Portal
-            </p>
+                    <div class="admin-feature">
+                        <span class="admin-feature-icon">
+                            <i class="bi bi-patch-check-fill"></i>
+                        </span>
+                        <div>
+                            <strong>Employer Approvals</strong>
+                            <small>Review and manage registrations</small>
+                        </div>
+                    </div>
+
+                    <div class="admin-feature">
+                        <span class="admin-feature-icon">
+                            <i class="bi bi-briefcase-fill"></i>
+                        </span>
+                        <div>
+                            <strong>Job Management</strong>
+                            <small>Keep job listings organized</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-brand-footer">
+                © @DateTime.Now.Year FreshStart. All rights reserved.
+            </div>
 
         </div>
 
+        <!-- Right Login Section -->
+        <div class="admin-login-form-section">
 
+            <div class="admin-login-card">
 
+                <div class="admin-login-icon">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
 
-        <form method="post"
-              asp-controller="AdminAuth"
-              asp-action="Login">
+                <div class="admin-login-heading">
+                    <span>WELCOME BACK</span>
+                    <h2>Admin Login</h2>
+                    <p>Enter your credentials to access your account.</p>
+                </div>
 
+                <form method="post"
+                      asp-controller="AdminAuth"
+                      asp-action="Login">
 
-            <div asp-validation-summary="All"
-                 class="text-danger mb-3">
+                    <div asp-validation-summary="All"
+                         class="text-danger admin-validation mb-3">
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label asp-for="Email">Admin Email</label>
+
+                        <div class="admin-input-wrapper">
+                            <i class="bi bi-envelope"></i>
+
+                            <input asp-for="Email"
+                                   class="admin-form-control"
+                                   placeholder="Enter your email"
+                                   autocomplete="username" />
+                        </div>
+
+                        <span asp-validation-for="Email"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label asp-for="Password">Password</label>
+
+                        <div class="admin-input-wrapper">
+                            <i class="bi bi-lock"></i>
+
+                            <input asp-for="Password"
+                                   type="password"
+                                   id="adminPassword"
+                                   class="admin-form-control"
+                                   placeholder="Enter your password"
+                                   autocomplete="current-password" />
+
+                            <button type="button"
+                                    class="admin-password-toggle"
+                                    id="toggleAdminPassword"
+                                    aria-label="Show password">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+
+                        <span asp-validation-for="Password"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="admin-login-button">
+                        Sign In to Admin Portal
+                        <i class="bi bi-arrow-right"></i>
+                    </button>
+
+                </form>
+
+                <div class="admin-login-security">
+                    <i class="bi bi-shield-check"></i>
+                    Secure access for authorized administrators
+                </div>
+
             </div>
 
-
-
-
-            <div class="mb-3">
-
-                <label class="form-label fw-bold">
-                    📧 Admin Email
-                </label>
-
-
-                <input asp-for="Email"
-                       class="form-control form-control-lg"
-                       placeholder="Enter admin email" />
-
-            </div>
-
-
-
-
-
-            <div class="mb-3">
-
-                <label class="form-label fw-bold">
-                    🔒 Password
-                </label>
-
-
-                <input asp-for="Password"
-                       class="form-control form-control-lg"
-                       placeholder="Enter password" />
-
-            </div>
-
-
-
-
-            <button type="submit"
-                    class="btn btn-dark btn-lg w-100 rounded-pill">
-
-                Login As Admin
-
-            </button>
-
-
-
-        </form>
-
+        </div>
 
     </div>
-
-
 </div>
-
-
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggleButton =
+                document.getElementById("toggleAdminPassword");
+
+            const passwordInput =
+                document.getElementById("adminPassword");
+
+            if (toggleButton && passwordInput) {
+                toggleButton.addEventListener("click", function () {
+                    const isPassword =
+                        passwordInput.type === "password";
+
+                    passwordInput.type =
+                        isPassword ? "text" : "password";
+
+                    toggleButton.innerHTML = isPassword
+                        ? '<i class="bi bi-eye-slash"></i>'
+                        : '<i class="bi bi-eye"></i>';
+
+                    toggleButton.setAttribute(
+                        "aria-label",
+                        isPassword ? "Hide password" : "Show password"
+                    );
+                });
+            }
+        });
+    </script>
 }

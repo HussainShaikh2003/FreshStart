@@ -1,246 +1,1095 @@
-﻿@{
+﻿@using System.Text.Json
+@using System.Collections.Generic
+@using System.Linq
+@using FreshStart.Models.Job
+
+@{
     ViewData["Title"] = "Admin Dashboard";
+
+    var totalStudents = ViewBag.TotalStudents ?? 0;
+    var totalEmployers = ViewBag.TotalEmployers ?? 0;
+    var totalJobs = ViewBag.TotalJobs ?? 0;
+    var pendingEmployers = ViewBag.PendingEmployers ?? 0;
+    var approvedEmployers = ViewBag.ApprovedEmployers ?? 0;
+    var rejectedEmployers = ViewBag.RejectedEmployers ?? 0;
+
+    var jobTypeLabels = ViewBag.JobTypeLabels as IEnumerable<string>
+        ?? Enumerable.Empty<string>();
+
+    var jobTypeCounts = ViewBag.JobTypeCounts as IEnumerable<int>
+        ?? Enumerable.Empty<int>();
+
+    var approvalLabels = ViewBag.ApprovalLabels as IEnumerable<string>
+        ?? new List<string> { "Pending", "Approved", "Rejected" };
+
+    var approvalCounts = ViewBag.ApprovalCounts as IEnumerable<int>
+        ?? new List<int> { 0, 0, 0 };
+
+    var recentJobs = ViewBag.RecentJobs as IEnumerable<Job>
+        ?? Enumerable.Empty<Job>();
+
+    var jobTypeLabelsJson = JsonSerializer.Serialize(jobTypeLabels);
+    var jobTypeCountsJson = JsonSerializer.Serialize(jobTypeCounts);
+    var approvalLabelsJson = JsonSerializer.Serialize(approvalLabels);
+    var approvalCountsJson = JsonSerializer.Serialize(approvalCounts);
 }
 
+<div class="admin-dashboard">
 
-<div class="container-fluid mt-4">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
 
+        <a asp-controller="Admin"
+           asp-action="Index"
+           class="admin-sidebar-brand">
+            <span class="admin-logo-icon">
+                <i class="bi bi-briefcase-fill"></i>
+            </span>
+            <span>Fresh<span class="admin-brand-highlight">Start</span></span>
+        </a>
 
-    <!-- Admin Header -->
-    <div class="p-4 mb-4 rounded shadow bg-dark text-white">
+        <div class="admin-sidebar-label">MAIN MENU</div>
 
-        <h1 class="fw-bold">
-            👑 Welcome Admin
-        </h1>
+        <nav class="admin-sidebar-nav">
 
-        <p class="mb-0">
-            Manage FreshStart platform, users, companies and job activities.
-        </p>
+            <a asp-controller="Admin"
+               asp-action="Index"
+               class="admin-nav-link active">
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
 
-    </div>
+            <a asp-controller="Admin"
+               asp-action="Students"
+               class="admin-nav-link">
+                <i class="bi bi-people-fill"></i>
+                <span>Students</span>
+            </a>
 
+            <a asp-controller="Admin"
+               asp-action="Employers"
+               class="admin-nav-link">
+                <i class="bi bi-buildings-fill"></i>
+                <span>Employers</span>
 
+                @if (Convert.ToInt32(pendingEmployers) > 0)
+                {
+                    <span class="admin-nav-badge">@pendingEmployers</span>
+                }
+            </a>
 
+            <a asp-controller="Admin"
+               asp-action="Jobs"
+               class="admin-nav-link">
+                <i class="bi bi-briefcase-fill"></i>
+                <span>Manage Jobs</span>
+            </a>
 
+        </nav>
 
-    <!-- Statistics Cards -->
-    <div class="row">
+        <div class="admin-sidebar-bottom">
 
+            <div class="admin-sidebar-help">
+                <div class="admin-help-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <h6>Admin Portal</h6>
+                <p>Manage your FreshStart platform from one place.</p>
+            </div>
 
-        <div class="col-md-3 mb-4">
-
-            <div class="card shadow border-0 text-center p-4">
-
-                <h6 class="text-muted">
-                    👨‍🎓 Total Students
-                </h6>
-
-                <h1 class="fw-bold">
-                    @ViewBag.TotalStudents
-                </h1>
-
+            <div class="admin-sidebar-footer">
+                <span class="admin-online-dot"></span>
+                System Administration
             </div>
 
         </div>
 
+    </aside>
 
 
+    <!-- Main Content -->
+    <main class="admin-main-content">
 
+        <!-- Topbar -->
+        <header class="admin-topbar">
 
-        <div class="col-md-3 mb-4">
-
-            <div class="card shadow border-0 text-center p-4">
-
-                <h6 class="text-muted">
-                    🏢 Total Employers
-                </h6>
-
-                <h1 class="fw-bold">
-                    @ViewBag.TotalEmployers
-                </h1>
-
+            <div class="admin-topbar-heading">
+                <div class="admin-breadcrumb">
+                    Dashboard <i class="bi bi-chevron-right"></i> Overview
+                </div>
+                <h1>Admin Dashboard</h1>
+                <p>Here's what's happening on your platform.</p>
             </div>
 
+            <div class="admin-topbar-profile">
+                <div class="admin-profile-avatar">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+                <div class="admin-profile-info">
+                    <strong>Administrator</strong>
+                    <span>Platform Management</span>
+                </div>
+                <i class="bi bi-shield-check admin-profile-shield"></i>
+            </div>
+
+        </header>
+
+
+        <!-- Welcome Banner -->
+        <section class="admin-welcome-banner">
+
+            <div class="admin-welcome-content">
+                <span class="admin-welcome-label">
+                    <i class="bi bi-stars"></i>
+                    ADMINISTRATION OVERVIEW
+                </span>
+
+                <h2>Welcome back, Admin!</h2>
+
+                <p>
+                    Manage your students, review employer registrations
+                    and keep track of job listings across FreshStart.
+                </p>
+
+                <a asp-controller="Admin"
+                   asp-action="Employers"
+                   class="admin-welcome-button">
+                    Review Employers
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="admin-welcome-illustration">
+                <div class="admin-illustration-circle">
+                    <i class="bi bi-person-workspace"></i>
+                </div>
+                <div class="admin-illustration-mini admin-mini-one">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div class="admin-illustration-mini admin-mini-two">
+                    <i class="bi bi-briefcase-fill"></i>
+                </div>
+                <div class="admin-illustration-mini admin-mini-three">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- Statistics Heading -->
+        <div class="admin-section-heading">
+            <div>
+                <h3>Platform Overview</h3>
+                <p>A quick look at your platform statistics.</p>
+            </div>
+
+            <span class="admin-live-label">
+                <span class="admin-online-dot"></span>
+                Current totals
+            </span>
         </div>
 
 
+        <!-- Statistics Cards -->
+        <section class="admin-stats-grid">
 
-
-
-        <div class="col-md-3 mb-4">
-
-            <div class="card shadow border-0 text-center p-4">
-
-                <h6 class="text-muted">
-                    ⏳ Pending Approvals
-                </h6>
-
-                <h1 class="fw-bold text-warning">
-                    @ViewBag.PendingEmployers
-                </h1>
-
-            </div>
-
-        </div>
-
-
-
-
-
-        <div class="col-md-3 mb-4">
-
-            <div class="card shadow border-0 text-center p-4">
-
-                <h6 class="text-muted">
-                    ✅ Approved Companies
-                </h6>
-
-                <h1 class="fw-bold text-success">
-                    @ViewBag.ApprovedEmployers
-                </h1>
-
-            </div>
-
-        </div>
-
-
-    </div>
-
-
-
-
-
-
-
-    <!-- Control Panel -->
-
-    <div class="card shadow border-0 p-4 mt-3">
-
-
-        <h2 class="fw-bold">
-            🛠 Admin Control Center
-        </h2>
-
-
-        <p class="text-muted">
-            Control users, employers and jobs from one place.
-        </p>
-
-
-
-        <hr />
-
-
-
-        <div class="row mt-3">
-
-
-            <div class="col-md-4 mb-3">
-
-
-                <div class="card shadow-sm p-4 text-center">
-
-
-                    <h4>
-                        👨‍🎓 Students
-                    </h4>
-
-
-                    <p>
-                        View and manage registered students.
-                    </p>
-
-
-                    <a asp-controller="Admin"
-                       asp-action="Students"
-                       class="btn btn-primary">
-
-                        Manage Students
-
-                    </a>
-
-
+            <!-- Students -->
+            <div class="admin-stat-card">
+                <div class="admin-stat-top">
+                    <span class="admin-stat-icon stat-blue">
+                        <i class="bi bi-people-fill"></i>
+                    </span>
+                    <span class="admin-stat-caption">STUDENTS</span>
                 </div>
 
+                <div class="admin-stat-number">@totalStudents</div>
 
+                <div class="admin-stat-bottom">
+                    <span>Registered students</span>
+                    <i class="bi bi-arrow-up-right"></i>
+                </div>
             </div>
 
+            <!-- Employers -->
+            <div class="admin-stat-card">
+                <div class="admin-stat-top">
+                    <span class="admin-stat-icon stat-purple">
+                        <i class="bi bi-buildings-fill"></i>
+                    </span>
+                    <span class="admin-stat-caption">EMPLOYERS</span>
+                </div>
 
+                <div class="admin-stat-number">@totalEmployers</div>
 
+                <div class="admin-stat-bottom">
+                    <span>Registered employers</span>
+                    <i class="bi bi-arrow-up-right"></i>
+                </div>
+            </div>
 
+            <!-- Pending Employers -->
+            <div class="admin-stat-card">
+                <div class="admin-stat-top">
+                    <span class="admin-stat-icon stat-orange">
+                        <i class="bi bi-hourglass-split"></i>
+                    </span>
+                    <span class="admin-stat-caption">PENDING</span>
+                </div>
 
+                <div class="admin-stat-number">@pendingEmployers</div>
 
-            <div class="col-md-4 mb-3">
-
-
-                <div class="card shadow-sm p-4 text-center">
-
-
-                    <h4>
-                        🏢 Employers
-                    </h4>
-
-
-                    <p>
-                        Approve and manage companies.
-                    </p>
-
-
+                <div class="admin-stat-bottom">
+                    <span>Awaiting approval</span>
                     <a asp-controller="Admin"
                        asp-action="Employers"
-                       class="btn btn-success">
-
-                        Manage Employers
-
+                       aria-label="Review pending employers">
+                        <i class="bi bi-arrow-up-right"></i>
                     </a>
-
-
                 </div>
-
-
             </div>
 
+            <!-- Approved Employers -->
+            <div class="admin-stat-card">
+                <div class="admin-stat-top">
+                    <span class="admin-stat-icon stat-green">
+                        <i class="bi bi-patch-check-fill"></i>
+                    </span>
+                    <span class="admin-stat-caption">APPROVED</span>
+                </div>
 
+                <div class="admin-stat-number">@approvedEmployers</div>
 
+                <div class="admin-stat-bottom">
+                    <span>Approved employers</span>
+                    <i class="bi bi-check-circle"></i>
+                </div>
+            </div>
 
+            <!-- Total Jobs -->
+            <div class="admin-stat-card">
+                <div class="admin-stat-top">
+                    <span class="admin-stat-icon stat-blue">
+                        <i class="bi bi-briefcase-fill"></i>
+                    </span>
+                    <span class="admin-stat-caption">TOTAL JOBS</span>
+                </div>
 
+                <div class="admin-stat-number">@totalJobs</div>
 
-            <div class="col-md-4 mb-3">
-
-
-                <div class="card shadow-sm p-4 text-center">
-
-
-                    <h4>
-                        💼 Jobs
-                    </h4>
-
-
-                    <p>
-                        Monitor all posted jobs.
-                    </p>
-
-
+                <div class="admin-stat-bottom">
+                    <span>Posted job listings</span>
                     <a asp-controller="Admin"
                        asp-action="Jobs"
-                       class="btn btn-warning">
-
-                        Manage Jobs
-
+                       aria-label="Manage job listings">
+                        <i class="bi bi-arrow-up-right"></i>
                     </a>
+                </div>
+            </div>
+
+        </section>
 
 
+        <!-- Charts Section -->
+        <div class="admin-section-heading admin-management-heading">
+            <div>
+                <h3>Platform Analytics</h3>
+                <p>Visual summaries based on your platform's current records.</p>
+            </div>
+        </div>
+
+        <section class="admin-analytics-grid">
+
+            <!-- Jobs by Type Chart -->
+            <div class="admin-analytics-card">
+                <div class="admin-analytics-card-header">
+                    <div>
+                        <h4>Jobs by Type</h4>
+                        <p>Distribution of posted jobs</p>
+                    </div>
+                    <span class="admin-analytics-icon analytics-blue">
+                        <i class="bi bi-bar-chart-fill"></i>
+                    </span>
                 </div>
 
-
+                @if (jobTypeCounts.Any(count => count > 0))
+                {
+                    <div class="admin-chart-container">
+                        <canvas id="jobTypeChart"
+                                aria-label="Chart showing the number of jobs by job type"
+                                role="img"></canvas>
+                    </div>
+                }
+                else
+                {
+                    <div class="admin-chart-empty">
+                        <i class="bi bi-bar-chart"></i>
+                        <h5>No job data available</h5>
+                        <p>Job type statistics will appear here when jobs are posted.</p>
+                    </div>
+                }
             </div>
 
 
+            <!-- Employer Approval Chart -->
+            <div class="admin-analytics-card">
+                <div class="admin-analytics-card-header">
+                    <div>
+                        <h4>Employer Approval Status</h4>
+                        <p>Current registration status</p>
+                    </div>
+                    <span class="admin-analytics-icon analytics-purple">
+                        <i class="bi bi-pie-chart-fill"></i>
+                    </span>
+                </div>
+
+                @if (Convert.ToInt32(totalEmployers) > 0)
+                {
+                    <div class="admin-chart-container admin-doughnut-container">
+                        <canvas id="employerApprovalChart"
+                                aria-label="Chart showing pending, approved and rejected employers"
+                                role="img"></canvas>
+                    </div>
+
+                    <div class="admin-chart-summary">
+                        <div>
+                            <span class="chart-legend-dot legend-pending"></span>
+                            Pending
+                            <strong>@pendingEmployers</strong>
+                        </div>
+                        <div>
+                            <span class="chart-legend-dot legend-approved"></span>
+                            Approved
+                            <strong>@approvedEmployers</strong>
+                        </div>
+                        <div>
+                            <span class="chart-legend-dot legend-rejected"></span>
+                            Rejected
+                            <strong>@rejectedEmployers</strong>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="admin-chart-empty">
+                        <i class="bi bi-pie-chart"></i>
+                        <h5>No employer data available</h5>
+                        <p>Employer approval statistics will appear here after registration.</p>
+                    </div>
+                }
+            </div>
+
+        </section>
+
+
+        <!-- Recent Jobs -->
+        <section class="admin-recent-jobs-section">
+
+            <div class="admin-section-heading admin-recent-jobs-heading">
+                <div>
+                    <h3>Recent Job Listings</h3>
+                    <p>The latest jobs added to FreshStart.</p>
+                </div>
+
+                <a asp-controller="Admin"
+                   asp-action="Jobs"
+                   class="admin-view-all-link">
+                    View All Jobs
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="admin-recent-jobs-card">
+
+                @if (recentJobs.Any())
+                {
+                    <div class="admin-table-responsive">
+                        <table class="admin-recent-jobs-table">
+                            <thead>
+                                <tr>
+                                    <th>Job Title</th>
+                                    <th>Job Type</th>
+                                    <th>Location</th>
+                                    <th>Salary Range</th>
+                                    <th>Date Posted</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach (var job in recentJobs)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="admin-job-title-cell">
+                                                <span class="admin-job-table-icon">
+                                                    <i class="bi bi-briefcase-fill"></i>
+                                                </span>
+                                                <strong>@job.JobTitle</strong>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <span class="admin-job-type-badge">
+                                                @(string.IsNullOrWhiteSpace(job.JobType)
+                                                    ? "Not specified"
+                                                    : job.JobType)
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <span class="admin-job-location">
+                                                <i class="bi bi-geo-alt"></i>
+                                                @(string.IsNullOrWhiteSpace(job.Location)
+                                                    ? "Not specified"
+                                                    : job.Location)
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <span class="admin-job-salary">
+                                                @job.MinimumSalary.ToString("N0")
+                                                -
+                                                @job.MaximumSalary.ToString("N0")
+                                            </span>
+                                            <small class="admin-salary-type">
+                                                / @(string.IsNullOrWhiteSpace(job.SalaryType)
+                                                  ? "Monthly"
+                                                  : job.SalaryType)
+                                            </small>
+                                        </td>
+
+                                        <td>
+                                            <span class="admin-job-date">
+                                                @job.CreatedDate.ToString("dd MMM yyyy")
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="admin-recent-jobs-empty">
+                        <span class="admin-empty-jobs-icon">
+                            <i class="bi bi-briefcase"></i>
+                        </span>
+                        <h4>No jobs posted yet</h4>
+                        <p>Recently posted jobs will appear here.</p>
+                    </div>
+                }
+
+            </div>
+        </section>
+
+
+        <!-- Management Section -->
+        <div class="admin-section-heading admin-management-heading">
+            <div>
+                <h3>Platform Management</h3>
+                <p>Choose a section to manage its records.</p>
+            </div>
         </div>
 
 
-    </div>
+        <section class="admin-management-grid">
+
+            <!-- Students -->
+            <div class="admin-management-card">
+                <div class="admin-management-card-top">
+                    <div class="admin-management-icon management-blue">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </div>
+                    <span class="admin-card-arrow">
+                        <i class="bi bi-arrow-up-right"></i>
+                    </span>
+                </div>
+
+                <h4>Student Management</h4>
+
+                <p>
+                    View registered students and manage their profiles
+                    and platform accounts.
+                </p>
+
+                <div class="admin-management-card-footer">
+                    <span>@totalStudents students</span>
+
+                    <a asp-controller="Admin"
+                       asp-action="Students">
+                        Manage Students
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
 
 
+            <!-- Employers -->
+            <div class="admin-management-card">
+                <div class="admin-management-card-top">
+                    <div class="admin-management-icon management-purple">
+                        <i class="bi bi-buildings-fill"></i>
+                    </div>
+                    <span class="admin-card-arrow">
+                        <i class="bi bi-arrow-up-right"></i>
+                    </span>
+                </div>
+
+                <h4>Employer Management</h4>
+
+                <p>
+                    Review company profiles, approve registrations
+                    and manage employer accounts.
+                </p>
+
+                <div class="admin-management-card-footer">
+                    <span class="admin-pending-text">
+                        @pendingEmployers pending
+                    </span>
+
+                    <a asp-controller="Admin"
+                       asp-action="Employers">
+                        Manage Employers
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+
+            <!-- Jobs -->
+            <div class="admin-management-card">
+                <div class="admin-management-card-top">
+                    <div class="admin-management-icon management-orange">
+                        <i class="bi bi-briefcase-fill"></i>
+                    </div>
+                    <span class="admin-card-arrow">
+                        <i class="bi bi-arrow-up-right"></i>
+                    </span>
+                </div>
+
+                <h4>Job Management</h4>
+
+                <p>
+                    Review job listings posted by employers
+                    and manage available opportunities.
+                </p>
+
+                <div class="admin-management-card-footer">
+                    <span>@totalJobs job listings</span>
+
+                    <a asp-controller="Admin"
+                       asp-action="Jobs">
+                        Manage Jobs
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- Pending Approval Notice -->
+        @if (Convert.ToInt32(pendingEmployers) > 0)
+        {
+            <section class="admin-pending-notice">
+                <div class="admin-pending-notice-icon">
+                    <i class="bi bi-bell-fill"></i>
+                </div>
+
+                <div class="admin-pending-notice-content">
+                    <h4>Employer approvals need your attention</h4>
+                    <p>
+                        There are @pendingEmployers employer registration(s)
+                        waiting for review.
+                    </p>
+                </div>
+
+                <a asp-controller="Admin"
+                   asp-action="Employers"
+                   class="admin-pending-notice-button">
+                    Review Now
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </section>
+        }
+
+        <footer class="admin-dashboard-footer">
+            <span>FreshStart Administration</span>
+            <span>Manage your platform with confidence.</span>
+        </footer>
+
+    </main>
 
 </div>
+
+
+<!-- Dashboard-specific styling -->
+<style>
+    .admin-stats-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .admin-analytics-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 24px;
+        margin-bottom: 34px;
+    }
+
+    .admin-analytics-card {
+        min-width: 0;
+        padding: 24px;
+        background: #fff;
+        border: 1px solid #e9eef7;
+        border-radius: 18px;
+        box-shadow: 0 8px 24px rgba(34, 64, 110, 0.045);
+    }
+
+    .admin-analytics-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+        .admin-analytics-card-header h4 {
+            margin: 0 0 6px;
+            color: #172b4d;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .admin-analytics-card-header p {
+            margin: 0;
+            color: #8390a5;
+            font-size: 13px;
+        }
+
+    .admin-analytics-icon {
+        display: inline-flex;
+        width: 44px;
+        height: 44px;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 13px;
+        font-size: 19px;
+    }
+
+    .analytics-blue {
+        color: #2675e8;
+        background: #eaf2ff;
+    }
+
+    .analytics-purple {
+        color: #7c55d9;
+        background: #f1ebff;
+    }
+
+    .admin-chart-container {
+        position: relative;
+        width: 100%;
+        height: 280px;
+    }
+
+    .admin-doughnut-container {
+        max-width: 300px;
+        height: 245px;
+        margin: 0 auto;
+    }
+
+    .admin-chart-empty {
+        display: flex;
+        min-height: 245px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 25px;
+        text-align: center;
+        color: #8390a5;
+    }
+
+        .admin-chart-empty > i {
+            margin-bottom: 12px;
+            color: #a9bad3;
+            font-size: 38px;
+        }
+
+        .admin-chart-empty h5 {
+            margin: 0 0 7px;
+            color: #30415e;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .admin-chart-empty p {
+            max-width: 270px;
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+    .admin-chart-summary {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px 20px;
+        margin-top: 12px;
+    }
+
+        .admin-chart-summary > div {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .admin-chart-summary strong {
+            margin-left: 2px;
+            color: #203451;
+        }
+
+    .chart-legend-dot {
+        width: 9px;
+        height: 9px;
+        flex-shrink: 0;
+        border-radius: 50%;
+    }
+
+    .legend-pending {
+        background: #f5a623;
+    }
+
+    .legend-approved {
+        background: #20b486;
+    }
+
+    .legend-rejected {
+        background: #ef6464;
+    }
+
+    .admin-recent-jobs-section {
+        margin-bottom: 34px;
+    }
+
+    .admin-recent-jobs-heading {
+        margin-bottom: 18px;
+    }
+
+    .admin-view-all-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #2675e8;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+        .admin-view-all-link:hover {
+            color: #1559bf;
+        }
+
+    .admin-recent-jobs-card {
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #e9eef7;
+        border-radius: 18px;
+        box-shadow: 0 8px 24px rgba(34, 64, 110, 0.045);
+    }
+
+    .admin-table-responsive {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .admin-recent-jobs-table {
+        width: 100%;
+        border-collapse: collapse;
+        white-space: nowrap;
+    }
+
+        .admin-recent-jobs-table thead {
+            background: #f7f9fd;
+        }
+
+        .admin-recent-jobs-table th {
+            padding: 16px 20px;
+            color: #78869c;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            text-align: left;
+            text-transform: uppercase;
+            border-bottom: 1px solid #edf1f7;
+        }
+
+        .admin-recent-jobs-table td {
+            padding: 17px 20px;
+            color: #53637b;
+            font-size: 13px;
+            border-bottom: 1px solid #f0f3f8;
+        }
+
+        .admin-recent-jobs-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .admin-recent-jobs-table tbody tr:hover {
+            background: #fbfcff;
+        }
+
+    .admin-job-title-cell {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+    }
+
+        .admin-job-title-cell strong {
+            color: #243754;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+    .admin-job-table-icon {
+        display: inline-flex;
+        width: 35px;
+        height: 35px;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: #2675e8;
+        background: #edf4ff;
+        border-radius: 10px;
+    }
+
+    .admin-job-type-badge {
+        display: inline-block;
+        padding: 6px 10px;
+        color: #3568b7;
+        background: #edf4ff;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .admin-job-location {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+        .admin-job-location i {
+            color: #8b9ab0;
+        }
+
+    .admin-job-salary {
+        color: #253a59;
+        font-weight: 700;
+    }
+
+    .admin-salary-type {
+        color: #8b98aa;
+        font-size: 11px;
+    }
+
+    .admin-job-date {
+        color: #78869c;
+    }
+
+    .admin-recent-jobs-empty {
+        display: flex;
+        min-height: 235px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 30px 20px;
+        text-align: center;
+    }
+
+    .admin-empty-jobs-icon {
+        display: inline-flex;
+        width: 58px;
+        height: 58px;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 14px;
+        color: #6e9ce6;
+        background: #edf4ff;
+        border-radius: 17px;
+        font-size: 25px;
+    }
+
+    .admin-recent-jobs-empty h4 {
+        margin: 0 0 7px;
+        color: #243754;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .admin-recent-jobs-empty p {
+        margin: 0;
+        color: #8390a5;
+        font-size: 13px;
+    }
+
+    @@media (max-width: 1400px) {
+        .admin-stats-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .admin-analytics-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .admin-stats-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .admin-stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .admin-analytics-card {
+            padding: 18px;
+        }
+
+        .admin-chart-container {
+            height: 250px;
+        }
+
+        .admin-doughnut-container {
+            height: 225px;
+        }
+
+        .admin-chart-summary {
+            gap: 10px 14px;
+        }
+
+        .admin-view-all-link {
+            font-size: 12px;
+        }
+    }
+</style>
+
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const jobTypeLabels = @Html.Raw(jobTypeLabelsJson);
+        const jobTypeCounts = @Html.Raw(jobTypeCountsJson);
+
+        const approvalLabels = @Html.Raw(approvalLabelsJson);
+        const approvalCounts = @Html.Raw(approvalCountsJson);
+
+        // Jobs by Type
+        const jobTypeCanvas = document.getElementById("jobTypeChart");
+
+        if (jobTypeCanvas && jobTypeCounts.some(count => count > 0)) {
+            new Chart(jobTypeCanvas, {
+                type: "bar",
+                data: {
+                    labels: jobTypeLabels,
+                    datasets: [{
+                        label: "Number of Jobs",
+                        data: jobTypeCounts,
+                        backgroundColor: "#4b8df8",
+                        hoverBackgroundColor: "#2675e8",
+                        borderRadius: 7,
+                        maxBarThickness: 42
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: "#172b4d",
+                            padding: 12,
+                            displayColors: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: "#78869c"
+                            },
+                            border: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0,
+                                color: "#78869c"
+                            },
+                            grid: {
+                                color: "#edf1f7"
+                            },
+                            border: {
+                                display: false,
+                                dash: [4, 4]
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Employer Approval Status
+        const approvalCanvas = document.getElementById("employerApprovalChart");
+
+        if (approvalCanvas && approvalCounts.some(count => count > 0)) {
+            new Chart(approvalCanvas, {
+                type: "doughnut",
+                data: {
+                    labels: approvalLabels,
+                    datasets: [{
+                        data: approvalCounts,
+                        backgroundColor: [
+                            "#f5a623",
+                            "#20b486",
+                            "#ef6464"
+                        ],
+                        hoverOffset: 7,
+                        borderWidth: 0,
+                        spacing: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: "70%",
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: "#172b4d",
+                            padding: 12
+                        }
+                    }
+                }
+            });
+        }
+
+    });
+</script>

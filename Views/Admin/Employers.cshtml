@@ -2,229 +2,1087 @@
 
 @{
     ViewData["Title"] = "Manage Employers";
+
+    var employers = Model?.ToList()
+        ?? new List<FreshStart.Models.Employer.EmployerProfile>();
+
+    var totalEmployers = employers.Count;
+    var pendingCount = employers.Count(e =>
+        string.IsNullOrWhiteSpace(e.ApprovalStatus) ||
+        e.ApprovalStatus == "Pending");
+    var approvedCount = employers.Count(e => e.ApprovalStatus == "Approved");
+    var rejectedCount = employers.Count(e => e.ApprovalStatus == "Rejected");
 }
 
-
-<div class="container-fluid mt-4">
-
-
-    <div class="p-4 mb-4 rounded shadow bg-dark text-white">
-
-        <h1 class="fw-bold">
-            🏢 Employer Management
-        </h1>
-
-        <p class="mb-0">
-            Review company profiles and manage approval status.
-        </p>
-
-    </div>
-
-
-
-
-
-    <div class="card shadow border-0 p-4">
-
-
-        <h3 class="mb-4">
-            Registered Companies
-        </h3>
-
-
-
-
-        <div class="table-responsive">
-
-
-            <table class="table table-hover align-middle">
-
-
-                <thead class="table-dark">
-
-                    <tr>
-
-                        <th>
-                            Logo
-                        </th>
-
-
-                        <th>
-                            Company
-                        </th>
-
-
-                        <th>
-                            Email
-                        </th>
-
-
-                        <th>
-                            Industry
-                        </th>
-
-
-                        <th>
-                            Status
-                        </th>
-
-
-                        <th>
-                            Action
-                        </th>
-
-
-                    </tr>
-
-
-                </thead>
-
-
-
-
-                <tbody>
-
-
-                    @foreach (var employer in Model)
-                    {
-
-                        <tr>
-
-
-                            <td>
-
-                                @if (!string.IsNullOrEmpty(employer.CompanyLogo))
-                                {
-                                    <img src="@employer.CompanyLogo"
-                                         width="70"
-                                         height="70"
-                                         class="rounded-circle shadow" />
-                                }
-                                else
-                                {
-                                    <span class="badge bg-secondary">
-                                        No Logo
-                                    </span>
-                                }
-
-                            </td>
-
-
-
-
-
-                            <td>
-
-                                <strong>
-                                    @employer.CompanyName
-                                </strong>
-
-                            </td>
-
-
-
-
-
-                            <td>
-                                @employer.CompanyEmail
-                            </td>
-
-
-
-
-
-                            <td>
-                                <span class="badge bg-info text-dark">
-                                    @employer.Industry
-                                </span>
-                            </td>
-
-
-
-
-
-                            <td>
-
-
-                                @if (employer.ApprovalStatus == "Approved")
-                                {
-                                    <span class="badge bg-success">
-                                        ✅ Approved
-                                    </span>
-                                }
-                                else if (employer.ApprovalStatus == "Rejected")
-                                {
-                                    <span class="badge bg-danger">
-                                        ❌ Rejected
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-warning text-dark">
-                                        ⏳ Pending
-                                    </span>
-                                }
-
-
-                            </td>
-
-
-
-
-
-                            <td>
-
-
-                                <a asp-controller="Admin"
-                                   asp-action="ApproveEmployer"
-                                   asp-route-id="@employer.EmployerId"
-                                   class="btn btn-success btn-sm me-1">
-
-                                    ✔ Approve
-
-                                </a>
-
-
-
-
-                                <a asp-controller="Admin"
-                                   asp-action="RejectEmployer"
-                                   asp-route-id="@employer.EmployerId"
-                                   class="btn btn-danger btn-sm">
-
-                                    ✖ Reject
-
-                                </a>
-                                <a asp-controller="Admin"
-                                   asp-action="DeleteEmployer"
-                                   asp-route-id="@employer.EmployerId"
-                                   class="btn btn-dark btn-sm ms-1"
-                                   onclick="return confirm('Delete this employer permanently?');">
-
-                                    Delete
-
-                                </a>
-
-                            </td>
-
-
-
-                        </tr>
-
-                    }
-
-
-                </tbody>
-
-
-            </table>
-
+<div class="admin-dashboard admin-employers-page">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+
+        <a asp-controller="Admin"
+           asp-action="Index"
+           class="admin-sidebar-brand">
+            <span class="admin-logo-icon">
+                <i class="bi bi-briefcase-fill"></i>
+            </span>
+            <span>Fresh<span class="admin-brand-highlight">Start</span></span>
+        </a>
+
+        <div class="admin-sidebar-label">MAIN MENU</div>
+
+        <nav class="admin-sidebar-nav">
+
+            <a asp-controller="Admin"
+               asp-action="Index"
+               class="admin-nav-link">
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a asp-controller="Admin"
+               asp-action="Students"
+               class="admin-nav-link">
+                <i class="bi bi-people-fill"></i>
+                <span>Students</span>
+            </a>
+
+            <a asp-controller="Admin"
+               asp-action="Employers"
+               class="admin-nav-link active">
+                <i class="bi bi-buildings-fill"></i>
+                <span>Employers</span>
+
+                @if (pendingCount > 0)
+                {
+                    <span class="admin-nav-badge">@pendingCount</span>
+                }
+            </a>
+
+            <a asp-controller="Admin"
+               asp-action="Jobs"
+               class="admin-nav-link">
+                <i class="bi bi-briefcase-fill"></i>
+                <span>Manage Jobs</span>
+            </a>
+
+        </nav>
+
+        <div class="admin-sidebar-bottom">
+
+            <div class="admin-sidebar-help">
+                <div class="admin-help-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <h6>Admin Portal</h6>
+                <p>Manage your FreshStart platform from one place.</p>
+            </div>
+
+            <div class="admin-sidebar-footer">
+                <span class="admin-online-dot"></span>
+                System Administration
+            </div>
 
         </div>
 
+    </aside>
 
-    </div>
+
+    <!-- Main Content -->
+    <main class="admin-main-content">
+
+        <!-- Topbar -->
+        <header class="admin-topbar">
+
+            <div class="admin-topbar-heading">
+
+                <div class="admin-breadcrumb">
+                    Dashboard
+                    <i class="bi bi-chevron-right"></i>
+                    Employers
+                </div>
+
+                <h1>Employer Management</h1>
+
+                <p>Review company profiles and manage approval status.</p>
+
+            </div>
+
+            <div class="admin-topbar-profile">
+                <div class="admin-profile-avatar">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+
+                <div class="admin-profile-info">
+                    <strong>Administrator</strong>
+                    <span>Platform Management</span>
+                </div>
+
+                <i class="bi bi-shield-check admin-profile-shield"></i>
+            </div>
+
+        </header>
 
 
+        <!-- Welcome Banner -->
+        <section class="admin-employers-banner">
+
+            <div class="admin-employers-banner-content">
+
+                <span class="admin-employers-eyebrow">
+                    <i class="bi bi-buildings-fill"></i>
+                    EMPLOYER DIRECTORY
+                </span>
+
+                <h2>Build a trusted employer network</h2>
+
+                <p>
+                    Review company registrations, verify employer profiles
+                    and manage approval decisions across FreshStart.
+                </p>
+
+                <a asp-controller="Admin"
+                   asp-action="Index"
+                   class="admin-employers-back-button">
+                    <i class="bi bi-arrow-left"></i>
+                    Back to Dashboard
+                </a>
+
+            </div>
+
+            <div class="admin-employers-banner-art">
+
+                <div class="admin-employers-art-circle">
+                    <i class="bi bi-buildings-fill"></i>
+                </div>
+
+                <span class="admin-employers-art-badge employers-art-one">
+                    <i class="bi bi-patch-check-fill"></i>
+                </span>
+
+                <span class="admin-employers-art-badge employers-art-two">
+                    <i class="bi bi-shield-check"></i>
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- Statistics -->
+        <section class="admin-employers-stats">
+
+            <div class="admin-employer-stat-card">
+
+                <div class="admin-employer-stat-icon employer-stat-blue">
+                    <i class="bi bi-buildings-fill"></i>
+                </div>
+
+                <div class="admin-employer-stat-info">
+                    <span>TOTAL EMPLOYERS</span>
+                    <strong>@totalEmployers</strong>
+                    <small>Registered company profiles</small>
+                </div>
+
+            </div>
+
+
+            <div class="admin-employer-stat-card">
+
+                <div class="admin-employer-stat-icon employer-stat-orange">
+                    <i class="bi bi-hourglass-split"></i>
+                </div>
+
+                <div class="admin-employer-stat-info">
+                    <span>PENDING REVIEW</span>
+                    <strong>@pendingCount</strong>
+                    <small>Awaiting approval</small>
+                </div>
+
+            </div>
+
+
+            <div class="admin-employer-stat-card">
+
+                <div class="admin-employer-stat-icon employer-stat-green">
+                    <i class="bi bi-patch-check-fill"></i>
+                </div>
+
+                <div class="admin-employer-stat-info">
+                    <span>APPROVED</span>
+                    <strong>@approvedCount</strong>
+                    <small>Approved employers</small>
+                </div>
+
+            </div>
+
+
+            <div class="admin-employer-stat-card">
+
+                <div class="admin-employer-stat-icon employer-stat-red">
+                    <i class="bi bi-x-circle-fill"></i>
+                </div>
+
+                <div class="admin-employer-stat-info">
+                    <span>REJECTED</span>
+                    <strong>@rejectedCount</strong>
+                    <small>Rejected registrations</small>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Employer Directory -->
+        <section class="admin-employers-list-section">
+
+            <div class="admin-section-heading admin-employers-list-heading">
+
+                <div>
+                    <h3>Registered Companies</h3>
+                    <p>Review company details and take approval actions.</p>
+                </div>
+
+                <span class="admin-employers-count-badge">
+                    <i class="bi bi-buildings"></i>
+                    @totalEmployers Companies
+                </span>
+
+            </div>
+
+
+            <div class="admin-employers-table-card">
+
+                @if (employers.Any())
+                {
+                    <div class="admin-employers-table-responsive">
+
+                        <table class="admin-employers-table">
+
+                            <thead>
+                                <tr>
+                                    <th>Company</th>
+                                    <th>Email Address</th>
+                                    <th>Industry</th>
+                                    <th>Approval Status</th>
+                                    <th class="admin-employer-actions-heading">Actions</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                @foreach (var employer in employers)
+                                {
+                                    var status = string.IsNullOrWhiteSpace(employer.ApprovalStatus)
+                                    ? "Pending"
+                                    : employer.ApprovalStatus;
+
+                                    <tr>
+
+                                        <!-- Company -->
+                                        <td>
+                                            <div class="admin-employer-identity">
+
+                                                @if (!string.IsNullOrWhiteSpace(employer.CompanyLogo))
+                                                {
+                                                    <img src="@employer.CompanyLogo"
+                                                         alt="Company logo"
+                                                         class="admin-employer-logo" />
+                                                }
+                                                else
+                                                {
+                                                    <div class="admin-employer-logo admin-employer-logo-placeholder">
+                                                        <i class="bi bi-buildings-fill"></i>
+                                                    </div>
+                                                }
+
+                                                <div class="admin-employer-company-info">
+                                                    <strong>
+                                                        @(string.IsNullOrWhiteSpace(employer.CompanyName)
+                                                            ? "Unnamed Company"
+                                                            : employer.CompanyName)
+                                                    </strong>
+
+                                                    <span>
+                                                        Employer ID: @employer.EmployerId
+                                                    </span>
+                                                </div>
+
+                                            </div>
+                                        </td>
+
+
+                                        <!-- Email -->
+                                        <td>
+                                            <div class="admin-employer-email">
+                                                <i class="bi bi-envelope"></i>
+                                                <span>
+                                                    @(string.IsNullOrWhiteSpace(employer.CompanyEmail)
+                                                        ? "No email available"
+                                                        : employer.CompanyEmail)
+                                                </span>
+                                            </div>
+                                        </td>
+
+
+                                        <!-- Industry -->
+                                        <td>
+                                            @if (!string.IsNullOrWhiteSpace(employer.Industry))
+                                            {
+                                                <span class="admin-employer-industry">
+                                                    <i class="bi bi-diagram-3"></i>
+                                                    @employer.Industry
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="admin-employer-muted">
+                                                    Not specified
+                                                </span>
+                                            }
+                                        </td>
+
+
+                                        <!-- Approval Status -->
+                                        <td>
+                                            @if (status == "Approved")
+                                            {
+                                                <span class="admin-employer-status employer-status-approved">
+                                                    <i class="bi bi-check-circle-fill"></i>
+                                                    Approved
+                                                </span>
+                                            }
+                                            else if (status == "Rejected")
+                                            {
+                                                <span class="admin-employer-status employer-status-rejected">
+                                                    <i class="bi bi-x-circle-fill"></i>
+                                                    Rejected
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="admin-employer-status employer-status-pending">
+                                                    <i class="bi bi-clock-fill"></i>
+                                                    Pending
+                                                </span>
+                                            }
+                                        </td>
+
+
+                                        <!-- Actions -->
+                                        <td>
+                                            <div class="admin-employer-actions">
+
+                                                @if (status != "Approved")
+                                                {
+                                                    <a asp-controller="Admin"
+                                                       asp-action="ApproveEmployer"
+                                                       asp-route-id="@employer.EmployerId"
+                                                       class="admin-employer-action-button employer-action-approve"
+                                                       title="Approve employer">
+                                                        <i class="bi bi-check-lg"></i>
+                                                        Approve
+                                                    </a>
+                                                }
+
+                                                @if (status != "Rejected")
+                                                {
+                                                    <a asp-controller="Admin"
+                                                       asp-action="RejectEmployer"
+                                                       asp-route-id="@employer.EmployerId"
+                                                       class="admin-employer-action-button employer-action-reject"
+                                                       title="Reject employer">
+                                                        <i class="bi bi-x-lg"></i>
+                                                        Reject
+                                                    </a>
+                                                }
+
+                                                <a asp-controller="Admin"
+                                                   asp-action="DeleteEmployer"
+                                                   asp-route-id="@employer.EmployerId"
+                                                   class="admin-employer-action-button employer-action-delete"
+                                                   title="Delete employer"
+                                                   onclick="return confirm('Delete this employer permanently? This action cannot be undone.');">
+                                                    <i class="bi bi-trash3"></i>
+                                                    Delete
+                                                </a>
+
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                }
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                }
+                else
+                {
+                    <div class="admin-employers-empty-state">
+
+                        <div class="admin-employers-empty-icon">
+                            <i class="bi bi-buildings"></i>
+                        </div>
+
+                        <h4>No employers registered yet</h4>
+
+                        <p>
+                            Company profiles will appear here when employers
+                            register on FreshStart.
+                        </p>
+
+                        <a asp-controller="Admin"
+                           asp-action="Index"
+                           class="admin-employers-empty-button">
+                            <i class="bi bi-arrow-left"></i>
+                            Return to Dashboard
+                        </a>
+
+                    </div>
+                }
+
+            </div>
+
+        </section>
+
+
+        <!-- Approval Information -->
+        <section class="admin-employers-info">
+
+            <div class="admin-employers-info-icon">
+                <i class="bi bi-shield-check"></i>
+            </div>
+
+            <div>
+                <h4>Employer approval guidelines</h4>
+                <p>
+                    Review company information carefully before approving
+                    or rejecting an employer registration.
+                </p>
+            </div>
+
+        </section>
+
+
+        <!-- Footer -->
+        <footer class="admin-dashboard-footer">
+            <span>FreshStart Administration</span>
+            <span>Manage your platform with confidence.</span>
+        </footer>
+
+    </main>
 
 </div>
+
+
+<style>
+    .admin-employers-page {
+        color: #243754;
+    }
+
+    .admin-employers-banner {
+        position: relative;
+        display: flex;
+        min-height: 220px;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 27px;
+        padding: 32px 38px;
+        overflow: hidden;
+        color: #fff;
+        background: linear-gradient(115deg, #2454dc 0%, #3478f6 100%);
+        border-radius: 19px;
+    }
+
+        .admin-employers-banner::before {
+            position: absolute;
+            top: -140px;
+            right: 100px;
+            width: 330px;
+            height: 330px;
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            border-radius: 50%;
+            content: "";
+        }
+
+        .admin-employers-banner::after {
+            position: absolute;
+            right: -100px;
+            bottom: -190px;
+            width: 350px;
+            height: 350px;
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            border-radius: 50%;
+            content: "";
+        }
+
+    .admin-employers-banner-content {
+        position: relative;
+        z-index: 2;
+        max-width: 600px;
+    }
+
+    .admin-employers-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 16px;
+        color: #e2ecff;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 1.4px;
+    }
+
+    .admin-employers-banner h2 {
+        margin: 0 0 12px;
+        color: #fff;
+        font-size: clamp(23px, 2.3vw, 31px);
+        font-weight: 800;
+        line-height: 1.3;
+    }
+
+    .admin-employers-banner p {
+        max-width: 520px;
+        margin: 0 0 21px;
+        color: #e8efff;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .admin-employers-back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 11px 16px;
+        color: #2454dc;
+        background: #fff;
+        border-radius: 9px;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .admin-employers-back-button:hover {
+            color: #173fb9;
+            box-shadow: 0 5px 15px rgba(10, 33, 95, 0.18);
+            transform: translateY(-2px);
+        }
+
+    .admin-employers-banner-art {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        width: 175px;
+        height: 150px;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        margin: 0 35px 0 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 42px;
+        background: rgba(255, 255, 255, 0.1);
+        transform: rotate(-7deg);
+    }
+
+    .admin-employers-art-circle {
+        display: flex;
+        width: 88px;
+        height: 88px;
+        align-items: center;
+        justify-content: center;
+        color: #3478f6;
+        background: #fff;
+        border-radius: 25px;
+        font-size: 39px;
+        box-shadow: 0 12px 25px rgba(14, 40, 112, 0.16);
+    }
+
+    .admin-employers-art-badge {
+        position: absolute;
+        display: flex;
+        width: 39px;
+        height: 39px;
+        align-items: center;
+        justify-content: center;
+        color: #20a77b;
+        background: #fff;
+        border-radius: 12px;
+        font-size: 17px;
+        box-shadow: 0 6px 18px rgba(14, 40, 112, 0.14);
+    }
+
+    .employers-art-one {
+        top: -11px;
+        left: -13px;
+    }
+
+    .employers-art-two {
+        right: -15px;
+        bottom: -10px;
+        color: #3478f6;
+    }
+
+    .admin-employers-stats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 17px;
+        margin-bottom: 32px;
+    }
+
+    .admin-employer-stat-card {
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        gap: 13px;
+        padding: 20px 17px;
+        background: #fff;
+        border: 1px solid #e9eef7;
+        border-radius: 15px;
+        box-shadow: 0 7px 22px rgba(34, 64, 110, 0.04);
+    }
+
+    .admin-employer-stat-icon {
+        display: flex;
+        width: 45px;
+        height: 45px;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        border-radius: 13px;
+        font-size: 19px;
+    }
+
+    .employer-stat-blue {
+        color: #3478f6;
+        background: #eaf1ff;
+    }
+
+    .employer-stat-orange {
+        color: #e99a25;
+        background: #fff2df;
+    }
+
+    .employer-stat-green {
+        color: #18a878;
+        background: #e1f8ef;
+    }
+
+    .employer-stat-red {
+        color: #e45361;
+        background: #ffebed;
+    }
+
+    .admin-employer-stat-info {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+    }
+
+        .admin-employer-stat-info > span {
+            margin-bottom: 5px;
+            color: #8190a7;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.45px;
+        }
+
+        .admin-employer-stat-info > strong {
+            color: #203451;
+            font-size: 27px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .admin-employer-stat-info > small {
+            margin-top: 5px;
+            color: #8491a6;
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+    .admin-employers-list-heading {
+        margin-bottom: 18px;
+    }
+
+    .admin-employers-count-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 12px;
+        color: #326bd0;
+        background: #eaf2ff;
+        border-radius: 9px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .admin-employers-table-card {
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #e8edf5;
+        border-radius: 17px;
+        box-shadow: 0 8px 24px rgba(34, 64, 110, 0.045);
+    }
+
+    .admin-employers-table-responsive {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .admin-employers-table {
+        width: 100%;
+        border-collapse: collapse;
+        white-space: nowrap;
+    }
+
+        .admin-employers-table thead {
+            background: #f7f9fd;
+        }
+
+        .admin-employers-table th {
+            padding: 16px 18px;
+            color: #7d8ba2;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.6px;
+            text-align: left;
+            text-transform: uppercase;
+            border-bottom: 1px solid #eaf0f7;
+        }
+
+        .admin-employers-table td {
+            padding: 17px 18px;
+            color: #5f6e84;
+            font-size: 12px;
+            vertical-align: middle;
+            border-bottom: 1px solid #eff2f7;
+        }
+
+        .admin-employers-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .admin-employers-table tbody tr {
+            transition: background 0.2s ease;
+        }
+
+            .admin-employers-table tbody tr:hover {
+                background: #fbfcff;
+            }
+
+    .admin-employer-identity {
+        display: flex;
+        min-width: 175px;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .admin-employer-logo {
+        display: flex;
+        width: 45px;
+        height: 45px;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        object-fit: contain;
+        color: #3478f6;
+        background: #fff;
+        border: 1px solid #e7edf6;
+        border-radius: 13px;
+        font-size: 20px;
+    }
+
+    .admin-employer-logo-placeholder {
+        background: #edf4ff;
+        border-color: #edf4ff;
+    }
+
+    .admin-employer-company-info {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+        .admin-employer-company-info strong {
+            max-width: 185px;
+            overflow: hidden;
+            color: #243754;
+            font-size: 12px;
+            font-weight: 750;
+            text-overflow: ellipsis;
+        }
+
+        .admin-employer-company-info span {
+            color: #91a0b5;
+            font-size: 10px;
+        }
+
+    .admin-employer-email {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .admin-employer-email i {
+            color: #8c9bb1;
+            font-size: 14px;
+        }
+
+    .admin-employer-industry {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 10px;
+        color: #526ab6;
+        background: #f0efff;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 650;
+    }
+
+    .admin-employer-muted {
+        color: #9aa5b5;
+        font-size: 11px;
+        font-style: italic;
+    }
+
+    .admin-employer-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 11px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 750;
+    }
+
+    .employer-status-approved {
+        color: #168b65;
+        background: #e2f8ef;
+    }
+
+    .employer-status-pending {
+        color: #b97815;
+        background: #fff3df;
+    }
+
+    .employer-status-rejected {
+        color: #d84957;
+        background: #ffebed;
+    }
+
+    .admin-employer-actions-heading {
+        text-align: center !important;
+    }
+
+    .admin-employer-actions {
+        display: flex;
+        min-width: 270px;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 7px;
+    }
+
+    .admin-employer-action-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        padding: 8px 10px;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        font-size: 10px;
+        font-weight: 750;
+        text-decoration: none;
+        transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .employer-action-approve {
+        color: #168b65;
+        background: #e2f8ef;
+        border-color: #d2f2e5;
+    }
+
+        .employer-action-approve:hover {
+            color: #fff;
+            background: #18a878;
+            border-color: #18a878;
+        }
+
+    .employer-action-reject {
+        color: #d84957;
+        background: #ffebed;
+        border-color: #ffdcdf;
+    }
+
+        .employer-action-reject:hover {
+            color: #fff;
+            background: #e45361;
+            border-color: #e45361;
+        }
+
+    .employer-action-delete {
+        color: #58677c;
+        background: #f1f4f8;
+        border-color: #e6ebf2;
+    }
+
+        .employer-action-delete:hover {
+            color: #fff;
+            background: #475569;
+            border-color: #475569;
+        }
+
+    .admin-employers-empty-state {
+        display: flex;
+        min-height: 330px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 35px 20px;
+        text-align: center;
+    }
+
+    .admin-employers-empty-icon {
+        display: flex;
+        width: 70px;
+        height: 70px;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 18px;
+        color: #3478f6;
+        background: #edf4ff;
+        border-radius: 21px;
+        font-size: 31px;
+    }
+
+    .admin-employers-empty-state h4 {
+        margin: 0 0 9px;
+        color: #243754;
+        font-size: 17px;
+        font-weight: 750;
+    }
+
+    .admin-employers-empty-state p {
+        max-width: 370px;
+        margin: 0 0 19px;
+        color: #8390a5;
+        font-size: 12px;
+        line-height: 1.8;
+    }
+
+    .admin-employers-empty-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 15px;
+        color: #fff;
+        background: #3478f6;
+        border-radius: 9px;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+        .admin-employers-empty-button:hover {
+            color: #fff;
+            background: #245ed0;
+        }
+
+    .admin-employers-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-top: 25px;
+        padding: 20px 22px;
+        background: #fff;
+        border: 1px solid #e8edf5;
+        border-radius: 15px;
+    }
+
+    .admin-employers-info-icon {
+        display: flex;
+        width: 44px;
+        height: 44px;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        color: #3478f6;
+        background: #edf4ff;
+        border-radius: 13px;
+        font-size: 20px;
+    }
+
+    .admin-employers-info h4 {
+        margin: 0 0 5px;
+        color: #263a57;
+        font-size: 13px;
+        font-weight: 750;
+    }
+
+    .admin-employers-info p {
+        margin: 0;
+        color: #8390a5;
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    @@media (max-width: 1250px) {
+        .admin-employers-stats {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @@media (max-width: 1000px) {
+        .admin-employers-banner-art {
+            margin-right: 15px;
+        }
+    }
+
+    @@media (max-width: 650px) {
+        .admin-employers-banner {
+            min-height: auto;
+            padding: 25px 22px;
+        }
+
+        .admin-employers-banner-art {
+            display: none;
+        }
+
+        .admin-employers-banner h2 {
+            font-size: 24px;
+        }
+
+        .admin-employers-banner p {
+            font-size: 12px;
+        }
+
+        .admin-employers-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .admin-employer-stat-card {
+            padding: 17px;
+        }
+
+        .admin-employers-list-heading {
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .admin-employers-count-badge {
+            font-size: 10px;
+        }
+
+        .admin-employers-info {
+            align-items: flex-start;
+            padding: 17px;
+        }
+    }
+</style>
