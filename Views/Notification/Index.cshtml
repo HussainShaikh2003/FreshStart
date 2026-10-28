@@ -1,148 +1,526 @@
-﻿@model List<FreshStart.Models.Notification.Notification>
+﻿```cshtml
+@model List<FreshStart.Models.Notification.Notification>
 
 @{
     ViewData["Title"] = "Notifications";
 }
 
+<style>
+    .notification-page {
+        min-height: 100vh;
+        padding: 30px 0 50px;
+        background: #f3f7fd;
+        color: #24334d;
+    }
 
-<div class="container-fluid mt-4">
+    .notification-layout {
+        max-width: 1450px;
+        margin: auto;
+    }
 
+    .notification-sidebar {
+        background: #ffffff;
+        border: 1px solid #e7edf6;
+        border-radius: 22px;
+        padding: 25px 18px;
+        box-shadow: 0 8px 30px rgba(31, 65, 114, 0.05);
+        position: sticky;
+        top: 20px;
+    }
 
-    <div class="row">
+    .notification-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 5px 8px 23px;
+        border-bottom: 1px solid #edf1f7;
+        margin-bottom: 22px;
+    }
 
+    .notification-brand-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #e8f1ff;
+        color: #2563eb;
+        font-size: 23px;
+    }
 
-        <!-- Sidebar -->
+    .notification-brand h4 {
+        margin: 0;
+        color: #1e3a8a;
+        font-size: 21px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
 
-        <div class="col-md-3 mb-4">
+    .notification-brand small {
+        color: #8996aa;
+        font-size: 11px;
+    }
 
+    .notification-nav-label {
+        padding: 0 12px;
+        margin: 0 0 10px;
+        color: #9aa6b8;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 1.3px;
+        text-transform: uppercase;
+    }
 
-            <div class="card shadow p-4">
+    .notification-nav {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 13px 14px;
+        margin-bottom: 7px;
+        border-radius: 12px;
+        color: #64748b;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
 
+        .notification-nav i {
+            font-size: 17px;
+        }
 
-                <h3 class="fw-bold text-primary">
-                    FreshStart
-                </h3>
+        .notification-nav:hover {
+            color: #2563eb;
+            background: #f1f6ff;
+            transform: translateX(3px);
+        }
 
+        .notification-nav.active {
+            color: #2563eb;
+            background: #eaf2ff;
+            font-weight: 700;
+        }
 
-                <hr />
+    .notification-main {
+        min-width: 0;
+    }
 
+    .notification-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        flex-wrap: wrap;
+        margin-bottom: 25px;
+    }
 
-                <a asp-controller="Student"
-                   asp-action="Index"
-                   class="btn btn-light text-start mb-2">
+    .notification-eyebrow {
+        color: #2563eb;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
 
-                    🏠 Dashboard
+    .notification-heading h1 {
+        color: #1e293b;
+        font-size: clamp(27px, 3vw, 35px);
+        font-weight: 800;
+        letter-spacing: -1.1px;
+        margin: 0 0 8px;
+    }
 
-                </a>
+    .notification-heading p {
+        color: #8190a5;
+        font-size: 13px;
+        margin: 0;
+    }
 
+    .notification-count {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 16px;
+        border: 1px solid #dce8ff;
+        border-radius: 13px;
+        background: #ffffff;
+        color: #2563eb;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
 
-                <a asp-controller="Student"
-                   asp-action="Jobs"
-                   class="btn btn-light text-start mb-2">
+        .notification-count i {
+            font-size: 17px;
+        }
 
-                    🔍 Browse Jobs
+    .notification-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
 
-                </a>
+    .notification-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 17px;
+        padding: 23px;
+        background: #ffffff;
+        border: 1px solid #e6edf7;
+        border-radius: 18px;
+        box-shadow: 0 5px 20px rgba(31, 65, 114, 0.035);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        overflow-wrap: anywhere;
+    }
 
+        .notification-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(31, 65, 114, 0.08);
+        }
 
-                <a asp-controller="Student"
-                   asp-action="MyApplications"
-                   class="btn btn-light text-start mb-2">
+    .notification-card-icon {
+        width: 48px;
+        height: 48px;
+        flex: 0 0 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+        background: #eaf2ff;
+        color: #2563eb;
+        font-size: 21px;
+    }
 
-                    📄 Applications
+    .notification-card-content {
+        flex: 1;
+        min-width: 0;
+    }
 
-                </a>
+    .notification-card-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+    }
 
+    .notification-card h5 {
+        color: #26354d;
+        font-size: 15px;
+        line-height: 1.7;
+        font-weight: 700;
+        margin: 0;
+    }
 
-                <a asp-controller="Student"
-                   asp-action="SavedJobs"
-                   class="btn btn-light text-start">
+    .notification-type {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 20px;
+        background: #f0f5ff;
+        color: #4774c8;
+        font-size: 10px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
 
-                    ⭐ Saved Jobs
+    .notification-divider {
+        border: 0;
+        border-top: 1px solid #edf1f7;
+        margin: 0 0 12px;
+        opacity: 1;
+    }
 
-                </a>
+    .notification-date {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #8a97aa;
+        font-size: 12px;
+    }
 
+        .notification-date i {
+            color: #6085c7;
+            font-size: 15px;
+        }
 
-            </div>
+    .notification-empty {
+        padding: 65px 25px;
+        background: #ffffff;
+        border: 1px dashed #cbd9ee;
+        border-radius: 22px;
+        text-align: center;
+    }
 
+    .notification-empty-icon {
+        width: 82px;
+        height: 82px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 22px;
+        border-radius: 25px;
+        background: #edf4ff;
+        color: #3b82f6;
+        font-size: 35px;
+    }
 
-        </div>
+    .notification-empty h3 {
+        color: #26354d;
+        font-size: 21px;
+        font-weight: 800;
+        margin-bottom: 10px;
+    }
 
+    .notification-empty p {
+        max-width: 350px;
+        margin: 0 auto 22px;
+        color: #8794a8;
+        font-size: 13px;
+        line-height: 1.8;
+    }
 
+    .notification-empty-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        padding: 12px 18px;
+        border-radius: 12px;
+        background: #2563eb;
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 700;
+        transition: background 0.2s ease;
+    }
 
+        .notification-empty-link:hover {
+            color: #ffffff;
+            background: #1d4ed8;
+        }
 
+    .notification-footer-note {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 25px;
+        color: #98a4b6;
+        font-size: 11px;
+        text-align: center;
+    }
 
+        .notification-footer-note i {
+            color: #5a8de1;
+        }
 
-        <!-- Notifications -->
+    @@media (max-width: 767px) {
+        .notification-page {
+            padding: 18px 0 35px;
+        }
 
-        <div class="col-md-9">
+        .notification-sidebar {
+            position: static;
+            padding: 18px 14px;
+        }
 
+        .notification-brand {
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
 
-            <h1 class="fw-bold mb-4">
-                🔔 Notifications
-            </h1>
+        .notification-nav {
+            padding: 11px 12px;
+        }
 
+        .notification-heading {
+            align-items: flex-start;
+        }
 
+        .notification-card {
+            padding: 17px;
+            gap: 12px;
+        }
 
-            @if (Model.Count == 0)
-            {
+        .notification-card-icon {
+            width: 42px;
+            height: 42px;
+            flex-basis: 42px;
+            border-radius: 13px;
+        }
 
-                <div class="alert alert-info shadow">
+        .notification-card-top {
+            flex-direction: column;
+            gap: 9px;
+        }
 
-                    No notifications available.
+        .notification-empty {
+            padding: 45px 18px;
+        }
+    }
+</style>
 
-                </div>
+<div class="notification-page">
+    <div class="container-fluid px-3 px-lg-4 notification-layout">
+        <div class="row g-4">
 
-            }
+            <!-- Student Sidebar -->
+            <div class="col-lg-3 col-xl-2">
+                <aside class="notification-sidebar">
 
-            else
-            {
-
-
-                @foreach (var notification in Model)
-                {
-
-
-                    <div class="card shadow p-4 mb-3">
-
-
-                        <div class="d-flex justify-content-between align-items-center">
-
-
-                            <h5 class="fw-bold mb-0">
-
-                                🔔 @notification.Message
-
-                            </h5>
-
-
+                    <div class="notification-brand">
+                        <div class="notification-brand-icon">
+                            <i class="bi bi-briefcase-fill"></i>
                         </div>
-
-
-
-                        <hr />
-
-
-                        <p class="text-muted mb-0">
-
-                            📅 @notification.CreatedDate.ToString("dd MMM yyyy hh:mm tt")
-
-                        </p>
-
-
+                        <div>
+                            <h4>FreshStart</h4>
+                            <small>Your career journey</small>
+                        </div>
                     </div>
 
+                    <div class="notification-nav-label">Workspace</div>
 
+                    <a asp-controller="Student"
+                       asp-action="Index"
+                       class="notification-nav">
+                        <i class="bi bi-grid-1x2"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <a asp-controller="Student"
+                       asp-action="Jobs"
+                       class="notification-nav">
+                        <i class="bi bi-search"></i>
+                        <span>Browse Jobs</span>
+                    </a>
+
+                    <a asp-controller="Student"
+                       asp-action="MyApplications"
+                       class="notification-nav">
+                        <i class="bi bi-file-earmark-text"></i>
+                        <span>Applications</span>
+                    </a>
+
+                    <a asp-controller="Student"
+                       asp-action="SavedJobs"
+                       class="notification-nav">
+                        <i class="bi bi-bookmark-star"></i>
+                        <span>Saved Jobs</span>
+                    </a>
+
+                    <a asp-controller="Student"
+                       asp-action="Notifications"
+                       class="notification-nav active">
+                        <i class="bi bi-bell"></i>
+                        <span>Notifications</span>
+                    </a>
+
+                </aside>
+            </div>
+
+            <!-- Notifications Content -->
+            <div class="col-lg-9 col-xl-10 notification-main">
+
+                <div class="notification-heading">
+                    <div>
+                        <div class="notification-eyebrow">
+                            <i class="bi bi-grid me-1"></i> Student Workspace
+                        </div>
+
+                        <h1>Notifications</h1>
+
+                        <p>Stay updated with the latest activity on your account.</p>
+                    </div>
+
+                    <div class="notification-count">
+                        <i class="bi bi-bell"></i>
+                        @Model.Count @(Model.Count == 1 ? "Notification" : "Notifications")
+                    </div>
+                </div>
+
+                @if (Model.Count == 0)
+                {
+                    <div class="notification-empty">
+                        <div class="notification-empty-icon">
+                            <i class="bi bi-bell-slash"></i>
+                        </div>
+
+                        <h3>You're all caught up!</h3>
+
+                        <p>
+                            You don't have any notifications right now.
+                            Check out available jobs and keep moving forward in your career journey.
+                        </p>
+
+                        <a asp-controller="Student"
+                           asp-action="Jobs"
+                           class="notification-empty-link">
+                            <i class="bi bi-search"></i>
+                            Explore Jobs
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="notification-list">
+
+                        @foreach (var notification in Model)
+                        {
+                            <article class="notification-card">
+
+                                <div class="notification-card-icon">
+                                    <i class="bi bi-bell-fill"></i>
+                                </div>
+
+                                <div class="notification-card-content">
+
+                                    <div class="notification-card-top">
+                                        <h5>@notification.Message</h5>
+
+                                        <span class="notification-type">
+                                            <i class="bi bi-info-circle"></i>
+                                            Update
+                                        </span>
+                                    </div>
+
+                                    <hr class="notification-divider" />
+
+                                    <div class="notification-date">
+                                        <i class="bi bi-calendar3"></i>
+
+                                        <span>
+                                            @notification.CreatedDate.ToString("dd MMM yyyy")
+                                        </span>
+
+                                        <span>•</span>
+
+                                        <i class="bi bi-clock"></i>
+
+                                        <span>
+                                            @notification.CreatedDate.ToString("hh:mm tt")
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </article>
+                        }
+
+                    </div>
                 }
 
+                <div class="notification-footer-note">
+                    <i class="bi bi-shield-check"></i>
+                    <span>Your FreshStart account updates appear here.</span>
+                </div>
 
-            }
-
-
+            </div>
         </div>
-
-
     </div>
-
-
 </div>
+```

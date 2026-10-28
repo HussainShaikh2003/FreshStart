@@ -3,278 +3,659 @@
 @{
     ViewData["Title"] = "Applicants";
     var applicants = Model ?? new List<FreshStart.Models.ViewModels.ApplicantMatchViewModel>();
+
+    var highMatches = applicants.Count(x => x.MatchPercentage >= 70);
+    var mediumMatches = applicants.Count(x => x.MatchPercentage >= 40 && x.MatchPercentage < 70);
+    var lowMatches = applicants.Count(x => x.MatchPercentage < 40);
 }
 
-<div class="container-fluid mt-4">
-    <h1 class="fw-bold mb-4">Job Applicants 👥</h1>
+<div class="applicants-page">
+
+    <!-- Page Header -->
+    <div class="applicants-header">
+        <div>
+            <span class="applicants-eyebrow">
+                EMPLOYER WORKSPACE
+            </span>
+
+            <h1>Job Applicants</h1>
+
+            <p>
+                Review candidates, compare skills and find the right talent for your job.
+            </p>
+        </div>
+
+        <div class="applicants-header-icon">
+            <i class="bi bi-people"></i>
+        </div>
+    </div>
+
+    <!-- Overview Cards -->
+    <div class="applicants-overview">
+
+        <div class="applicants-stat-card">
+            <div class="applicants-stat-icon applicants-icon-blue">
+                <i class="bi bi-people-fill"></i>
+            </div>
+
+            <div>
+                <span class="applicants-stat-label">Total Applicants</span>
+                <h2>@applicants.Count</h2>
+                <small>Applications received</small>
+            </div>
+        </div>
+
+        <div class="applicants-stat-card">
+            <div class="applicants-stat-icon applicants-icon-green">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+
+            <div>
+                <span class="applicants-stat-label">High Match</span>
+                <h2>@highMatches</h2>
+                <small>70% match and above</small>
+            </div>
+        </div>
+
+        <div class="applicants-stat-card">
+            <div class="applicants-stat-icon applicants-icon-orange">
+                <i class="bi bi-bar-chart-fill"></i>
+            </div>
+
+            <div>
+                <span class="applicants-stat-label">Medium Match</span>
+                <h2>@mediumMatches</h2>
+                <small>40% to below 70%</small>
+            </div>
+        </div>
+
+        <div class="applicants-stat-card">
+            <div class="applicants-stat-icon applicants-icon-red">
+                <i class="bi bi-clipboard2-x-fill"></i>
+            </div>
+
+            <div>
+                <span class="applicants-stat-label">Low Match</span>
+                <h2>@lowMatches</h2>
+                <small>Below 40% match</small>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Match Categories -->
+    <div class="applicants-section-heading">
+        <div>
+            <h2>Candidate Match Overview</h2>
+            <p>Select a category to filter candidates by their match score.</p>
+        </div>
+    </div>
+
+    <div class="applicants-match-grid">
+
+        <button type="button"
+                class="applicants-match-card match-high"
+                data-category="high">
+
+            <div class="match-card-top">
+                <span class="match-card-icon">
+                    <i class="bi bi-stars"></i>
+                </span>
+
+                <span class="match-card-arrow">
+                    <i class="bi bi-arrow-up-right"></i>
+                </span>
+            </div>
+
+            <h3>High Match</h3>
+            <div class="match-card-number">@highMatches</div>
+            <p>70% and above</p>
+
+            <div class="match-progress-track">
+                <div class="match-progress-fill"
+                     style="width:@(applicants.Count == 0 ? 0 : highMatches * 100.0 / applicants.Count)%">
+                </div>
+            </div>
+        </button>
+
+        <button type="button"
+                class="applicants-match-card match-medium"
+                data-category="medium">
+
+            <div class="match-card-top">
+                <span class="match-card-icon">
+                    <i class="bi bi-graph-up-arrow"></i>
+                </span>
+
+                <span class="match-card-arrow">
+                    <i class="bi bi-arrow-up-right"></i>
+                </span>
+            </div>
+
+            <h3>Medium Match</h3>
+            <div class="match-card-number">@mediumMatches</div>
+            <p>40% to below 70%</p>
+
+            <div class="match-progress-track">
+                <div class="match-progress-fill"
+                     style="width:@(applicants.Count == 0 ? 0 : mediumMatches * 100.0 / applicants.Count)%">
+                </div>
+            </div>
+        </button>
+
+        <button type="button"
+                class="applicants-match-card match-low"
+                data-category="low">
+
+            <div class="match-card-top">
+                <span class="match-card-icon">
+                    <i class="bi bi-filter-circle"></i>
+                </span>
+
+                <span class="match-card-arrow">
+                    <i class="bi bi-arrow-up-right"></i>
+                </span>
+            </div>
+
+            <h3>Low Match</h3>
+            <div class="match-card-number">@lowMatches</div>
+            <p>Below 40%</p>
+
+            <div class="match-progress-track">
+                <div class="match-progress-fill"
+                     style="width:@(applicants.Count == 0 ? 0 : lowMatches * 100.0 / applicants.Count)%">
+                </div>
+            </div>
+        </button>
+
+    </div>
+
+    <!-- Analysis Notice -->
+    <div class="applicants-analysis-note">
+        <div class="analysis-note-icon">
+            <i class="bi bi-lightbulb"></i>
+        </div>
+
+        <div>
+            <h6>CV Matching Insights</h6>
+            <p>
+                Candidate match scores are calculated using the available profile,
+                skills and job-related information. Use these scores as a guide
+                during screening, not as an automatic hiring decision.
+            </p>
+        </div>
+    </div>
+
+    <!-- Candidate Filters -->
+    <div class="applicants-filter-panel">
+
+        <div class="applicants-filter-heading">
+            <div class="filter-heading-icon">
+                <i class="bi bi-sliders"></i>
+            </div>
+
+            <div>
+                <h2>Filter Candidates</h2>
+                <p>Narrow down applicants to find suitable candidates.</p>
+            </div>
+        </div>
+
+        <div class="applicants-filter-grid">
+
+            <div class="applicants-filter-field">
+                <label for="minMatch">Minimum Match</label>
+
+                <select id="minMatch" class="form-select">
+                    <option value="0">All Matches</option>
+                    <option value="40">40% and above</option>
+                    <option value="50">50% and above</option>
+                    <option value="70">70% and above</option>
+                    <option value="80">80% and above</option>
+                    <option value="90">90% and above</option>
+                </select>
+            </div>
+
+            <div class="applicants-filter-field">
+                <label for="maxMatch">Maximum Match</label>
+
+                <select id="maxMatch" class="form-select">
+                    <option value="100">No Maximum</option>
+                    <option value="39">Up to 39%</option>
+                    <option value="69">Up to 69%</option>
+                    <option value="79">Up to 79%</option>
+                </select>
+            </div>
+
+            <div class="applicants-filter-field">
+                <label for="skillSearch">Search Skills</label>
+
+                <div class="applicants-input-icon">
+                    <i class="bi bi-search"></i>
+
+                    <input type="text"
+                           id="skillSearch"
+                           class="form-control"
+                           placeholder="e.g. C#, HTML, SQL" />
+                </div>
+            </div>
+
+            <div class="applicants-filter-field">
+                <label for="statusFilter">Application Status</label>
+
+                <select id="statusFilter" class="form-select">
+                    <option value="">All Statuses</option>
+                    <option value="Applied">Applied</option>
+                    <option value="Reviewed">Reviewed</option>
+                    <option value="Shortlisted">Shortlisted</option>
+                    <option value="Selected">Selected</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="applicants-filter-footer">
+            <div class="filter-results-text">
+                <i class="bi bi-people"></i>
+                <span id="candidateCount">
+                    Showing @applicants.Count of @applicants.Count candidates
+                </span>
+            </div>
+
+            <button type="button"
+                    class="applicants-reset-btn"
+                    id="resetFilters">
+                <i class="bi bi-arrow-counterclockwise"></i>
+                Reset Filters
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Candidate List Heading -->
+    <div class="applicants-list-heading">
+        <div>
+            <h2>Candidate Profiles</h2>
+            <p>Review applicant details, skills and application status.</p>
+        </div>
+
+        <span class="applicants-total-badge">
+            <i class="bi bi-person-lines-fill"></i>
+            @applicants.Count Applicants
+        </span>
+    </div>
+
+    <div id="noFilteredResults"
+         class="applicants-empty-state"
+         style="display:none;">
+
+        <div class="empty-state-icon">
+            <i class="bi bi-search"></i>
+        </div>
+
+        <h3>No Candidates Found</h3>
+        <p>No candidates match your selected filters. Try adjusting your search.</p>
+
+        <button type="button"
+                class="applicants-primary-btn"
+                id="emptyResetFilters">
+            Clear Filters
+        </button>
+    </div>
 
     @if (applicants.Count == 0)
     {
-        <div class="alert alert-info shadow">
-            No applicants found.
+        <div class="applicants-empty-state">
+            <div class="empty-state-icon">
+                <i class="bi bi-person-plus"></i>
+            </div>
+
+            <h3>No Applicants Yet</h3>
+
+            <p>
+                There are no applications for this job yet.
+                New candidates will appear here when they apply.
+            </p>
         </div>
     }
     else
     {
-        <!-- Bulk CV Analysis Summary -->
-        <div class="row g-3 mb-4">
-            <div class="col-md-4">
-                <div class="card border-success shadow-sm h-100 match-category-card"
-                     role="button" tabindex="0" data-category="high">
-                    <div class="card-body">
-                        <h6 class="text-success">High Match</h6>
-                        <h2 class="fw-bold">
-                            @applicants.Count(x => x.MatchPercentage >= 70)
-                        </h2>
-                        <small class="text-muted">70% and above · Click to view</small>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="card border-warning shadow-sm h-100 match-category-card"
-                     role="button" tabindex="0" data-category="medium">
-                    <div class="card-body">
-                        <h6 class="text-warning">Medium Match</h6>
-                        <h2 class="fw-bold">
-                            @applicants.Count(x => x.MatchPercentage >= 40 && x.MatchPercentage < 70)
-                        </h2>
-                        <small class="text-muted">40%–69% · Click to view</small>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="card border-secondary shadow-sm h-100 match-category-card"
-                     role="button" tabindex="0" data-category="low">
-                    <div class="card-body">
-                        <h6 class="text-secondary">Low Match</h6>
-                        <h2 class="fw-bold">
-                            @applicants.Count(x => x.MatchPercentage < 40)
-                        </h2>
-                        <small class="text-muted">Below 40% · Click to view</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="alert alert-light border">
-            <strong>Bulk CV Analysis:</strong>
-            Candidates are grouped by their calculated match scores.
-            These scores are indicators for review, not automatic hiring decisions.
-        </div>
-
-        <!-- Filters -->
-        <div class="card shadow-sm p-3 mb-4">
-            <h5 class="fw-bold mb-3">Filter Candidates</h5>
-
-            <div class="row g-3">
-                <div class="col-md-4">
-                    <label for="minMatch" class="form-label">
-                        Minimum Match Percentage
-                    </label>
-                    <select id="minMatch" class="form-select">
-                        <option value="0">All Matches</option>
-                        <option value="40">40% and above</option>
-                        <option value="50">50% and above</option>
-                        <option value="70">70% and above</option>
-                        <option value="80">80% and above</option>
-                        <option value="90">90% and above</option>
-                    </select>
-                </div>
-
-                <div class="col-md-4">
-                    <label for="maxMatch" class="form-label">
-                        Maximum Match Percentage
-                    </label>
-                    <select id="maxMatch" class="form-select">
-                        <option value="100">No maximum</option>
-                        <option value="39">Up to 39%</option>
-                        <option value="69">Up to 69%</option>
-                        <option value="79">Up to 79%</option>
-                    </select>
-                </div>
-
-                <div class="col-md-4">
-                    <label for="skillSearch" class="form-label">
-                        Search Skill
-                    </label>
-                    <input type="text" id="skillSearch"
-                           class="form-control"
-                           placeholder="e.g. C#, HTML, SQL" />
-                </div>
-
-                <div class="col-md-4">
-                    <label for="statusFilter" class="form-label">
-                        Application Status
-                    </label>
-                    <select id="statusFilter" class="form-select">
-                        <option value="">All Statuses</option>
-                        <option value="Applied">Applied</option>
-                        <option value="Reviewed">Reviewed</option>
-                        <option value="Shortlisted">Shortlisted</option>
-                        <option value="Selected">Selected</option>
-                        <option value="Rejected">Rejected</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="d-flex justify-content-between align-items-center mt-3">
-                <span class="text-muted" id="candidateCount">
-                    Showing @applicants.Count of @applicants.Count candidates
-                </span>
-
-                <button type="button" class="btn btn-outline-secondary"
-                        id="resetFilters">
-                    Reset Filters
-                </button>
-            </div>
-        </div>
-
-        <div id="noFilteredResults" class="alert alert-warning" style="display:none;">
-            No candidates match your filters.
-        </div>
-
         <div id="applicantList">
+
             @foreach (var item in applicants.OrderByDescending(x => x.MatchPercentage))
             {
                 var application = item.Application;
                 var student = application.Student;
 
-                <div class="card shadow p-4 mb-4 applicant-card"
-                     data-match="@item.MatchPercentage"
-                     data-status="@(application.Status ?? "")"
-                     data-skills="@(student?.Skills ?? "")">
+                var matchClass = item.MatchPercentage >= 70
+                ? "candidate-match-high"
+                : item.MatchPercentage >= 40
+                ? "candidate-match-medium"
+                : "candidate-match-low";
 
-                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                        <div>
-                            <h3 class="fw-bold">@(student?.FullName ?? "Student")</h3>
-                            <span class="badge bg-primary applicant-status">
-                                @application.Status
-                            </span>
-                        </div>
+                var statusValue = application.Status ?? "Applied";
 
-                        <div class="text-end">
-                            <small class="text-muted">
-                                Applied: @application.AppliedDate.ToShortDateString()
-                            </small>
-                            <div class="mt-2">
-                                <span class="badge @(item.MatchPercentage >= 70 ? "bg-success" : item.MatchPercentage >= 40 ? "bg-warning text-dark" : "bg-secondary") fs-6">
-                                    @item.MatchPercentage.ToString("0.##")% Match
-                                </span>
+                var statusClass = statusValue.Equals("Selected", StringComparison.OrdinalIgnoreCase)
+                ? "status-selected"
+                : statusValue.Equals("Shortlisted", StringComparison.OrdinalIgnoreCase)
+                ? "status-shortlisted"
+                : statusValue.Equals("Reviewed", StringComparison.OrdinalIgnoreCase)
+                ? "status-reviewed"
+                : statusValue.Equals("Rejected", StringComparison.OrdinalIgnoreCase)
+                ? "status-rejected"
+                : "status-applied";
+
+                <article class="applicant-profile-card"
+                         data-match="@item.MatchPercentage"
+                         data-status="@statusValue"
+                         data-skills="@(student?.Skills ?? "")">
+
+                    <!-- Candidate Header -->
+                    <div class="candidate-card-header">
+
+                        <div class="candidate-identity">
+                            <div class="candidate-avatar">
+                                <i class="bi bi-person"></i>
+                            </div>
+
+                            <div class="candidate-identity-info">
+                                <h3>@(student?.FullName ?? "Student")</h3>
+
+                                <div class="candidate-applied-date">
+                                    <i class="bi bi-calendar3"></i>
+                                    Applied @application.AppliedDate.ToShortDateString()
+                                </div>
                             </div>
                         </div>
+
+                        <div class="candidate-score @matchClass">
+                            <div class="candidate-score-top">
+                                <i class="bi bi-patch-check"></i>
+                                <span>Profile Match</span>
+                            </div>
+
+                            <div class="candidate-score-value">
+                                @item.MatchPercentage.ToString("0.##")<span>%</span>
+                            </div>
+
+                            <div class="candidate-score-track">
+                                <div class="candidate-score-fill"
+                                     style="width:@(Math.Clamp(item.MatchPercentage, 0, 100))%">
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
-                    <hr />
+                    <!-- Status -->
+                    <div class="candidate-status-row">
+                        <span class="candidate-status-label">Application Status</span>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p>🎓 <strong>University:</strong> @(student?.University ?? "Not specified")</p>
-                            <p>📚 <strong>Degree:</strong> @(student?.Degree ?? "Not specified")</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p>🛠 <strong>Skills:</strong> @(student?.Skills ?? "Not specified")</p>
-                            <p>💼 <strong>Experience:</strong> @(student?.Experience ?? "Not specified")</p>
-                        </div>
+                        <span class="candidate-status-badge @statusClass">
+                            <span class="status-dot"></span>
+                            @statusValue
+                        </span>
                     </div>
 
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <h6 class="fw-bold text-success">Matched Terms</h6>
-                            @if (item.MatchedTerms.Any())
-                            {
-                                @foreach (var term in item.MatchedTerms)
+                    <!-- Candidate Details -->
+                    <div class="candidate-information-grid">
+
+                        <div class="candidate-information-item">
+                            <div class="candidate-information-icon">
+                                <i class="bi bi-mortarboard"></i>
+                            </div>
+
+                            <div>
+                                <span>University</span>
+                                <strong>@(student?.University ?? "Not specified")</strong>
+                            </div>
+                        </div>
+
+                        <div class="candidate-information-item">
+                            <div class="candidate-information-icon">
+                                <i class="bi bi-book"></i>
+                            </div>
+
+                            <div>
+                                <span>Degree</span>
+                                <strong>@(student?.Degree ?? "Not specified")</strong>
+                            </div>
+                        </div>
+
+                        <div class="candidate-information-item">
+                            <div class="candidate-information-icon">
+                                <i class="bi bi-briefcase"></i>
+                            </div>
+
+                            <div>
+                                <span>Experience</span>
+                                <strong>@(student?.Experience ?? "Not specified")</strong>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Skills -->
+                    <div class="candidate-skills-section">
+                        <h4>
+                            <i class="bi bi-code-slash"></i>
+                            Candidate Skills
+                        </h4>
+
+                        @if (!string.IsNullOrWhiteSpace(student?.Skills))
+                        {
+                            <div class="candidate-skills-list">
+                                @foreach (var skill in student.Skills.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
                                 {
-                                    <span class="badge bg-success me-1 mb-1">@term</span>
+                                    <span class="candidate-skill-tag">@skill</span>
                                 }
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="candidate-no-data">No skills specified in the profile.</p>
+                        }
+                    </div>
+
+                    <!-- Matching Analysis -->
+                    <div class="candidate-analysis-grid">
+
+                        <div class="candidate-analysis-box candidate-matched-box">
+                            <div class="candidate-analysis-heading">
+                                <span class="analysis-icon">
+                                    <i class="bi bi-check2-circle"></i>
+                                </span>
+
+                                <div>
+                                    <h4>Matched Terms</h4>
+                                    <p>Skills and terms found</p>
+                                </div>
+                            </div>
+
+                            @if (item.MatchedTerms != null && item.MatchedTerms.Any())
+                            {
+                                <div class="candidate-term-list">
+                                    @foreach (var term in item.MatchedTerms)
+                                    {
+                                        <span class="candidate-term candidate-term-matched">
+                                            <i class="bi bi-check2"></i>
+                                            @term
+                                        </span>
+                                    }
+                                </div>
                             }
                             else
                             {
-                                <span class="text-muted">No matching terms found.</span>
+                                <p class="candidate-no-data">No matching terms found.</p>
                             }
                         </div>
 
-                        <div class="col-md-6">
-                            <h6 class="fw-bold text-danger">Missing Terms</h6>
-                            @if (item.MissingTerms.Any())
+                        <div class="candidate-analysis-box candidate-missing-box">
+                            <div class="candidate-analysis-heading">
+                                <span class="analysis-icon">
+                                    <i class="bi bi-exclamation-circle"></i>
+                                </span>
+
+                                <div>
+                                    <h4>Missing Terms</h4>
+                                    <p>Terms not found in the profile</p>
+                                </div>
+                            </div>
+
+                            @if (item.MissingTerms != null && item.MissingTerms.Any())
                             {
-                                @foreach (var term in item.MissingTerms)
-                                {
-                                    <span class="badge bg-danger me-1 mb-1">@term</span>
-                                }
+                                <div class="candidate-term-list">
+                                    @foreach (var term in item.MissingTerms)
+                                    {
+                                        <span class="candidate-term candidate-term-missing">
+                                            <i class="bi bi-dash"></i>
+                                            @term
+                                        </span>
+                                    }
+                                </div>
                             }
                             else
                             {
-                                <span class="text-muted">No missing terms.</span>
+                                <p class="candidate-no-data">No missing terms.</p>
                             }
                         </div>
+
                     </div>
 
-                    @if (!string.IsNullOrEmpty(student?.ResumePath))
-                    {
-                        <a href="@student.ResumePath" target="_blank"
-                           rel="noopener noreferrer"
-                           class="btn btn-outline-primary mb-3">
-                            📄 View Resume
-                        </a>
-                    }
+                    <!-- Candidate Actions -->
+                    <div class="candidate-actions">
 
-                    <form asp-controller="Employer"
-                          asp-action="UpdateApplicationStatus"
-                          method="post">
-                        @Html.AntiForgeryToken()
+                        @if (!string.IsNullOrWhiteSpace(student?.ResumePath))
+                        {
+                            <a href="@student.ResumePath"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="candidate-resume-btn">
 
-                        <input type="hidden" name="applicationId"
-                               value="@application.ApplicationId" />
+                                <i class="bi bi-file-earmark-pdf"></i>
+                                View Resume
+                            </a>
+                        }
 
-                        <div class="d-flex flex-wrap gap-2">
-                            <button type="submit" name="status" value="Reviewed"
-                                    class="btn btn-secondary">
-                                Review
-                            </button>
+                        <div class="candidate-action-buttons">
 
-                            <button type="submit" name="status" value="Shortlisted"
-                                    class="btn btn-primary">
-                                Shortlist
-                            </button>
+                            <form asp-controller="Employer"
+                                  asp-action="UpdateApplicationStatus"
+                                  method="post">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden"
+                                       name="applicationId"
+                                       value="@application.ApplicationId" />
+
+                                <button type="submit"
+                                        name="status"
+                                        value="Reviewed"
+                                        class="candidate-action-btn action-review">
+
+                                    <i class="bi bi-eye"></i>
+                                    Review
+                                </button>
+                            </form>
+
+                            <form asp-controller="Employer"
+                                  asp-action="UpdateApplicationStatus"
+                                  method="post">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden"
+                                       name="applicationId"
+                                       value="@application.ApplicationId" />
+
+                                <button type="submit"
+                                        name="status"
+                                        value="Shortlisted"
+                                        class="candidate-action-btn action-shortlist">
+
+                                    <i class="bi bi-bookmark-check"></i>
+                                    Shortlist
+                                </button>
+                            </form>
 
                             <a asp-controller="Employer"
                                asp-action="ScheduleInterview"
                                asp-route-id="@application.ApplicationId"
-                               class="btn btn-warning">📅 Schedule Interview</a>
+                               class="candidate-action-btn action-interview">
 
-                            <button type="submit" name="status" value="Selected"
-                                    class="btn btn-success">
-                                Select
-                            </button>
+                                <i class="bi bi-calendar-event"></i>
+                                Schedule Interview
+                            </a>
 
-                            <button type="submit" name="status" value="Rejected"
-                                    class="btn btn-danger">
-                                Reject
-                            </button>
+                            <form asp-controller="Employer"
+                                  asp-action="UpdateApplicationStatus"
+                                  method="post">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden"
+                                       name="applicationId"
+                                       value="@application.ApplicationId" />
+
+                                <button type="submit"
+                                        name="status"
+                                        value="Selected"
+                                        class="candidate-action-btn action-select">
+
+                                    <i class="bi bi-check-circle"></i>
+                                    Select
+                                </button>
+                            </form>
+
+                            <form asp-controller="Employer"
+                                  asp-action="UpdateApplicationStatus"
+                                  method="post">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden"
+                                       name="applicationId"
+                                       value="@application.ApplicationId" />
+
+                                <button type="submit"
+                                        name="status"
+                                        value="Rejected"
+                                        class="candidate-action-btn action-reject">
+
+                                    <i class="bi bi-x-circle"></i>
+                                    Reject
+                                </button>
+                            </form>
+
                         </div>
-                    </form>
-                </div>
+
+                    </div>
+
+                </article>
             }
+
         </div>
     }
+
 </div>
 
 @section Scripts {
     <script>
         $(function () {
+
             function filterApplicants() {
                 const minMatch = parseFloat($("#minMatch").val()) || 0;
                 const maxMatch = parseFloat($("#maxMatch").val()) || 100;
                 const skill = $.trim($("#skillSearch").val()).toLowerCase();
-                const status = $("#statusFilter").val().toLowerCase();
+                const status = ($("#statusFilter").val() || "").toLowerCase();
 
                 let visibleCount = 0;
-                const totalCount = $(".applicant-card").length;
+                const totalCount = $(".applicant-profile-card").length;
 
-                $(".applicant-card").each(function () {
+                $(".applicant-profile-card").each(function () {
                     const card = $(this);
+
                     const match = parseFloat(card.attr("data-match")) || 0;
                     const skills = (card.attr("data-skills") || "").toLowerCase();
                     const cardStatus = (card.attr("data-status") || "").toLowerCase();
@@ -282,58 +663,64 @@
                     const matchesPercentage = match >= minMatch && match <= maxMatch;
                     const matchesSkill = skill === "" || skills.includes(skill);
                     const matchesStatus = status === "" || cardStatus === status;
+
                     const show = matchesPercentage && matchesSkill && matchesStatus;
 
                     card.toggle(show);
-                    if (show) visibleCount++;
+
+                    if (show) {
+                        visibleCount++;
+                    }
                 });
 
                 $("#candidateCount").text(
                     "Showing " + visibleCount + " of " + totalCount + " candidates"
                 );
-                $("#noFilteredResults").toggle(visibleCount === 0);
+
+                $("#noFilteredResults").toggle(totalCount > 0 && visibleCount === 0);
+            }
+
+            function resetApplicantFilters() {
+                $("#minMatch").val("0");
+                $("#maxMatch").val("100");
+                $("#skillSearch").val("");
+                $("#statusFilter").val("");
+
+                filterApplicants();
             }
 
             $("#minMatch, #maxMatch, #statusFilter").on("change", filterApplicants);
             $("#skillSearch").on("input", filterApplicants);
 
-            $("#resetFilters").on("click", function () {
-                $("#minMatch").val("0");
-                $("#maxMatch").val("100");
-                $("#skillSearch").val("");
-                $("#statusFilter").val("");
-                filterApplicants();
+            $("#resetFilters, #emptyResetFilters").on("click", function () {
+                resetApplicantFilters();
             });
 
-            $(".match-category-card").on("click keydown", function (e) {
-                if (e.type === "keydown" && e.key !== "Enter" && e.key !== " ") {
-                    return;
-                }
-
-                if (e.type === "keydown") e.preventDefault();
-
+            $(".applicants-match-card").on("click", function () {
                 const category = $(this).attr("data-category");
 
-                $("#minMatch").val("0");
-                $("#maxMatch").val("100");
-                $("#skillSearch").val("");
-                $("#statusFilter").val("");
+                resetApplicantFilters();
 
                 if (category === "high") {
                     $("#minMatch").val("70");
-                } else if (category === "medium") {
+                }
+                else if (category === "medium") {
                     $("#minMatch").val("40");
-                    $("#maxMatch").val("69");
-                } else if (category === "low") {
-                    $("#maxMatch").val("39");
+                    $("#maxMatch").val("69.99");
+                }
+                else if (category === "low") {
+                    $("#maxMatch").val("39.99");
                 }
 
                 filterApplicants();
-                document.getElementById("applicantList").scrollIntoView({
+
+                document.getElementById("applicantList")?.scrollIntoView({
                     behavior: "smooth",
                     block: "start"
                 });
             });
+
+            filterApplicants();
         });
     </script>
 }

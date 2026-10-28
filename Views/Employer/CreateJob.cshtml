@@ -1,150 +1,291 @@
-﻿@model FreshStart.Models.Job.Job
+﻿```cshtml
+@model FreshStart.Models.Job.Job
 
 @{
-    ViewData["Title"] = "Create Job";
+    ViewData["Title"] = "Post a Job";
 }
 
-<div class="container mt-5">
-    <div class="card shadow p-5">
-        <h1 class="text-center fw-bold mb-4">
-            Post New Job 🚀
-        </h1>
+<div class="create-job-page">
 
-        <form asp-controller="Employer"
-              asp-action="CreateJob"
-              method="post">
-
-            <div asp-validation-summary="All"
-                 class="text-danger mb-3">
+    <!-- Header -->
+    <div class="create-job-header">
+        <div>
+            <div class="create-job-breadcrumb">
+                Employer Portal <i class="bi bi-chevron-right"></i> Post a Job
             </div>
 
-            <div class="row">
-                <div class="col-md-6">
+            <h1>Create a Job Listing</h1>
+            <p>Share an opportunity and connect with talented candidates.</p>
+        </div>
 
-                    <div class="mb-3">
-                        <label asp-for="JobTitle"
-                               class="form-label fw-bold">
-                            Job Title
-                        </label>
+        <div class="create-job-header-icon">
+            <i class="bi bi-briefcase-fill"></i>
+        </div>
+    </div>
+
+    <!-- Intro Banner -->
+    <section class="create-job-banner">
+        <div>
+            <span class="create-job-banner-label">
+                <i class="bi bi-stars"></i>
+                FIND YOUR NEXT GREAT CANDIDATE
+            </span>
+
+            <h2>Build your team with FreshStart.</h2>
+
+            <p>
+                Add accurate job details, salary information and required skills
+                to help suitable candidates discover your opportunity.
+            </p>
+        </div>
+
+        <div class="create-job-banner-art">
+            <i class="bi bi-person-workspace"></i>
+        </div>
+    </section>
+
+    <!-- Form -->
+    <form asp-controller="Employer"
+          asp-action="CreateJob"
+          method="post"
+          class="create-job-form">
+
+        <div asp-validation-summary="All"
+             class="create-job-validation-summary">
+        </div>
+
+        <!-- Job Details -->
+        <section class="create-job-card">
+
+            <div class="create-job-card-heading">
+                <div class="create-job-section-icon">
+                    <i class="bi bi-card-text"></i>
+                </div>
+
+                <div>
+                    <h3>Basic Job Information</h3>
+                    <p>Enter the main details of the opportunity.</p>
+                </div>
+            </div>
+
+            <div class="create-job-fields-grid">
+
+                <div class="create-job-field create-job-field-full">
+                    <label asp-for="JobTitle">
+                        Job Title <span>*</span>
+                    </label>
+
+                    <div class="create-job-input-wrap">
+                        <i class="bi bi-briefcase"></i>
                         <input asp-for="JobTitle"
-                               class="form-control"
                                placeholder="e.g. Junior .NET Developer" />
-                        <span asp-validation-for="JobTitle"
-                              class="text-danger"></span>
                     </div>
 
-                    <div class="mb-3">
-                        <label asp-for="RequiredSkills"
-                               class="form-label fw-bold">
-                            Required Skills
-                        </label>
-                        <input asp-for="RequiredSkills"
-                               class="form-control"
-                               placeholder="C#, ASP.NET, SQL" />
+                    <span asp-validation-for="JobTitle"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="create-job-field">
+                    <label asp-for="JobType">Job Type</label>
+
+                    <div class="create-job-input-wrap">
+                        <i class="bi bi-clock"></i>
+                        <input asp-for="JobType"
+                               placeholder="e.g. Full Time / Internship" />
                     </div>
 
-                    <div class="mb-3">
-                        <label asp-for="Location"
-                               class="form-label fw-bold">
-                            Location
-                        </label>
+                    <span asp-validation-for="JobType"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="create-job-field">
+                    <label asp-for="Location">Location</label>
+
+                    <div class="create-job-input-wrap">
+                        <i class="bi bi-geo-alt"></i>
                         <input asp-for="Location"
-                               class="form-control"
-                               placeholder="Karachi" />
+                               placeholder="e.g. Karachi" />
                     </div>
 
-                    <div class="mb-3">
-                        <label asp-for="MinimumSalary"
-                               class="form-label fw-bold">
-                            Minimum Salary (PKR)
-                        </label>
+                    <span asp-validation-for="Location"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="create-job-field create-job-field-full">
+                    <label asp-for="RequiredSkills">Required Skills</label>
+
+                    <div class="create-job-input-wrap">
+                        <i class="bi bi-code-slash"></i>
+                        <input asp-for="RequiredSkills"
+                               placeholder="e.g. C#, ASP.NET Core, SQL Server" />
+                    </div>
+
+                    <small class="create-job-field-help">
+                        Separate skills with commas so candidates can understand
+                        which skills are required.
+                    </small>
+
+                    <span asp-validation-for="RequiredSkills"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="create-job-field create-job-field-full">
+                    <label asp-for="Description">
+                        Job Description <span>*</span>
+                    </label>
+
+                    <textarea asp-for="Description"
+                              rows="6"
+                              placeholder="Describe the role, responsibilities, requirements and what the candidate will do."></textarea>
+
+                    <div class="create-job-textarea-footer">
+                        <span>Write a clear description of the position.</span>
+                        <i class="bi bi-pencil-square"></i>
+                    </div>
+
+                    <span asp-validation-for="Description"
+                          class="text-danger"></span>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Salary Details -->
+        <section class="create-job-card">
+
+            <div class="create-job-card-heading">
+                <div class="create-job-section-icon salary-section-icon">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+
+                <div>
+                    <h3>Salary & Compensation</h3>
+                    <p>Specify the expected salary range for this position.</p>
+                </div>
+            </div>
+
+            <div class="create-job-fields-grid">
+
+                <div class="create-job-field">
+                    <label asp-for="MinimumSalary">
+                        Minimum Salary (PKR) <span>*</span>
+                    </label>
+
+                    <div class="create-job-input-wrap">
+                        <i class="bi bi-currency-rupee"></i>
                         <input asp-for="MinimumSalary"
                                type="number"
                                min="0"
                                step="0.01"
-                               class="form-control"
                                placeholder="50000" />
-                        <span asp-validation-for="MinimumSalary"
-                              class="text-danger"></span>
                     </div>
 
-                    <div class="mb-3">
-                        <label asp-for="MaximumSalary"
-                               class="form-label fw-bold">
-                            Maximum Salary (PKR)
-                        </label>
+                    <span asp-validation-for="MinimumSalary"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="create-job-field">
+                    <label asp-for="MaximumSalary">
+                        Maximum Salary (PKR) <span>*</span>
+                    </label>
+
+                    <div class="create-job-input-wrap">
+                        <i class="bi bi-currency-rupee"></i>
                         <input asp-for="MaximumSalary"
                                type="number"
                                min="0"
                                step="0.01"
-                               class="form-control"
                                placeholder="80000" />
-                        <span asp-validation-for="MaximumSalary"
-                              class="text-danger"></span>
                     </div>
 
-                    <div class="mb-3">
-                        <label asp-for="SalaryType"
-                               class="form-label fw-bold">
-                            Salary Type
-                        </label>
-                        <select asp-for="SalaryType"
-                                class="form-select">
+                    <span asp-validation-for="MaximumSalary"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="create-job-field create-job-field-full">
+                    <label asp-for="SalaryType">Salary Period</label>
+
+                    <div class="create-job-input-wrap">
+                        <i class="bi bi-calendar-range"></i>
+
+                        <select asp-for="SalaryType">
                             <option value="Monthly">Monthly</option>
                             <option value="Yearly">Yearly</option>
                             <option value="Hourly">Hourly</option>
                         </select>
-                        <span asp-validation-for="SalaryType"
-                              class="text-danger"></span>
                     </div>
 
+                    <span asp-validation-for="SalaryType"
+                          class="text-danger"></span>
                 </div>
 
-                <div class="col-md-6">
+            </div>
 
-                    <div class="mb-3">
-                        <label asp-for="JobType"
-                               class="form-label fw-bold">
-                            Job Type
-                        </label>
-                        <input asp-for="JobType"
-                               class="form-control"
-                               placeholder="Full Time / Internship" />
-                    </div>
+            <div class="create-job-salary-note">
+                <i class="bi bi-info-circle-fill"></i>
+                <span>Enter the minimum and maximum salary in PKR.</span>
+            </div>
 
-                    <div class="mb-3">
-                        <label asp-for="Deadline"
-                               class="form-label fw-bold">
-                            Deadline
-                        </label>
-                        <input asp-for="Deadline"
-                               type="date"
-                               class="form-control" />
-                    </div>
+        </section>
 
-                    <div class="mb-3">
-                        <label asp-for="Description"
-                               class="form-label fw-bold">
-                            Job Description
-                        </label>
-                        <textarea asp-for="Description"
-                                  class="form-control"
-                                  rows="7"
-                                  placeholder="Describe job responsibilities"></textarea>
-                    </div>
+        <!-- Application Deadline -->
+        <section class="create-job-card">
 
+            <div class="create-job-card-heading">
+                <div class="create-job-section-icon deadline-section-icon">
+                    <i class="bi bi-calendar-check"></i>
+                </div>
+
+                <div>
+                    <h3>Application Deadline</h3>
+                    <p>Choose the last date for candidates to apply.</p>
                 </div>
             </div>
 
-            <button type="submit"
-                    class="btn btn-primary w-100 mt-3">
-                Post Job 🚀
+            <div class="create-job-fields-grid">
+
+                <div class="create-job-field create-job-field-full">
+                    <label asp-for="Deadline">Last Date to Apply</label>
+
+                    <div class="create-job-input-wrap">
+                        <i class="bi bi-calendar-event"></i>
+                        <input asp-for="Deadline" type="date" />
+                    </div>
+
+                    <span asp-validation-for="Deadline"
+                          class="text-danger"></span>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Actions -->
+        <div class="create-job-form-actions">
+
+            <a asp-controller="Employer"
+               asp-action="Jobs"
+               class="create-job-cancel-btn">
+                <i class="bi bi-arrow-left"></i>
+                Back to My Jobs
+            </a>
+
+            <button type="submit" class="create-job-submit-btn">
+                <i class="bi bi-send-fill"></i>
+                Publish Job
             </button>
 
-        </form>
-    </div>
+        </div>
+
+    </form>
+
+    <footer class="create-job-footer">
+        <span>FreshStart Employer Portal</span>
+        <span>Helping you connect with the right talent.</span>
+    </footer>
+
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+```

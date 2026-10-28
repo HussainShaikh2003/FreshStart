@@ -1,83 +1,288 @@
-﻿@model IEnumerable<FreshStart.Models.Job.Job>
+﻿```cshtml
+@model IEnumerable<FreshStart.Models.Job.Job>
 
 @{
     ViewData["Title"] = "My Jobs";
+
+    var jobs = Model?.ToList() ?? new List<FreshStart.Models.Job.Job>();
+    var totalJobs = jobs.Count;
+    var fullTimeJobs = jobs.Count(j => j.JobType != null && j.JobType.Contains("full", StringComparison.OrdinalIgnoreCase));
+    var partTimeJobs = jobs.Count(j => j.JobType != null && j.JobType.Contains("part", StringComparison.OrdinalIgnoreCase));
+    var otherJobs = totalJobs - fullTimeJobs - partTimeJobs;
 }
 
-<div class="container-fluid mt-4">
+<div class="employer-jobs-page">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="fw-bold">
-            My Posted Jobs 💼
-        </h1>
+    <!-- Page Header -->
+    <header class="employer-jobs-header">
+        <div>
+            <div class="employer-jobs-breadcrumb">
+                Dashboard <i class="bi bi-chevron-right"></i> My Jobs
+            </div>
+
+            <h1>Job Management</h1>
+            <p>Manage your job listings and find the right candidates.</p>
+        </div>
 
         <a asp-controller="Employer"
            asp-action="CreateJob"
-           class="btn btn-primary">
-            ➕ Post New Job
+           class="employer-jobs-primary-btn">
+            <i class="bi bi-plus-lg"></i>
+            Post New Job
         </a>
-    </div>
+    </header>
 
-    <div class="card shadow p-4">
-        <div class="table-responsive">
+    <!-- Welcome Banner -->
+    <section class="employer-jobs-banner">
+        <div class="employer-jobs-banner-content">
+            <span class="employer-jobs-banner-label">
+                <i class="bi bi-briefcase-fill"></i>
+                YOUR JOB LISTINGS
+            </span>
 
-            <table class="table table-hover align-middle">
+            <h2>Find the right talent for your company.</h2>
 
-                <thead class="table-light">
-                    <tr>
-                        <th>Job Title</th>
-                        <th>Skills</th>
-                        <th>Location</th>
-                        <th>Salary Range</th>
-                        <th>Type</th>
-                        <th>Deadline</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
+            <p>
+                Review your posted opportunities, check salary ranges
+                and manage applications from one place.
+            </p>
 
-                <tbody>
-                    @foreach (var job in Model)
-                    {
-                        <tr>
-                            <td>
-                                <strong>@job.JobTitle</strong>
-                            </td>
-
-                            <td>
-                                <span class="badge bg-primary">
-                                    @job.RequiredSkills
-                                </span>
-                            </td>
-
-                            <td>
-                                📍 @job.Location
-                            </td>
-
-                            <td>
-                                💰 @job.MinimumSalary.ToString("N0")
-                                – @job.MaximumSalary.ToString("N0")
-                                / @job.SalaryType
-                            </td>
-
-                            <td>@job.JobType</td>
-
-                            <td>@job.Deadline.ToShortDateString()</td>
-
-                            <td>
-                                <a asp-controller="Employer"
-                                   asp-action="Applicants"
-                                   asp-route-id="@job.JobId"
-                                   class="btn btn-info btn-sm">
-                                    View Applicants
-                                </a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-
-            </table>
-
+            <a asp-controller="Employer"
+               asp-action="CreateJob"
+               class="employer-jobs-banner-btn">
+                Create a Job Listing
+                <i class="bi bi-arrow-right"></i>
+            </a>
         </div>
-    </div>
+
+        <div class="employer-jobs-banner-art">
+            <div class="employer-jobs-art-circle">
+                <i class="bi bi-briefcase-fill"></i>
+            </div>
+
+            <span class="employer-jobs-art-icon jobs-art-one">
+                <i class="bi bi-people-fill"></i>
+            </span>
+
+            <span class="employer-jobs-art-icon jobs-art-two">
+                <i class="bi bi-check-circle-fill"></i>
+            </span>
+        </div>
+    </section>
+
+    <!-- Statistics -->
+    <section class="employer-jobs-stats">
+
+        <div class="employer-jobs-stat-card">
+            <div class="employer-jobs-stat-icon jobs-stat-blue">
+                <i class="bi bi-briefcase-fill"></i>
+            </div>
+
+            <div>
+                <span class="employer-jobs-stat-label">TOTAL JOBS</span>
+                <h3>@totalJobs</h3>
+                <p>All posted listings</p>
+            </div>
+        </div>
+
+        <div class="employer-jobs-stat-card">
+            <div class="employer-jobs-stat-icon jobs-stat-purple">
+                <i class="bi bi-clock-fill"></i>
+            </div>
+
+            <div>
+                <span class="employer-jobs-stat-label">FULL-TIME</span>
+                <h3>@fullTimeJobs</h3>
+                <p>Full-time opportunities</p>
+            </div>
+        </div>
+
+        <div class="employer-jobs-stat-card">
+            <div class="employer-jobs-stat-icon jobs-stat-orange">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+
+            <div>
+                <span class="employer-jobs-stat-label">PART-TIME</span>
+                <h3>@partTimeJobs</h3>
+                <p>Part-time opportunities</p>
+            </div>
+        </div>
+
+        <div class="employer-jobs-stat-card">
+            <div class="employer-jobs-stat-icon jobs-stat-green">
+                <i class="bi bi-grid-fill"></i>
+            </div>
+
+            <div>
+                <span class="employer-jobs-stat-label">OTHER TYPES</span>
+                <h3>@otherJobs</h3>
+                <p>Other job categories</p>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Jobs Table Heading -->
+    <section class="employer-jobs-list-section">
+
+        <div class="employer-jobs-section-heading">
+            <div>
+                <h3>My Posted Jobs</h3>
+                <p>Review your job details and manage applicants.</p>
+            </div>
+
+            <span class="employer-jobs-count">
+                <i class="bi bi-briefcase"></i>
+                @totalJobs @(totalJobs == 1 ? "Job" : "Jobs")
+            </span>
+        </div>
+
+        @if (!jobs.Any())
+        {
+            <div class="employer-jobs-empty">
+                <div class="employer-jobs-empty-icon">
+                    <i class="bi bi-briefcase"></i>
+                </div>
+
+                <h3>No jobs posted yet</h3>
+
+                <p>
+                    You haven't created any job listings.
+                    Post your first opportunity to start receiving applications.
+                </p>
+
+                <a asp-controller="Employer"
+                   asp-action="CreateJob"
+                   class="employer-jobs-primary-btn">
+                    <i class="bi bi-plus-lg"></i>
+                    Post Your First Job
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="employer-jobs-table-card">
+                <div class="table-responsive">
+                    <table class="table employer-jobs-table align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>JOB DETAILS</th>
+                                <th>REQUIRED SKILLS</th>
+                                <th>LOCATION</th>
+                                <th>SALARY RANGE</th>
+                                <th>JOB TYPE</th>
+                                <th>DEADLINE</th>
+                                <th>ACTION</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var job in jobs.OrderByDescending(j => j.CreatedDate))
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="employer-jobs-title-cell">
+                                            <span class="employer-jobs-row-icon">
+                                                <i class="bi bi-briefcase-fill"></i>
+                                            </span>
+
+                                            <div>
+                                                <strong>@job.JobTitle</strong>
+                                                <small>
+                                                    Job ID: @job.JobId
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        @if (!string.IsNullOrWhiteSpace(job.RequiredSkills))
+                                        {
+                                            <span class="employer-jobs-skills">
+                                                @job.RequiredSkills
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="employer-jobs-muted">Not specified</span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        <span class="employer-jobs-location">
+                                            <i class="bi bi-geo-alt"></i>
+                                            @(string.IsNullOrWhiteSpace(job.Location) ? "Not specified" : job.Location)
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <div class="employer-jobs-salary">
+                                            <strong>
+                                                @job.MinimumSalary.ToString("N0")
+                                                – @job.MaximumSalary.ToString("N0")
+                                            </strong>
+
+                                            <small>
+                                                / @(string.IsNullOrWhiteSpace(job.SalaryType) ? "Monthly" : job.SalaryType)
+                                            </small>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <span class="employer-jobs-type">
+                                            <i class="bi bi-clock"></i>
+                                            @(string.IsNullOrWhiteSpace(job.JobType) ? "Not specified" : job.JobType)
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="employer-jobs-date">
+                                            <i class="bi bi-calendar3"></i>
+                                            @job.Deadline.ToString("dd MMM yyyy")
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <a asp-controller="Employer"
+                                           asp-action="Applicants"
+                                           asp-route-id="@job.JobId"
+                                           class="employer-jobs-applicants-btn">
+                                            <i class="bi bi-people-fill"></i>
+                                            Applicants
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        }
+
+    </section>
+
+    <!-- Information Notice -->
+    <section class="employer-jobs-info">
+        <div class="employer-jobs-info-icon">
+            <i class="bi bi-info-circle"></i>
+        </div>
+
+        <div>
+            <h4>Manage your opportunities</h4>
+            <p>
+                Select Applicants on any listing to review candidates
+                and check their job-match information.
+            </p>
+        </div>
+    </section>
+
+    <footer class="employer-jobs-footer">
+        <span>FreshStart Employer Portal</span>
+        <span>Connecting employers with talented candidates.</span>
+    </footer>
 
 </div>
+```
